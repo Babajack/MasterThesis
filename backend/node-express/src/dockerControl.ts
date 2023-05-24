@@ -2,8 +2,8 @@ import { Docker } from "node-docker-api";
 import axios from "axios";
 import { Container } from "node-docker-api/lib/container";
 
-const SOCKET_PATH = "//./pipe/docker_engine";
-//const SOCKET_PATH = "'/var/run/docker.sock'";
+//const SOCKET_PATH = "//./pipe/docker_engine";
+const SOCKET_PATH = "'/var/run/docker.sock'";
 const IMAGE_NAME = "node-docker";
 const DOCKER_PORT = "8000/tcp";
 const HOST_URL = "http://localhost";
