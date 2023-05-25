@@ -3,8 +3,6 @@ version: '3.7'
 services:
   node-backend:
     image: node-backend
-    environment:
-      - COMPOSE_CONVERT_WINDOWS_PATHS=1
     build:
       context: .
       dockerfile: ./Dockerfile
@@ -12,7 +10,7 @@ services:
     volumes:
       - ./src:/home/node/app/src
       - ./nodemon.json:/home/node/app/nodemon.json
-      - /usr/local/bin/docker:/usr/bin/docker
+      - /var/run/docker.sock:/var/run/docker.sock
     container_name: node-backend-docker
     expose:
       - '8000'

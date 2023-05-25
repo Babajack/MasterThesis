@@ -1,5 +1,5 @@
 import express from "express";
-import { cleanup, executeTask, initDockerControl, listContainers } from "../src/dockerControl";
+import { executeTask, initDockerControl, listContainers } from "../src/dockerControl";
 
 const app = express();
 const port = 8000;
@@ -15,5 +15,5 @@ app.get("/docker", (req, res) => {
 
 app.listen(port, () => {
 	console.log(`Example app listening on port ${port}`);
-	initDockerControl();
+	//initDockerControl();
 });
