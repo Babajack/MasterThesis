@@ -1,16 +1,13 @@
-version: '3.9'
-
 services:
 
-  node-docker:
-    image: node-docker
-    build: 
-      context: ./backend/test-env
-      dockerfile: ./Dockerfile
-    command: ""
+  #node-docker:
+   # image: node-docker
+    #build: 
+     # context: ./backend/test-env
+      #dockerfile: ./Dockerfile
 
-  node-backend:
-    image: node-backend
+  backend-express:
+    image: backend-express
     build:
       context: ./backend/node-express
       dockerfile: ./Dockerfile
@@ -19,9 +16,24 @@ services:
       - ./backend/node-express/src:/home/node/app/src
       - ./backend/node-express/nodemon.json:/home/node/app/nodemon.json
       - /var/run/docker.sock:/var/run/docker.sock
-    container_name: node-backend-docker
     expose:
       - '8000'
     ports:
       - '8000:8000'
     command: npm run dev
+
+  frontend-react:
+    image: frontend-react
+    build:
+      context: ./frontend
+      dockerfile: ./Dockerfile
+    volumes:
+      - /usr/src/app/node_modules
+      - ./frontend:/usr/src/app
+    environment:
+      WATCHPACK_POLLING: "true"
+    expose:
+      - '3000'
+    ports:
+      - '3000:3000'
+    
