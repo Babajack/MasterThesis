@@ -1,5 +1,5 @@
 import express from "express";
-import { executeTask, initDockerControl, listContainers } from "../src/dockerControl";
+import { executeTask, initDockerControl, listContainers } from "./dockerControl";
 
 const app = express();
 const port = 8000;

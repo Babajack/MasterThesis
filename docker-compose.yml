@@ -6,10 +6,10 @@ services:
      # context: ./backend/test-env
       #dockerfile: ./Dockerfile
 
-  backend-express:
-    image: backend-express
+  backend-express-main:
+    image: express-main
     build:
-      context: ./backend/node-express
+      context: ./backend/express-main
       dockerfile: ./Dockerfile
       target: base
     volumes:
@@ -22,10 +22,10 @@ services:
       - '8000:8000'
     command: npm run dev
 
-  frontend-react:
-    image: frontend-react
+  frontend-react-main:
+    image: react-main
     build:
-      context: ./frontend
+      context: ./frontend/react-main
       dockerfile: ./Dockerfile
     volumes:
       - /usr/src/app/node_modules
