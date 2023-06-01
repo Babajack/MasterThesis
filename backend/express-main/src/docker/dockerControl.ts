@@ -1,34 +1,15 @@
 import { Docker } from "node-docker-api";
 import axios from "axios";
 import { Container } from "node-docker-api/lib/container";
+import fs from "fs";
+import { SandboxFiles } from "types";
+import { DOCKER_PORT, getNextPortNumber } from "./portControl";
 
-//const SOCKET_PATH = "//./pipe/docker_engine";
 const SOCKET_PATH = "/var/run/docker.sock";
-const IMAGE_NAME = "node-docker";
-const DOCKER_PORT = "8000/tcp";
-const HOST_URL = "http://localhost";
-
-const HOST_PORT_DEFAULT = 4000;
+const TESTENV_IMAGE_NAME = "node-docker";
+const SANDBOX_IMAGE_NAME = "react-sandbox";
 
 const TIMEOUT = 5000; //3600000; // milliseconds
-
-/**
- * Port
- */
-var hostPort: number = HOST_PORT_DEFAULT;
-
-const getNextPortNumber = () => {
-	if (hostPort === HOST_PORT_DEFAULT + 1000) {
-		resetPortNumber();
-		return hostPort;
-	} else {
-		return hostPort++;
-	}
-};
-
-const resetPortNumber = () => {
-	hostPort = HOST_PORT_DEFAULT;
-};
 
 /**
  * Timeout
@@ -44,9 +25,8 @@ const stopTimer = (timeout: NodeJS.Timeout) => {
 	clearTimeout(timeout);
 };
 
-/**
- * Docker
- */
+/* -------------------------------- Docker -------------------------------- */
+
 const docker = new Docker({
 	socketPath: SOCKET_PATH,
 });
@@ -65,10 +45,12 @@ export const cleanupContainer = async (container: Container) => {
 	return container.delete({ force: true });
 };
 
-export const startContainer = async () => {
+/* -------------------------------- Test Env Docker -------------------------------- */
+
+export const startTestEnvContainer = async () => {
 	return docker.container
 		.create({
-			Image: IMAGE_NAME,
+			Image: TESTENV_IMAGE_NAME,
 			ExposedPorts: { [DOCKER_PORT]: {} },
 			HostConfig: {
 				PortBindings: {
@@ -79,11 +61,11 @@ export const startContainer = async () => {
 		.then((container) => container.start());
 };
 
-export const executeTask = async () => {
+export const runTest = async () => {
 	let container;
 	try {
 		// start new container
-		container = await startContainer();
+		container = await startTestEnvContainer();
 
 		// get port number
 		const status = await container.status();
@@ -92,7 +74,7 @@ export const executeTask = async () => {
 		const currentPort = status.data.HostConfig.PortBindings[DOCKER_PORT][0].HostPort;
 
 		// make request
-		const url = HOST_URL + ":" + currentPort;
+		//const url = HOST_URL + ":" + currentPort;
 
 		//const response = await axios.get(url);
 		//console.log(response);
@@ -105,4 +87,32 @@ export const executeTask = async () => {
 	} catch (error) {
 		console.log(error);
 	}
+};
+
+/* -------------------------------- React Sandbox Docker -------------------------------- */
+
+export const updateSandboxCode = (files: SandboxFiles) => {
+	try {
+		for (let file of files) {
+			fs.writeFileSync("/home/node/user-code/" + file.filename, file.code);
+		}
+	} catch (error) {
+		console.log(error);
+	}
+};
+
+export const startSandboxContainer = async () => {
+	return docker.container
+		.create({
+			Image: SANDBOX_IMAGE_NAME,
+			ExposedPorts: { "3000/tcp": {} },
+			HostConfig: {
+				Binds: ["master-thesis_user-code:/usr/src/app/user-code"],
+				NetworkMode: "master-thesis_main-network",
+				PortBindings: {
+					"3000/tcp": [{ HostPort: "2000" }],
+				},
+			},
+		})
+		.then((container) => container.start());
 };

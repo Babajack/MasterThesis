@@ -8,14 +8,17 @@ services:
 
   backend-express-main:
     image: express-main
+    networks:
+      - main-network
     build:
       context: ./backend/express-main
       dockerfile: ./Dockerfile
       target: base
     volumes:
-      - ./backend/node-express/src:/home/node/app/src
-      - ./backend/node-express/nodemon.json:/home/node/app/nodemon.json
+      - ./backend/express-main/src:/home/node/app/src
+      - ./backend/express-main/nodemon.json:/home/node/app/nodemon.json
       - /var/run/docker.sock:/var/run/docker.sock
+      - user-code:/home/node/user-code
     expose:
       - '8000'
     ports:
@@ -24,12 +27,14 @@ services:
 
   frontend-react-main:
     image: react-main
+    networks:
+      - main-network
     build:
       context: ./frontend/react-main
       dockerfile: ./Dockerfile
     volumes:
       - /usr/src/app/node_modules
-      - ./frontend:/usr/src/app
+      - ./frontend/react-main:/usr/src/app
     environment:
       WATCHPACK_POLLING: "true"
     expose:
@@ -37,3 +42,24 @@ services:
     ports:
       - '3000:3000'
     
+  frontend-react-sandbox:
+    image: react-sandbox
+    networks:
+      - main-network
+    build:
+      context: ./frontend/react-sandbox
+      dockerfile: ./Dockerfile
+    volumes:
+      - user-code:/usr/src/app/user-code
+    #expose:
+      # - '3000'
+    #ports:
+      # - '3000:3000'
+
+volumes:
+  user-code:
+
+networks:
+  main-network:
+    name: master-thesis_main-network
+    driver: bridge

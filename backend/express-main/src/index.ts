@@ -1,5 +1,11 @@
 import express from "express";
-import { executeTask, initDockerControl, listContainers } from "./dockerControl";
+import {
+	runTest,
+	initDockerControl,
+	listContainers,
+	startSandboxContainer,
+	updateSandboxCode,
+} from "./docker/dockerControl";
 
 const app = express();
 const port = 8000;
@@ -10,7 +16,14 @@ app.get("/", (req, res) => {
 
 app.get("/docker", (req, res) => {
 	res.send("starting docker...");
-	executeTask();
+	//executeTask();
+	updateSandboxCode([{ filename: "testfile", code: "console.log('testcode')" }]);
+});
+
+app.get("/docker/start", (req, res) => {
+	res.send("starting docker...");
+	//executeTask();
+	startSandboxContainer();
 });
 
 app.listen(port, () => {
