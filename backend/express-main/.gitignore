@@ -11,3 +11,7 @@ coverage
 benchmarks/graphs
 
 .vscode
+
+# dotenv environment variables file
+.env
+.env.test

@@ -6,9 +6,15 @@ import {
 	startSandboxContainer,
 	updateSandboxCode,
 } from "./docker/dockerControl";
+import session from "express-session";
+import MongoStore from "connect-mongo";
+import dotenv from "dotenv";
 
+dotenv.config();
 const app = express();
 const port = 8000;
+
+app.use(session({ secret: process.env.SECRET }));
 
 app.get("/", (req, res) => {
 	res.send("Hello World!");
