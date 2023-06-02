@@ -20,6 +20,8 @@ services:
       - ./backend/express-main/nodemon.json:/home/node/app/nodemon.json
       - /var/run/docker.sock:/var/run/docker.sock
       - user-code:/home/node/user-code
+    env_file:
+      - ./backend/express-main/.env
     expose:
       - '8000'
     ports:

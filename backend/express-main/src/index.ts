@@ -9,15 +9,31 @@ import {
 import session from "express-session";
 import MongoStore from "connect-mongo";
 import dotenv from "dotenv";
+import { getConnection } from "../src/database/database";
+import { createNewUser } from "../src/database/user";
 
+// env variables
 dotenv.config();
+
+// db connection
+const connection = getConnection();
+
 const app = express();
 const port = 8000;
 
-app.use(session({ secret: process.env.SECRET }));
+app.use(
+	session({
+		secret: process.env.SECRET!,
+		// @ts-ignore
+		store: (await connection).connection.getClient(),
+	})
+);
 
 app.get("/", (req, res) => {
 	res.send("Hello World!");
+	createNewUser("testname", "testpasswort")
+		.then((user) => console.log(user))
+		.catch((error) => console.log(error));
 });
 
 app.get("/docker", (req, res) => {
