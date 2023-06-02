@@ -105,12 +105,12 @@ export const startSandboxContainer = async () => {
 	return docker.container
 		.create({
 			Image: SANDBOX_IMAGE_NAME,
-			ExposedPorts: { "3000/tcp": {} },
+			ExposedPorts: { [DOCKER_PORT]: {} },
 			HostConfig: {
 				Binds: ["master-thesis_user-code:/usr/src/app/user-code"],
 				NetworkMode: "master-thesis_main-network",
 				PortBindings: {
-					"3000/tcp": [{ HostPort: "2000" }],
+					[DOCKER_PORT]: [{ HostPort: String(getNextPortNumber()) }],
 				},
 			},
 		})

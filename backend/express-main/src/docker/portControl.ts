@@ -1,6 +1,7 @@
 // configuration
 export const DOCKER_PORT = "8000/tcp";
-const HOST_PORT_DEFAULT = 4000;
+const HOST_PORT_DEFAULT = 10000;
+const HOST_PORT_MAX = 20000;
 
 /**
  * Port
@@ -8,7 +9,7 @@ const HOST_PORT_DEFAULT = 4000;
 var hostPort: number = HOST_PORT_DEFAULT;
 
 export const getNextPortNumber = () => {
-	if (hostPort === HOST_PORT_DEFAULT + 1000) {
+	if (hostPort === HOST_PORT_DEFAULT + HOST_PORT_MAX) {
 		resetPortNumber();
 		return hostPort;
 	} else {

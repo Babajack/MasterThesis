@@ -5,10 +5,12 @@ const userSchema = new mongoose.Schema({
 	id: {
 		type: String,
 		required: true,
+		index: { unique: true, dropDups: true },
 	},
 	username: {
 		type: String,
 		required: true,
+		index: { unique: true, dropDups: true },
 	},
 	passwort: {
 		type: String,
@@ -44,4 +46,13 @@ export const createNewUser = async (username: string, passwort: string) => {
 		passwort: passwort,
 		tasks: [],
 	});
+};
+
+export const getUser = async (username: string, passwort: string) => {
+	return (
+		await User.find({
+			username: username,
+			passwort: passwort,
+		})
+	).at(0);
 };
