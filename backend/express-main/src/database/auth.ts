@@ -12,11 +12,15 @@ const SALT_ROUNDS = 10;
  */
 export const login = async (req: Request<{}, {}, UserRequest>) => {
 	const user = await getUser(req.body.username);
-	console.log(user);
 	if (user) {
 		if (await bcrypt.compare(req.body.passwort, user.passwort)) {
 			req.session.user = { username: user.username, id: user.id };
-			return true;
+			return new Promise((resolve, reject) => {
+				req.session.save((err) => {
+					if (err) reject(err);
+					else resolve(true);
+				});
+			});
 		}
 	}
 	return false;
@@ -33,6 +37,20 @@ export const register = async (req: Request<{}, {}, UserRequest>) => {
 	const user = await createNewUser(req.body.username, passwort);
 	console.log(user);
 	return true;
+};
+
+/**
+ * attempt to logout a user
+ * @param req
+ * @returns true if success, false if not
+ */
+export const logout = async (req: Request) => {
+	return new Promise((resolve, reject) => {
+		req.session.destroy((err) => {
+			if (err) reject(err);
+			else resolve(true);
+		});
+	});
 };
 
 const hashPasswort = async (password: string) => {

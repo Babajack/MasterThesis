@@ -2,9 +2,10 @@ import dotenv from "dotenv";
 import express, { Request, Response } from "express";
 import session from "express-session";
 import { UserRequest } from "types";
-import { login, register } from "../src/database/auth";
-import { getSessionStore } from "../src/database/database";
+import { login, register } from "./database/auth";
+import { getSessionStore } from "./database/database";
 import { startSandboxContainer, updateSandboxCode } from "./docker/dockerControl";
+import { authRouter } from "./routes/auth";
 
 // env variables
 dotenv.config();
@@ -16,51 +17,29 @@ const port = 8000;
 app.use(
 	session({
 		secret: process.env.SECRET!,
-		resave: false,
-		saveUninitialized: true,
+		resave: true,
+		saveUninitialized: false,
 		store: getSessionStore(),
 	})
 );
+
+// json parser
 app.use(express.json());
 
+// logging
 app.use((req, res, next) => {
 	console.log(`request: ${JSON.stringify(req.body)}`);
 	next();
 });
 
+app.use("/", authRouter);
+
 app.get("/", (req, res) => {
-	res.send("Hello World!");
-});
-
-app.get("/login", (req: Request<{}, {}, UserRequest>, res: Response) => {
-	login(req)
-		.then((result) => {
-			console.log(result);
-			if (result) {
-				// user found
-				// TODO return success info?
-			} else {
-				// user not found
-				// TODO return error info?
-			}
-		})
-		.catch((error) => console.log(error));
-	res.send("logging in");
-});
-
-app.get("/register", (req: Request<{}, {}, UserRequest>, res: Response) => {
-	register(req)
-		.then((result) => {
-			if (result) {
-				// user created
-				// TODO return success info?
-			} else {
-				// user not created
-				// TODO return error info?
-			}
-		})
-		.catch((error) => console.log(error));
-	res.send("registering");
+	if (!req.session.user) {
+		res.send("Hello World!");
+	} else {
+		res.send(`Hello ${req.session.user.username}`);
+	}
 });
 
 app.get("/docker", (req, res) => {
@@ -72,7 +51,7 @@ app.get("/docker", (req, res) => {
 app.get("/docker/start", (req, res) => {
 	res.send("starting docker...");
 	//executeTask();
-	startSandboxContainer();
+	startSandboxContainer(req.session.user?.id!);
 });
 
 app.listen(port, () => {

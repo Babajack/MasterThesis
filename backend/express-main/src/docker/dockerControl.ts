@@ -101,7 +101,13 @@ export const updateSandboxCode = (files: SandboxFiles) => {
 	}
 };
 
-export const startSandboxContainer = async () => {
+export const startSandboxContainer = async (sessionID: string) => {
+	try {
+		const status = await docker.container.get(sessionID).status();
+	} catch (error) {
+		console.log(error);
+	}
+
 	return docker.container
 		.create({
 			Image: SANDBOX_IMAGE_NAME,

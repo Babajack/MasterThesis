@@ -21,7 +21,7 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock
       - user-code:/home/node/user-code
     env_file:
-      - ./backend/express-main/.env
+      - ./env
     expose:
       - '8000'
     ports:
@@ -69,9 +69,8 @@ services:
       - 27017:27017
     volumes:
       - db-data:/data/db
-    environment:
-      MONGO_INITDB_ROOT_USERNAME: root
-      MONGO_INITDB_ROOT_PASSWORD: example
+    env_file:
+      - ./env
 
   mongo-express:
     image: mongo-express
@@ -80,10 +79,8 @@ services:
       - main-network
     ports:
       - 8081:8081
-    environment:
-      ME_CONFIG_MONGODB_ADMINUSERNAME: root
-      ME_CONFIG_MONGODB_ADMINPASSWORD: example
-      ME_CONFIG_MONGODB_SERVER: mongodb
+    env_file:
+      - ./env
 
 volumes:
   user-code:

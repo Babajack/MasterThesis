@@ -25,6 +25,7 @@
   "scripts": {
     "start": "NODE_PATH=./build node build/index.js",
     "build": "tsc -p .",
-    "dev": "nodemon -L src/index.ts"
+    "dev": "nodemon -L src/index.ts",
+    "debug": "nodemon -L src/index.ts"
   }
 }
