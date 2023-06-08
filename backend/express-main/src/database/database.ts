@@ -1,3 +1,4 @@
+import MongoStore from "connect-mongo";
 import mongoose from "mongoose";
 
 // Connection URI
@@ -7,4 +8,13 @@ const DB_NAME = process.env.MONGODB_DB_NAME;
 const uri = `mongodb://${MONGODB_USERNAME}:${MONGODB_PASSWORT}@mongodb/`;
 
 // connect to mongoose
-export const getConnection = () => mongoose.connect(uri, { dbName: DB_NAME });
+const client = mongoose.connect(uri, { dbName: DB_NAME }).then((c) => c.connection.getClient());
+
+export const getSessionStore = () => {
+	return MongoStore.create({
+		clientPromise: client,
+		dbName: process.env.MONGODB_DB_NAME,
+		ttl: 14 * 24 * 60 * 60,
+		autoRemove: "native",
+	});
+};

@@ -1,55 +1,41 @@
-import express from "express";
-import {
-	runTest,
-	initDockerControl,
-	listContainers,
-	startSandboxContainer,
-	updateSandboxCode,
-} from "./docker/dockerControl";
-import session from "express-session";
-import MongoStore from "connect-mongo";
 import dotenv from "dotenv";
-import { Request, Response } from "express";
-import { getConnection } from "../src/database/database";
-import { createNewUser } from "../src/database/user";
-import { login } from "../src/database/auth";
-import { User, UserRequest } from "types";
-import { error } from "console";
+import express, { Request, Response } from "express";
+import session from "express-session";
+import { UserRequest } from "types";
+import { login, register } from "../src/database/auth";
+import { getSessionStore } from "../src/database/database";
+import { startSandboxContainer, updateSandboxCode } from "./docker/dockerControl";
 
 // env variables
 dotenv.config();
 
-// db connection
-const connection = getConnection().then((c) => c.connection.getClient());
-
 const app = express();
 const port = 8000;
 
+// session
 app.use(
 	session({
 		secret: process.env.SECRET!,
 		resave: false,
 		saveUninitialized: true,
-		store: MongoStore.create({
-			clientPromise: connection,
-			dbName: process.env.MONGODB_DB_NAME,
-			ttl: 14 * 24 * 60 * 60,
-			autoRemove: "native",
-		}),
+		store: getSessionStore(),
 	})
 );
 app.use(express.json());
 
+app.use((req, res, next) => {
+	console.log(`request: ${JSON.stringify(req.body)}`);
+	next();
+});
+
 app.get("/", (req, res) => {
 	res.send("Hello World!");
-	createNewUser("testname", "testpasswort")
-		.then((user) => console.log(user))
-		.catch((error) => console.log(error));
 });
 
 app.get("/login", (req: Request<{}, {}, UserRequest>, res: Response) => {
 	login(req)
 		.then((result) => {
+			console.log(result);
 			if (result) {
 				// user found
 				// TODO return success info?
@@ -59,6 +45,22 @@ app.get("/login", (req: Request<{}, {}, UserRequest>, res: Response) => {
 			}
 		})
 		.catch((error) => console.log(error));
+	res.send("logging in");
+});
+
+app.get("/register", (req: Request<{}, {}, UserRequest>, res: Response) => {
+	register(req)
+		.then((result) => {
+			if (result) {
+				// user created
+				// TODO return success info?
+			} else {
+				// user not created
+				// TODO return error info?
+			}
+		})
+		.catch((error) => console.log(error));
+	res.send("registering");
 });
 
 app.get("/docker", (req, res) => {

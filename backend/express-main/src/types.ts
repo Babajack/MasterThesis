@@ -17,6 +17,5 @@ export type UserRequest = {
 
 export type User = {
 	username: string;
-	passwort: string;
-	id?: string;
+	id: string;
 };

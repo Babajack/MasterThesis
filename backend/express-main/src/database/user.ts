@@ -48,11 +48,10 @@ export const createNewUser = async (username: string, passwort: string) => {
 	});
 };
 
-export const getUser = async (username: string, passwort: string) => {
+export const getUser = async (username: string) => {
 	return (
 		await User.find({
 			username: username,
-			passwort: passwort,
 		})
 	).at(0);
 };
