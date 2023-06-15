@@ -1,6 +1,6 @@
 import { MDBCol, MDBContainer, MDBRow } from "mdb-react-ui-kit";
 import * as React from "react";
-import PreviewComponent from "../components/PreviewComponent";
+import PreviewComponent from "../components/Task/PreviewComponent";
 
 const TaskView = () => {
 	return (

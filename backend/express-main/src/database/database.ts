@@ -5,7 +5,7 @@ import mongoose from "mongoose";
 const MONGODB_USERNAME = process.env.MONGODB_USERNAME;
 const MONGODB_PASSWORT = process.env.MONGODB_PASSWORT;
 const DB_NAME = process.env.MONGODB_DB_NAME;
-const MONGODB_HOST = process.env.DEBUG ? "localhost:27017" : "mongodb";
+const MONGODB_HOST = process.env.MONGODB_SERVER;
 const uri = `mongodb://${MONGODB_USERNAME}:${MONGODB_PASSWORT}@${MONGODB_HOST}/`;
 
 // connect to mongoose

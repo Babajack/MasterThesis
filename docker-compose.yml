@@ -7,6 +7,7 @@ services:
       #dockerfile: ./Dockerfile
 
   backend-express-main:
+    container_name: backend-express-main
     image: express-main
     restart: always
     networks:
@@ -21,7 +22,7 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock
       - user-code:/home/node/user-code
     env_file:
-      - ./env
+      - /.env
     expose:
       - '8000'
     ports:
@@ -29,6 +30,7 @@ services:
     command: npm run dev
 
   frontend-react-main:
+    container_name: frontend-react-main
     image: react-main
     restart: always
     networks:
@@ -39,6 +41,8 @@ services:
     volumes:
       - /usr/src/app/node_modules
       - ./frontend/react-main:/usr/src/app
+    env_file:
+      - /.env
     environment:
       WATCHPACK_POLLING: "true"
     expose:
@@ -70,7 +74,7 @@ services:
     volumes:
       - db-data:/data/db
     env_file:
-      - ./env
+      - /.env
 
   mongo-express:
     image: mongo-express
@@ -80,7 +84,7 @@ services:
     ports:
       - 8081:8081
     env_file:
-      - ./env
+      - /.env
 
 volumes:
   user-code:

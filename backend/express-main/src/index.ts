@@ -6,12 +6,20 @@ import { login, register } from "./database/auth";
 import { getSessionStore } from "./database/database";
 import { startSandboxContainer, updateSandboxCode } from "./docker/dockerControl";
 import { authRouter } from "./routes/auth";
+import cors from "cors";
 
 // env variables
 dotenv.config();
 
 const app = express();
 const port = 8000;
+
+// cors
+app.use(
+	cors({
+		origin: [process.env.FRONTEND_SERVER!],
+	})
+);
 
 // session
 app.use(
@@ -34,7 +42,7 @@ app.use((req, res, next) => {
 
 app.use("/", authRouter);
 
-app.get("/", (req, res) => {
+app.get("/user", (req, res) => {
 	if (!req.session.user) {
 		res.send("Hello World!");
 	} else {
