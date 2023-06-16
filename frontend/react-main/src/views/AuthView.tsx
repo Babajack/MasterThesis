@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
 	MDBBtn,
 	MDBContainer,
@@ -11,25 +11,111 @@ import {
 	MDBInput,
 	MDBCardText,
 	MDBCardTitle,
+	MDBValidation,
+	MDBValidationItem,
 } from "mdb-react-ui-kit";
 import logo from "../logo.svg";
-import { Link } from "react-router-dom";
+import { Form } from "react-bootstrap";
+import { httpRequest } from "../network/httpRequest";
+import { loginUser } from "../redux/slices/userSlice";
 
-interface AuthViewProps {
-	type: "login" | "register";
-}
+const AuthView = () => {
+	// state
+	const [isLogin, setIsLogin] = useState(true);
+	const [formValue, setFormValue] = useState<{
+		username?: string;
+		password?: string;
+		password2?: string;
+	}>({});
+	const [formError, setFormError] = useState<{
+		username?: string;
+		password?: string;
+		password2?: string;
+	}>({});
+	const [isValidated, setValidated] = useState(false);
+	const resetState = () => {
+		setFormValue({});
+		setFormError({});
+		setValidated(false);
+	};
 
-const AuthView = ({ type }: AuthViewProps) => {
+	useEffect(() => {
+		if (isValidated) validateInput();
+	}, [formValue]);
+
+	// ref
+	const usernameFormRef = useRef<HTMLInputElement>(null);
+	const passwordFormRef = useRef<HTMLInputElement>(null);
+	const password2FormRef = useRef<HTMLInputElement>(null);
+
+	// functions
+	const handleLoginRegisterSwitch = () => {
+		resetState();
+		setIsLogin(!isLogin);
+	};
+
+	const onChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+		setFormValue({ ...formValue, [event.target.name]: event.target.value });
+	};
+
+	const validateInput = () => {
+		let newFormError: typeof formError = {};
+		if (!isLogin && formValue?.password !== formValue?.password2)
+			newFormError = {
+				...newFormError,
+				password: "Passwörter müssen übereinstimmen!",
+				password2: "Passwörter müssen übereinstimmen!",
+			};
+		if (!formValue?.username)
+			newFormError = { ...newFormError, username: "Bitte alle Felder ausfüllen!" };
+		if (!formValue?.password)
+			newFormError = { ...newFormError, password: "Bitte alle Felder ausfüllen!" };
+		if (!isLogin && !formValue?.password2)
+			newFormError = { ...newFormError, password2: "Bitte alle Felder ausfüllen!" };
+
+		usernameFormRef.current?.setCustomValidity(newFormError.username ?? "");
+		passwordFormRef.current?.setCustomValidity(newFormError.password ?? "");
+		password2FormRef.current?.setCustomValidity(newFormError.password2 ?? "");
+
+		setFormError(newFormError);
+		setValidated(true);
+		return Object.keys(newFormError).length === 0;
+	};
+
+	const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+		event.preventDefault();
+		event.stopPropagation();
+		if (validateInput()) {
+			if (isLogin) {
+				loginUser({ username: formValue.username!, passwort: formValue.password! });
+			} else {
+			}
+		}
+	};
+
+	const getSubmitBtnText = () => {
+		if (isLogin) return "Login";
+		else return "Registrieren";
+	};
+
+	const getValidationItemClassName = (type: keyof typeof formError) => {
+		let className = "mb-0 ";
+		if (isValidated) {
+			className += formError[type] ? "is-invalid" : "is-valid";
+		}
+		return className;
+	};
+
 	return (
-		<MDBContainer className="my-5 h-75">
-			<MDBCard className="h-100">
-				<MDBRow className="g-0 h-100 justify-content-between">
-					<MDBCol md={5}>
-						<MDBCardImage src={logo} className="rounded-start h-100" fluid />
+		<MDBContainer key={String(isLogin)} className="my-5 ">
+			<MDBCard className="">
+				<MDBRow className="g-0 justify-content-between">
+					<MDBCol md={6}>
+						<MDBCardImage src={logo} className="rounded-start img-fluid" fluid />
 					</MDBCol>
 					<MDBCol md={6}>
-						<MDBCardBody className="h-100 d-flex flex-column justify-content-center">
-							<div className="d-flex flex-row mt-2">
+						<MDBCardBody className=" d-flex flex-column justify-content-center align-items-center">
+							<div className="d-flex flex-row mt-2 ">
 								<MDBIcon fab icon="react fa-3x me-3" style={{ color: "blue" }} />
 								<span className="h1 fw-bold mb-0">Learn React</span>
 							</div>
@@ -37,54 +123,78 @@ const AuthView = ({ type }: AuthViewProps) => {
 							<h5 className="fw-normal my-4 pb-3" style={{ letterSpacing: "1px" }}>
 								Melde dich an und lerne React in einer interaktiven Umgebung
 							</h5>
-							<MDBInput wrapperClass="mb-4" label="Benutzername" type="text" size="lg" />
-							<MDBInput wrapperClass="mb-4" label="Passwort" type="password" size="lg" />
-							<MDBBtn className="mb-4 px-5" color="dark" size="lg">
-								Login
-							</MDBBtn>
+
+							<Form
+								onSubmit={handleSubmit}
+								noValidate
+								validated={isValidated}
+								className="row justify-content-center"
+							>
+								<Form.Group className="col-md-8 mb-2">
+									<MDBInput
+										ref={usernameFormRef}
+										onChange={onChange}
+										value={formValue?.username ?? ""}
+										label="Benutzername"
+										name="username"
+										type="text"
+										size="lg"
+										className={getValidationItemClassName("username")}
+										required
+									/>
+									<div className="text-danger mt-2">{formError?.username}</div>
+								</Form.Group>
+								<Form.Group className="col-md-8 mb-2">
+									<MDBInput
+										ref={passwordFormRef}
+										onChange={onChange}
+										value={formValue?.password ?? ""}
+										label="Passwort"
+										name="password"
+										type="password"
+										size="lg"
+										className={getValidationItemClassName("password")}
+										required
+									/>
+									<div className="text-danger mt-2">{formError?.password}</div>
+								</Form.Group>
+
+								{!isLogin && (
+									<Form.Group className="col-md-8 mb-2">
+										<MDBInput
+											ref={password2FormRef}
+											onChange={onChange}
+											value={formValue?.password2 ?? ""}
+											label="Passwort bestätigen"
+											name="password2"
+											type="password"
+											size="lg"
+											className={getValidationItemClassName("password2")}
+											required
+										/>
+										<div className="text-danger mt-2">{formError?.password2}</div>
+									</Form.Group>
+								)}
+
+								<MDBCol md={8}>
+									<MDBBtn type="submit" className="mb-4 px-5 mt-2" color="dark" size="lg">
+										{getSubmitBtnText()}
+									</MDBBtn>
+								</MDBCol>
+							</Form>
 							<p className="mb-5 pb-lg-2">
-								Neu hier?{" "}
-								<Link to={"/register"} style={{ color: "#1266f1" }}>
-									registrieren
-								</Link>
+								<>
+									{isLogin && "Neu hier? "}
+									{!isLogin && "Bereits angemeldet? "}
+									<span
+										onClick={handleLoginRegisterSwitch}
+										style={{ color: "#1266f1", cursor: "pointer" }}
+									>
+										{isLogin && "registrieren"}
+										{!isLogin && "anmelden"}
+									</span>
+								</>
 							</p>
-
-							{/* <MDBInput
-								wrapperClass="mb-4"
-								label="Email address"
-								id="formControlLg"
-								type="email"
-								size="lg"
-							/>
-							<MDBInput
-								wrapperClass="mb-4"
-								label="Password"
-								id="formControlLg"
-								type="password"
-								size="lg"
-							/>
-
-							<MDBBtn className="mb-4 px-5" color="dark" size="lg">
-								Login
-							</MDBBtn>
-							<a className="small text-muted" href="#!">
-								Forgot password?
-							</a>
-							<p className="mb-5 pb-lg-2" style={{ color: "#393f81" }}>
-								Don't have an account?{" "}
-								<a href="#!" style={{ color: "#393f81" }}>
-									Register here
-								</a>
-							</p>
-
-							<div className="d-flex flex-row justify-content-start">
-								<a href="#!" className="small text-muted me-1">
-									Terms of use.
-								</a>
-								<a href="#!" className="small text-muted">
-									Privacy policy
-								</a>
-							</div> */}
 						</MDBCardBody>
 					</MDBCol>
 				</MDBRow>

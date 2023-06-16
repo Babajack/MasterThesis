@@ -2,7 +2,7 @@ import { Navigate, Outlet, Route, useLocation } from "react-router-dom";
 import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../redux/store";
-import { fetchUser } from "../../redux/slices/userSlice";
+import { getUserData, loginUser } from "../../redux/slices/userSlice";
 import LoadingComponent from "./LoadingComponent";
 import EditorComponent from "../Task/EditorComponent";
 import { useEffect } from "react";
@@ -20,7 +20,7 @@ const ProtectedRoute = () => {
 
 	useEffect(() => {
 		// fetch user data
-		dispatch(fetchUser());
+		dispatch(getUserData());
 	}, []);
 
 	let childComponent = <></>;
@@ -33,10 +33,10 @@ const ProtectedRoute = () => {
 			break;
 		case "Success":
 			if (userState.isLoggedIn) childComponent = <Outlet />;
-			else childComponent = <Navigate to={"/login"} state={{ from: location }} />;
+			else childComponent = <Navigate to={"/auth"} state={{ from: location }} />;
 			break;
 		case "Error":
-			childComponent = <Navigate to={"/login"} state={{ from: location }} />;
+			childComponent = <Navigate to={"/auth"} state={{ from: location }} />;
 			break;
 	}
 

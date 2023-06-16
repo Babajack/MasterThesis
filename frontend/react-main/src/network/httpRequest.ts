@@ -19,4 +19,28 @@ export const httpRequest = {
 	async getUserData() {
 		return axios.get("/user");
 	},
+	async loginUser(username: string, passwort: string) {
+		return axios.post(
+			"/login",
+			{},
+			{
+				auth: {
+					username: username,
+					password: passwort,
+				},
+			}
+		);
+	},
+	async registerUser(username: string, passwort: string) {
+		return axios.post(
+			"/register",
+			{},
+			{
+				auth: {
+					username: username,
+					password: passwort,
+				},
+			}
+		);
+	},
 };

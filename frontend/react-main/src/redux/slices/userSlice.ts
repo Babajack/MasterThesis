@@ -32,17 +32,17 @@ export const userSlice = createSlice({
 	},
 	extraReducers: (builder) => {
 		builder
-			.addCase(fetchUser.pending, (state) => {
+			.addCase(loginUser.pending, (state) => {
 				state.loadingStatus = "Pending";
 			})
-			.addCase(fetchUser.fulfilled, (state, action: PayloadAction<UserResponse>) => {
+			.addCase(loginUser.fulfilled, (state, action: PayloadAction<UserResponse>) => {
 				state.loadingStatus = "Success";
 				state.username = action.payload.username;
 				if (action.payload.username) {
 					state.isLoggedIn = true;
 				}
 			})
-			.addCase(fetchUser.rejected, (state) => {
+			.addCase(loginUser.rejected, (state) => {
 				state.loadingStatus = "Error";
 			});
 	},
@@ -52,7 +52,23 @@ export const { setIsLoggedIn, setUsername } = userSlice.actions;
 
 export default userSlice.reducer;
 
-export const fetchUser = createAsyncThunk("data/fetchUser", async () => {
+export const getUserData = createAsyncThunk("data/getUser", async () => {
 	const user = await httpRequest.getUserData();
 	return user.data;
 });
+
+export const loginUser = createAsyncThunk(
+	"auth/login",
+	async (payload: { username: string; passwort: string }, thunkApi) => {
+		const user = await httpRequest.loginUser(payload.username, payload.passwort);
+		return user.data;
+	}
+);
+
+export const registerUser = createAsyncThunk(
+	"auth/register",
+	async (payload: { username: string; passwort: string }, thunkApi) => {
+		const user = await httpRequest.registerUser(payload.username, payload.passwort);
+		return user.data;
+	}
+);
