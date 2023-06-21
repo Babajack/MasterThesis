@@ -1,12 +1,10 @@
-import dotenv from "dotenv";
-import express, { Request, Response } from "express";
-import session from "express-session";
-import { UserRequest } from "types";
-import { login, register } from "./database/auth";
-import { getSessionStore } from "./database/database";
-import { startSandboxContainer, updateSandboxCode } from "./docker/dockerControl";
-import { authRouter } from "./routes/auth";
 import cors from "cors";
+import dotenv from "dotenv";
+import express from "express";
+import session from "express-session";
+import { getSessionStore } from "./database/database";
+import { authRouter, requireLogin } from "./routes/authRoutes";
+import { dockerRouter } from "./routes/dockerRoutes";
 
 // env variables
 dotenv.config();
@@ -48,17 +46,7 @@ app.use((req, res, next) => {
 
 app.use("/", authRouter);
 
-app.get("/docker", (req, res) => {
-	res.send("starting docker...");
-	//executeTask();
-	updateSandboxCode([{ filename: "testfile", code: "console.log('testcode')" }]);
-});
-
-app.get("/docker/start", (req, res) => {
-	res.send("starting docker...");
-	//executeTask();
-	startSandboxContainer(req.session.user?.id!);
-});
+app.use("/", requireLogin, dockerRouter);
 
 app.listen(port, () => {
 	console.log(`Example app listening on port ${port}`);

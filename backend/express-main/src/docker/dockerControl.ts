@@ -91,34 +91,73 @@ export const runTest = async () => {
 
 /* -------------------------------- React Sandbox Docker -------------------------------- */
 
-export const updateSandboxCode = (files: SandboxFiles) => {
+export const updateSandboxCode = (files: SandboxFiles, userID: string) => {
 	try {
 		for (let file of files) {
-			fs.writeFileSync("/home/node/user-code/" + file.filename, file.code);
+			fs.writeFileSync(
+				"/home/node/user-code/" + userID + "/" + JSON.stringify(file.filename).slice(1, -1),
+				file.code
+			);
 		}
 	} catch (error) {
 		console.log(error);
 	}
 };
 
-export const startSandboxContainer = async (sessionID: string) => {
+export const startSandboxContainer = async (userID: string) => {
 	try {
-		const status = await docker.container.get(sessionID).status();
-	} catch (error) {
-		console.log(error);
-	}
+		const container = (
+			await docker.container.list({ limit: 1, filters: { name: [`${userID}`] } })
+		).at(0);
+		//console.log(container);
 
-	return docker.container
-		.create({
+		if (container) {
+			//console.log(container.data);
+			// @ts-ignore
+			if (container.data.State === "running") {
+				//TODO: check if this means that container is healthy
+				// container is already up
+				return true;
+			} else {
+				// container is not up, but exists
+				await cleanupContainer(container);
+			}
+		}
+		// create container
+		const newContainer = await docker.container.create({
 			Image: SANDBOX_IMAGE_NAME,
+			name: userID,
 			ExposedPorts: { [DOCKER_PORT]: {} },
 			HostConfig: {
-				Binds: ["master-thesis_user-code:/usr/src/app/user-code"],
+				Binds: ["master-thesis_user-code:/usr/src/app/user-code/" + userID],
 				NetworkMode: "master-thesis_main-network",
 				PortBindings: {
 					[DOCKER_PORT]: [{ HostPort: String(getNextPortNumber()) }],
 				},
 			},
-		})
-		.then((container) => container.start());
+		});
+		await newContainer.start();
+	} catch (error) {
+		console.log(error);
+		return false;
+	}
+
+	return true;
+};
+
+export const stopSandboxContainer = async (userID: string) => {
+	try {
+		const container = (
+			await docker.container.list({ limit: 1, filters: { name: [`${userID}`] } })
+		).at(0);
+
+		if (container) {
+			await cleanupContainer(container);
+		}
+	} catch (error) {
+		console.log(error);
+		return false;
+	}
+
+	return true;
 };

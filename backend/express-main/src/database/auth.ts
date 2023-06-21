@@ -2,6 +2,7 @@ import { Request } from "express";
 import { createNewUser, getUser } from "./user";
 import { UserRequest } from "types";
 import bcrypt from "bcrypt";
+import { stopSandboxContainer } from "../docker/dockerControl";
 
 const SALT_ROUNDS = 10;
 
@@ -53,6 +54,7 @@ export const register = async (req: Request<{}, {}, UserRequest>) => {
  * @returns true if success, false if not
  */
 export const logout = async (req: Request) => {
+	if (req.session.user?.id) stopSandboxContainer(req.session.user?.id);
 	return new Promise((resolve, reject) => {
 		req.session.destroy((err) => {
 			if (err) reject(err);

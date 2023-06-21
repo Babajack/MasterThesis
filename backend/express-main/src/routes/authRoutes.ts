@@ -1,12 +1,9 @@
+import { startSandboxContainer, stopSandboxContainer } from "../docker/dockerControl";
 import { login, logout, register } from "../database/auth";
 import express, { NextFunction, Request, Response } from "express";
 import { UserRequest } from "types";
 
 export const authRouter = express.Router();
-
-authRouter.use((req, res, next) => {
-	next();
-});
 
 interface AuthResponse {
 	username?: string;
@@ -73,15 +70,16 @@ authRouter.get("/user", (req, res: Response<AuthResponse>) => {
 	if (!req.session.user) {
 		res.send({ error: "Session does not exist!" });
 	} else {
+		startSandboxContainer(req.session.user.id);
 		res.send({ username: req.session.user.username });
 	}
 });
 
-const requireLogin = (req: Request, res: Response, next: NextFunction) => {
+export const requireLogin = (req: Request, res: Response, next: NextFunction) => {
 	if (req.session.user) {
 		next();
 	} else {
-		res.redirect("/auth/login");
+		res.status(401).send("Unauthorized");
 	}
 };
 

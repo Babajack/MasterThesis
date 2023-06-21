@@ -36,4 +36,7 @@ export const httpRequest = {
 	async logout() {
 		return axios.post("/auth/logout");
 	},
+	async startDocker() {
+		return axios.post("/docker/data");
+	},
 };
