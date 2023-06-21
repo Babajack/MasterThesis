@@ -12,7 +12,7 @@ const userSchema = new mongoose.Schema({
 		required: true,
 		index: { unique: true, dropDups: true },
 	},
-	passwort: {
+	password: {
 		type: String,
 		required: true,
 	},
@@ -39,11 +39,11 @@ const userSchema = new mongoose.Schema({
 
 const User = mongoose.model("User", userSchema);
 
-export const createNewUser = async (username: string, passwort: string) => {
+export const createNewUser = async (username: string, password: string) => {
 	return await User.create({
 		id: uuidv4(),
 		username: username,
-		passwort: passwort,
+		password: password,
 		tasks: [],
 	});
 };

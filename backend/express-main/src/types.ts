@@ -12,7 +12,7 @@ export type SandboxFiles = {
 
 export type UserRequest = {
 	username: string;
-	passwort: string;
+	password: string;
 };
 
 export type User = {

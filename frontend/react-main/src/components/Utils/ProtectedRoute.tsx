@@ -16,7 +16,7 @@ const ProtectedRoute = () => {
 	// state
 	const userState = useSelector((state: RootState) => state.user);
 	const dispatch = useDispatch<AppDispatch>();
-	let location = useLocation();
+	const location = useLocation();
 
 	useEffect(() => {
 		// fetch user data

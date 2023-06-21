@@ -13,7 +13,7 @@ const SALT_ROUNDS = 10;
 export const login = async (req: Request<{}, {}, UserRequest>) => {
 	const user = await getUser(req.body.username);
 	if (user) {
-		if (await bcrypt.compare(req.body.passwort, user.passwort)) {
+		if (await bcrypt.compare(req.body.password, user.password)) {
 			req.session.user = { username: user.username, id: user.id };
 			return new Promise((resolve, reject) => {
 				req.session.save((err) => {
@@ -32,11 +32,19 @@ export const login = async (req: Request<{}, {}, UserRequest>) => {
  * @returns true if success, false if not
  */
 export const register = async (req: Request<{}, {}, UserRequest>) => {
-	const passwort = await hashPasswort(req.body.passwort);
+	const password = await hashPassword(req.body.password);
 
-	const user = await createNewUser(req.body.username, passwort);
-	console.log(user);
-	return true;
+	const user = await createNewUser(req.body.username, password);
+	if (user) {
+		req.session.user = { username: user.username, id: user.id };
+		return new Promise((resolve, reject) => {
+			req.session.save((err) => {
+				if (err) reject(err);
+				else resolve(true);
+			});
+		});
+	}
+	return false;
 };
 
 /**
@@ -53,6 +61,6 @@ export const logout = async (req: Request) => {
 	});
 };
 
-const hashPasswort = async (password: string) => {
+const hashPassword = async (password: string) => {
 	return bcrypt.hash(password, SALT_ROUNDS);
 };

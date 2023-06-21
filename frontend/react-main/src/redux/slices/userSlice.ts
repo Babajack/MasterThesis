@@ -1,5 +1,5 @@
 import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { LoadingStatus } from "../../types";
+import { LoadingStatus, UserResponse } from "../../types";
 import { useSelector } from "react-redux";
 import { RootState } from "../store";
 import { httpRequest } from "../../network/httpRequest";
@@ -8,10 +8,7 @@ interface UserState {
 	username?: string;
 	isLoggedIn: boolean;
 	loadingStatus: LoadingStatus;
-}
-
-interface UserResponse {
-	username?: string;
+	error?: string;
 }
 
 const initialState: UserState = {
@@ -32,18 +29,36 @@ export const userSlice = createSlice({
 	},
 	extraReducers: (builder) => {
 		builder
-			.addCase(loginUser.pending, (state) => {
+			.addCase(getUserData.pending, (state) => {
 				state.loadingStatus = "Pending";
 			})
-			.addCase(loginUser.fulfilled, (state, action: PayloadAction<UserResponse>) => {
+			.addCase(getUserData.fulfilled, (state, action: PayloadAction<UserResponse>) => {
 				state.loadingStatus = "Success";
 				state.username = action.payload.username;
 				if (action.payload.username) {
 					state.isLoggedIn = true;
 				}
 			})
-			.addCase(loginUser.rejected, (state) => {
+			.addCase(getUserData.rejected, (state) => {
 				state.loadingStatus = "Error";
+			})
+			.addCase(loginUser.fulfilled, (state, action: PayloadAction<UserResponse>) => {
+				state.username = action.payload.username;
+				state.error = action.payload.error;
+				if (action.payload.username) {
+					state.isLoggedIn = true;
+				}
+			})
+			.addCase(registerUser.fulfilled, (state, action: PayloadAction<UserResponse>) => {
+				state.username = action.payload.username;
+				state.error = action.payload.error;
+				if (action.payload.username) {
+					state.isLoggedIn = true;
+				}
+			})
+			.addCase(logoutUser.fulfilled, (state, action) => {
+				state.isLoggedIn = false;
+				state.username = undefined;
 			});
 	},
 });
@@ -59,16 +74,21 @@ export const getUserData = createAsyncThunk("data/getUser", async () => {
 
 export const loginUser = createAsyncThunk(
 	"auth/login",
-	async (payload: { username: string; passwort: string }, thunkApi) => {
-		const user = await httpRequest.loginUser(payload.username, payload.passwort);
+	async (payload: { username: string; password: string }, thunkApi) => {
+		const user = await httpRequest.loginUser(payload.username, payload.password);
 		return user.data;
 	}
 );
 
 export const registerUser = createAsyncThunk(
 	"auth/register",
-	async (payload: { username: string; passwort: string }, thunkApi) => {
-		const user = await httpRequest.registerUser(payload.username, payload.passwort);
+	async (payload: { username: string; password: string }, thunkApi) => {
+		const user = await httpRequest.registerUser(payload.username, payload.password);
 		return user.data;
 	}
 );
+
+export const logoutUser = createAsyncThunk("auth/logout", async () => {
+	const user = await httpRequest.logout();
+	return user.data;
+});

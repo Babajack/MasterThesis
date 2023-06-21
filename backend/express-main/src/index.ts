@@ -13,11 +13,14 @@ dotenv.config();
 
 const app = express();
 const port = 8000;
+const MAX_AGE = 1000 * 60 * 60;
 
 // cors
 app.use(
 	cors({
-		origin: [process.env.FRONTEND_SERVER!],
+		//origin: [process.env.FRONTEND_SERVER!],
+		origin: "http://localhost:3000",
+		credentials: true,
 	})
 );
 
@@ -28,6 +31,9 @@ app.use(
 		resave: true,
 		saveUninitialized: false,
 		store: getSessionStore(),
+		cookie: {
+			maxAge: MAX_AGE,
+		},
 	})
 );
 
@@ -41,14 +47,6 @@ app.use((req, res, next) => {
 });
 
 app.use("/", authRouter);
-
-app.get("/user", (req, res) => {
-	if (!req.session.user) {
-		res.send("Hello World!");
-	} else {
-		res.send(`Hello ${req.session.user.username}`);
-	}
-});
 
 app.get("/docker", (req, res) => {
 	res.send("starting docker...");

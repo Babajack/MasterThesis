@@ -1,7 +1,9 @@
 import axios from "axios";
+import { UserRequest } from "../types";
 
 const BASE_URL = process.env.REACT_APP_BACKEND_URL!;
 axios.defaults.baseURL = "http://localhost:8000"; //`http://${BASE_URL}`;
+axios.defaults.withCredentials = true;
 
 axios.interceptors.request.use((request) => {
 	//console.log("Starting Request", JSON.stringify(request, null, 2));
@@ -19,28 +21,19 @@ export const httpRequest = {
 	async getUserData() {
 		return axios.get("/user");
 	},
-	async loginUser(username: string, passwort: string) {
-		return axios.post(
-			"/login",
-			{},
-			{
-				auth: {
-					username: username,
-					password: passwort,
-				},
-			}
-		);
+	async loginUser(username: string, password: string) {
+		return axios.post<UserRequest>("/auth/login", {
+			username: username,
+			password: password,
+		});
 	},
-	async registerUser(username: string, passwort: string) {
-		return axios.post(
-			"/register",
-			{},
-			{
-				auth: {
-					username: username,
-					password: passwort,
-				},
-			}
-		);
+	async registerUser(username: string, password: string) {
+		return axios.post<UserRequest>("/auth/register", {
+			username: username,
+			password: password,
+		});
+	},
+	async logout() {
+		return axios.post("/auth/logout");
 	},
 };

@@ -5,48 +5,58 @@ import { UserRequest } from "types";
 export const authRouter = express.Router();
 
 authRouter.use((req, res, next) => {
-	console.log("Time: ", Date.now());
 	next();
 });
 
+interface AuthResponse {
+	username?: string;
+	error?: string;
+}
+
 // login
-authRouter.post("/auth/login", (req: Request<{}, {}, UserRequest>, res: Response) => {
+authRouter.post("/auth/login", (req: Request<{}, {}, UserRequest>, res: Response<AuthResponse>) => {
 	login(req)
 		.then((result) => {
 			console.log(result);
 			if (result) {
 				// user found
-				// TODO return success info?
+				res.send({ username: req.body.username });
 			} else {
 				// user not found
-				// TODO return error info?
+				res.send({ error: "Dieser Nutzer wurde nicht gefunden!" });
 			}
 		})
-		.catch((error) => console.log(error));
-	res.send("logging in");
+		.catch((error) => {
+			console.log(error);
+			res.status(404).send({ error: "Unbekannter Fehler!" });
+		});
 });
 
 // register
-authRouter.post("/auth/register", (req: Request<{}, {}, UserRequest>, res: Response) => {
-	register(req)
-		.then((result) => {
-			if (result) {
-				// user created
-				// TODO return success info?
-			} else {
-				// user not created
-				// TODO return error info?
-			}
-		})
-		.catch((error) => console.log(error));
-	res.send("registering");
-});
+authRouter.post(
+	"/auth/register",
+	(req: Request<{}, {}, UserRequest>, res: Response<AuthResponse>) => {
+		register(req)
+			.then((result) => {
+				if (result) {
+					// user created
+					res.send({ username: req.body.username });
+				} else {
+					// user not created
+					res.send({ error: "Dieser Benutzername existiert bereits!" });
+				}
+			})
+			.catch((error) => {
+				console.log(error);
+				res.status(404).send({ error: "Unbekannter Fehler!" });
+			});
+	}
+);
 
 // logout
 authRouter.post("/auth/logout", (req: Request<{}, {}, UserRequest>, res: Response) => {
 	logout(req)
 		.then((result) => {
-			console.log(result);
 			if (result) {
 				// user logged out
 				// TODO return success info?
@@ -55,8 +65,16 @@ authRouter.post("/auth/logout", (req: Request<{}, {}, UserRequest>, res: Respons
 				// TODO return error info?
 			}
 		})
-		.catch((error) => console.log(error));
-	res.send("logout");
+		.catch((error) => console.log(error))
+		.finally(() => res.send("logout"));
+});
+
+authRouter.get("/user", (req, res: Response<AuthResponse>) => {
+	if (!req.session.user) {
+		res.send({ error: "Session does not exist!" });
+	} else {
+		res.send({ username: req.session.user.username });
+	}
 });
 
 const requireLogin = (req: Request, res: Response, next: NextFunction) => {

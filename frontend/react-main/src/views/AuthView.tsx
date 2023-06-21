@@ -17,7 +17,10 @@ import {
 import logo from "../logo.svg";
 import { Form } from "react-bootstrap";
 import { httpRequest } from "../network/httpRequest";
-import { loginUser } from "../redux/slices/userSlice";
+import { loginUser, registerUser } from "../redux/slices/userSlice";
+import { useLocation, useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "../redux/store";
 
 const AuthView = () => {
 	// state
@@ -38,10 +41,26 @@ const AuthView = () => {
 		setFormError({});
 		setValidated(false);
 	};
+	const userState = useSelector((state: RootState) => state.user);
+	const { state } = useLocation();
+	const navigate = useNavigate();
+	const dispatch = useDispatch<AppDispatch>();
 
+	// effect
 	useEffect(() => {
 		if (isValidated) validateInput();
 	}, [formValue]);
+
+	useEffect(() => {
+		if (userState.isLoggedIn) {
+			const to = state ? state.from ?? "/" : "/";
+			navigate(to);
+		}
+	}, [userState.isLoggedIn]);
+
+	useEffect(() => {
+		setFormError({ username: userState.error });
+	}, [userState.error]);
 
 	// ref
 	const usernameFormRef = useRef<HTMLInputElement>(null);
@@ -87,8 +106,9 @@ const AuthView = () => {
 		event.stopPropagation();
 		if (validateInput()) {
 			if (isLogin) {
-				loginUser({ username: formValue.username!, passwort: formValue.password! });
+				dispatch(loginUser({ username: formValue.username!, password: formValue.password! }));
 			} else {
+				dispatch(registerUser({ username: formValue.username!, password: formValue.password! }));
 			}
 		}
 	};
@@ -149,7 +169,7 @@ const AuthView = () => {
 										ref={passwordFormRef}
 										onChange={onChange}
 										value={formValue?.password ?? ""}
-										label="Passwort"
+										label="password"
 										name="password"
 										type="password"
 										size="lg"
@@ -165,7 +185,7 @@ const AuthView = () => {
 											ref={password2FormRef}
 											onChange={onChange}
 											value={formValue?.password2 ?? ""}
-											label="Passwort bestätigen"
+											label="password bestätigen"
 											name="password2"
 											type="password"
 											size="lg"
