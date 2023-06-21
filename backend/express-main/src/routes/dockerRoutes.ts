@@ -7,10 +7,10 @@ dockerRouter.post("/docker/data", (req, res) => {
 	res.send("starting docker...");
 	//executeTask();
 
-	updateSandboxCode(
+	/* updateSandboxCode(
 		[{ filename: "testfile", code: "console.log('testcode')" }],
 		req.session.user?.id!
-	);
+	); */
 });
 
 dockerRouter.get("/docker/start", (req, res) => {

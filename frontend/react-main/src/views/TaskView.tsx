@@ -13,6 +13,13 @@ const TaskView = () => {
 			<MDBRow>
 				<MDBCol md={6}>
 					<MDBBtn onClick={() => dispatch(logoutUser())}>Logout</MDBBtn>
+					<MDBBtn
+						onClick={() =>
+							httpRequest.updateCode([{ filename: "new.js", code: "console.log('hi')" }])
+						}
+					>
+						Upload
+					</MDBBtn>
 				</MDBCol>
 				<MDBCol md={6}>
 					<PreviewComponent result={""} />

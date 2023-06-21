@@ -14,3 +14,8 @@ export type User = {
 	username: string;
 	id: string;
 };
+
+export type SandboxFiles = {
+	filename: string;
+	code: string;
+}[];

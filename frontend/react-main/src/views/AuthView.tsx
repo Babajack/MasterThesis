@@ -219,7 +219,6 @@ const AuthView = () => {
 					</MDBCol>
 				</MDBRow>
 			</MDBCard>
-			<MDBBtn onClick={httpRequest.startDocker}>TEST</MDBBtn>
 		</MDBContainer>
 	);
 };

@@ -92,12 +92,11 @@ export const runTest = async () => {
 /* -------------------------------- React Sandbox Docker -------------------------------- */
 
 export const updateSandboxCode = (files: SandboxFiles, userID: string) => {
+	const dir = "/home/node/user-code/" + userID;
 	try {
+		if (!fs.existsSync(dir)) fs.mkdirSync(dir);
 		for (let file of files) {
-			fs.writeFileSync(
-				"/home/node/user-code/" + userID + "/" + JSON.stringify(file.filename).slice(1, -1),
-				file.code
-			);
+			fs.writeFileSync(dir + "/" + JSON.stringify(file.filename).slice(1, -1), file.code);
 		}
 	} catch (error) {
 		console.log(error);
@@ -124,19 +123,33 @@ export const startSandboxContainer = async (userID: string) => {
 			}
 		}
 		// create container
-		const newContainer = await docker.container.create({
+		let newContainer = await docker.container.create({
 			Image: SANDBOX_IMAGE_NAME,
 			name: userID,
 			ExposedPorts: { [DOCKER_PORT]: {} },
 			HostConfig: {
-				Binds: ["master-thesis_user-code:/usr/src/app/user-code/" + userID],
+				Binds: ["master-thesis_user-code:/usr/user-code"],
 				NetworkMode: "master-thesis_main-network",
 				PortBindings: {
 					[DOCKER_PORT]: [{ HostPort: String(getNextPortNumber()) }],
 				},
 			},
 		});
-		await newContainer.start();
+		// start container
+		newContainer = await newContainer.start();
+		// execute symlink command to map usercode path to src path
+
+		newContainer.exec
+			.create({
+				AttachStdout: true,
+				AttachStderr: true,
+				//Cmd: ["ln -s /usr/user-code/" + userID + " /usr/src/app/test"],
+				Cmd: ["ln", "-s", `/usr/user-code/${userID}`, "/usr/src/app/src"],
+			})
+			.then((exec) => {
+				return exec.start({ Detach: false });
+			})
+			.catch((err) => console.log(err));
 	} catch (error) {
 		console.log(error);
 		return false;

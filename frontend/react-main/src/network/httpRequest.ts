@@ -1,5 +1,5 @@
 import axios from "axios";
-import { UserRequest } from "../types";
+import { SandboxFiles, UserRequest } from "../types";
 
 const BASE_URL = process.env.REACT_APP_BACKEND_URL!;
 axios.defaults.baseURL = "http://localhost:8000"; //`http://${BASE_URL}`;
@@ -38,5 +38,8 @@ export const httpRequest = {
 	},
 	async startDocker() {
 		return axios.post("/docker/data");
+	},
+	async updateCode(files: SandboxFiles) {
+		return axios.post("/task/updateCode", files);
 	},
 };

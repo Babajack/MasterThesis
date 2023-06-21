@@ -5,6 +5,7 @@ import session from "express-session";
 import { getSessionStore } from "./database/database";
 import { authRouter, requireLogin } from "./routes/authRoutes";
 import { dockerRouter } from "./routes/dockerRoutes";
+import { taskRouter } from "./routes/taskRoutes";
 
 // env variables
 dotenv.config();
@@ -47,6 +48,8 @@ app.use((req, res, next) => {
 app.use("/", authRouter);
 
 app.use("/", requireLogin, dockerRouter);
+
+app.use("/", requireLogin, taskRouter);
 
 app.listen(port, () => {
 	console.log(`Example app listening on port ${port}`);
