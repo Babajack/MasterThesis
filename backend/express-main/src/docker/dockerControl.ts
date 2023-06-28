@@ -137,8 +137,8 @@ export const startSandboxContainer = async (userID: string) => {
 		});
 		// start container
 		newContainer = await newContainer.start();
-		// execute symlink command to map usercode path to src path
 
+		// execute symlink command to map usercode path to src path
 		newContainer.exec
 			.create({
 				AttachStdout: true,

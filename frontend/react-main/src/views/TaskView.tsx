@@ -8,6 +8,7 @@ import { logoutUser } from "../redux/slices/userSlice";
 
 const TaskView = () => {
 	const dispatch = useDispatch<AppDispatch>();
+
 	return (
 		<MDBContainer>
 			<MDBRow>
