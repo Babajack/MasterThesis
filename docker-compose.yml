@@ -65,6 +65,7 @@ services:
       # - '3000:3000'
 
   mongodb:
+    container_name: mongodb
     image: mongo
     restart: always
     networks:
@@ -77,6 +78,7 @@ services:
       - /.env
 
   mongo-express:
+    container_name: mongo-express
     image: mongo-express
     restart: always
     networks:

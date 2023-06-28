@@ -1,5 +1,6 @@
 .vscode/
 *.env
+*.debug.env
 *node_modules
 *build
 

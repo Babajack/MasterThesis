@@ -6,8 +6,8 @@ import { SandboxFiles } from "types";
 import { DOCKER_PORT, getNextPortNumber } from "./portControl";
 
 const SOCKET_PATH = "/var/run/docker.sock";
-const TESTENV_IMAGE_NAME = "node-docker";
-const SANDBOX_IMAGE_NAME = "react-sandbox";
+//const TESTENV_IMAGE_NAME = "node-docker";
+const SANDBOX_IMAGE_NAME = "express-session";
 
 const TIMEOUT = 5000; //3600000; // milliseconds
 
@@ -47,7 +47,7 @@ export const cleanupContainer = async (container: Container) => {
 
 /* -------------------------------- Test Env Docker -------------------------------- */
 
-export const startTestEnvContainer = async () => {
+/* export const startTestEnvContainer = async () => {
 	return docker.container
 		.create({
 			Image: TESTENV_IMAGE_NAME,
@@ -87,7 +87,7 @@ export const runTest = async () => {
 	} catch (error) {
 		console.log(error);
 	}
-};
+}; */
 
 /* -------------------------------- React Sandbox Docker -------------------------------- */
 
