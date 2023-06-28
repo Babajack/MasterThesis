@@ -50,12 +50,12 @@ services:
     ports:
       - '3000:3000'
     
-  frontend-react-sandbox:
-    image: react-sandbox
+  backend-express-session:
+    image: express-session
     networks:
       - main-network
     build:
-      context: ./frontend/react-sandbox
+      context: ./backend/express-session
       dockerfile: ./Dockerfile
     volumes:
       - user-code:/usr/src/app/user-code
