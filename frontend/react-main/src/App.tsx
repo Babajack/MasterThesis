@@ -6,7 +6,6 @@ import { Routes, Route } from "react-router-dom";
 import EditorComponent from "./components/Task/EditorComponent";
 import AuthView from "./views/AuthView";
 import ProtectedRoute from "./components/Utils/ProtectedRoute";
-import FormExample from "./components/Utils/test";
 //import ProtectedRoute from "./components/Utils/ProtectedRoute";
 
 function App() {
@@ -16,7 +15,6 @@ function App() {
 				<Routes>
 					{/* public routes */}
 					<Route path="/auth" element={<AuthView />} />
-					<Route path="/test" element={<FormExample />} />
 
 					{/* protected routes */}
 					<Route element={<ProtectedRoute />}>
