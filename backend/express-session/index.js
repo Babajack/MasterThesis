@@ -36,18 +36,17 @@ app.get("*", (req, res) => {
 	res.sendFile(path.join(__dirname, "sandbox/public/index.html"));
 });
 
-/* app.get("/update", (req, res) => {
+app.get("/update", (req, res) => {
 	console.log("building app...");
 	update().then((e) => {
 		res.send("This is from express.js");
 	});
-}); */
+});
 
-// start express server on port 5000
-app.listen(5000, () => {
-	console.log("server started on port 5000");
+app.listen(8000, () => {
+	console.log("server started on port 8000");
 
-	esbuild
+	/* esbuild
 		.context({
 			entryPoints: ["./sandbox/src/index.js"],
 			bundle: true,
@@ -58,10 +57,10 @@ app.listen(5000, () => {
 			loader: { ".js": "jsx" },
 		})
 		.then((e) => e.watch())
-		.catch((error) => console.log(error));
+		.catch((error) => console.log(error)); */
 });
 
-/* let build = async () =>
+let build = async () =>
 	esbuild.build({
 		entryPoints: ["../src/index.js"],
 		bundle: true,
@@ -73,10 +72,10 @@ app.listen(5000, () => {
 	});
 
 async function update() {
-	 const { stdout, stderr } = await exec("npm run build", {
+	const { stdout, stderr } = await exec("npm run build", {
 		cwd: "../",
 	});
 	console.log("stdout:", stdout);
-	console.log("stderr:", stderr); 
+	console.log("stderr:", stderr);
 	return build();
-} */
+}
