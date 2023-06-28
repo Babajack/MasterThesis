@@ -1,2 +1,10 @@
 .vscode/
 *.env
+*node_modules
+*build
+
+# express-main
+
+# react-main
+
+# session-container
