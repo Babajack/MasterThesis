@@ -47,6 +47,58 @@ export const cleanupContainer = async (container: Container) => {
 
 /* -------------------------------- Test Env Docker -------------------------------- */
 
+export const runCode = async (files: SandboxFiles, userID: string) => {
+	console.log("runCode");
+
+	try {
+		let newContainer = await docker.container.create({
+			Image: SANDBOX_IMAGE_NAME,
+			/* name: userID,
+			ExposedPorts: { [DOCKER_PORT]: {} },
+			HostConfig: {
+				Binds: ["master-thesis_user-code:/usr/user-code"],
+				NetworkMode: "master-thesis_main-network",
+				PortBindings: {
+					[DOCKER_PORT]: [{ HostPort: String(getNextPortNumber()) }],
+				},
+			}, */
+		});
+		// start container
+		newContainer = await newContainer.start();
+
+		for (let file of files) {
+			console.log("writing to file...");
+
+			//fs.writeFileSync(dir + "/" + JSON.stringify(file.filename).slice(1, -1), file.code);
+			let exec = await newContainer.exec.create({
+				Cmd: ["touch", "usr/src/app/sandbox/src/filename.js"],
+				Cmd: ["cd", "usr/src/app/sandbox/src", "touch", "filename.js"],
+			});
+			/* exec = await exec.create({
+				Cmd: ["touch", "filename.js"],
+			}); */
+			await exec.start();
+		}
+
+		/* let exec = await newContainer.exec
+			.create({
+				AttachStdout: true,
+				AttachStderr: true,
+				//Cmd: ["ln -s /usr/user-code/" + userID + " /usr/src/app/test"],
+				//Cmd: ["ln", "-s", `/usr/user-code/${userID}`, "/usr/src/app/src"],
+				Cmd: []
+			})
+		await exec.start() */
+
+		/* .then((exec) => {
+			return exec.start({ Detach: false });
+		})
+		.catch((err) => console.log(err)); */
+	} catch (error) {
+		console.log(error);
+	}
+};
+
 /* export const startTestEnvContainer = async () => {
 	return docker.container
 		.create({
