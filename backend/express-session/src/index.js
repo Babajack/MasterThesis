@@ -31,16 +31,22 @@ const app = express(); // create express app
 //app.use(express.static(path.join(__dirname, "..", "build")));
 app.use(express.static("./sandbox/public"));
 
-app.get("*", (req, res) => {
+app.get("/", (req, res) => {
 	//res.send("This is from express.js");
-	res.sendFile(path.join(__dirname, "sandbox/public/index.html"));
+	res.sendFile(path.join(__dirname, "..", "sandbox/public/index.html"));
 });
 
-app.get("/update", (req, res) => {
+/* app.get("/update", (req, res) => {
 	console.log("building app...");
 	update().then((e) => {
 		res.send("This is from express.js");
 	});
+}); */
+
+app.get("/test", (req, res) => {
+	build()
+		.then((result) => res.sendFile(path.join(__dirname, "..", "sandbox/public/index.html")))
+		.catch((error) => console.log(error));
 });
 
 app.listen(8000, () => {
@@ -62,12 +68,12 @@ app.listen(8000, () => {
 
 let build = async () =>
 	esbuild.build({
-		entryPoints: ["../src/index.js"],
+		entryPoints: ["./sandbox/src/index.js"],
 		bundle: true,
 		minify: true,
 		sourcemap: true,
 		//target: ["chrome58", "firefox57", "safari11", "edge16"],
-		outfile: "../public/build/App.js",
+		outfile: "./public/build/App.js",
 		loader: { ".js": "jsx" },
 	});
 

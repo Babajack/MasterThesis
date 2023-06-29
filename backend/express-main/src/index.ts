@@ -47,7 +47,8 @@ app.use((req, res, next) => {
 
 app.use("/", authRouter);
 
-app.use("/", requireLogin, dockerRouter);
+//app.use("/", requireLogin, dockerRouter);
+app.use("/", dockerRouter);
 
 app.use("/", requireLogin, taskRouter);
 

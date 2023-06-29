@@ -59,10 +59,11 @@ services:
       dockerfile: ./Dockerfile
     volumes:
       - user-code:/usr/src/app/user-code
-    #expose:
-      # - '3000'
-    #ports:
-      # - '3000:3000'
+      - ./backend/express-session/src:/usr/src/app/src
+    expose:
+       - '8001'
+    ports:
+       - '8001:8000'
 
   mongodb:
     container_name: mongodb

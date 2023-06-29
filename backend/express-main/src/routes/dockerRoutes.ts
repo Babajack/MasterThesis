@@ -1,16 +1,19 @@
-import { startSandboxContainer, updateSandboxCode } from "../docker/dockerControl";
+import { runCode, startSandboxContainer, updateSandboxCode } from "../docker/dockerControl";
 import express from "express";
 
 export const dockerRouter = express.Router();
 
-/* dockerRouter.post("/docker/data", (req, res) => {
-	res.send("starting docker...");
+dockerRouter.get("/docker/data", async (req, res) => {
+	//res.send("starting docker...");
 	//executeTask();
 
-	updateSandboxCode(
+	/* updateSandboxCode(
 		[{ filename: "testfile", code: "console.log('testcode')" }],
 		req.session.user?.id!
-	);
+	); */
+	await runCode([{ filename: "testfile", code: "console.log('testcode')" }], req.session.user?.id!);
+
+	res.send("done");
 });
 
 dockerRouter.get("/docker/start", (req, res) => {
@@ -18,4 +21,4 @@ dockerRouter.get("/docker/start", (req, res) => {
 	//executeTask();
 	//startSandboxContainer(req.session.user?.id!);
 	startSandboxContainer(req.session.user?.id!);
-}); */
+});
