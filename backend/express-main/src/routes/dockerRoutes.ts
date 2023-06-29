@@ -11,7 +11,7 @@ dockerRouter.get("/docker/data", async (req, res) => {
 		[{ filename: "testfile", code: "console.log('testcode')" }],
 		req.session.user?.id!
 	); */
-	await runCode([{ filename: "testfile", code: "console.log('testcode')" }], req.session.user?.id!);
+	//await runCode([{ filename: "testfile", code: "console.log('testcode')" }], req.session.user?.id!);
 
 	res.send("done");
 });

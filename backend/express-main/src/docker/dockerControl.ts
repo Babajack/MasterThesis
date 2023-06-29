@@ -72,7 +72,6 @@ export const runCode = async (files: SandboxFiles, userID: string) => {
 			//fs.writeFileSync(dir + "/" + JSON.stringify(file.filename).slice(1, -1), file.code);
 			let exec = await newContainer.exec.create({
 				Cmd: ["touch", "usr/src/app/sandbox/src/filename.js"],
-				Cmd: ["cd", "usr/src/app/sandbox/src", "touch", "filename.js"],
 			});
 			/* exec = await exec.create({
 				Cmd: ["touch", "filename.js"],
