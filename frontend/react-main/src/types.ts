@@ -10,6 +10,14 @@ export interface UserResponse {
 	error?: string;
 }
 
+export interface TaskResponse {
+	taskID: string;
+	description: string;
+	defaultFiles: SandboxFiles;
+	currentFiles?: SandboxFiles;
+	successFiles?: SandboxFiles;
+}
+
 export type User = {
 	username: string;
 	id: string;

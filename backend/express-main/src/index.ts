@@ -18,7 +18,7 @@ const MAX_AGE = 1000 * 60 * 60;
 app.use(
 	cors({
 		//origin: [process.env.FRONTEND_SERVER!],
-		origin: "http://localhost:3000",
+		origin: ["http://localhost:3000", "http://localhost:3001"],
 		credentials: true,
 	})
 );

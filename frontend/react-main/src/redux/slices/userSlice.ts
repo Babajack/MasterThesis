@@ -67,7 +67,9 @@ export const { setIsLoggedIn, setUsername } = userSlice.actions;
 
 export default userSlice.reducer;
 
-export const getUserData = createAsyncThunk("data/getUser", async () => {
+/* --------- async thunks --------- */
+
+export const getUserData = createAsyncThunk("auth/getUser", async () => {
 	const user = await httpRequest.getUserData();
 	return user.data;
 });

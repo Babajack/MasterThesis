@@ -1,29 +1,64 @@
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { LoadingStatus, SandboxFiles, TaskResponse } from "../../types";
+import { httpRequest } from "../../network/httpRequest";
 
 interface TaskState {
-	value: number;
+	description: string;
+	currentFiles: SandboxFiles;
+	defaultFiles: SandboxFiles;
+	successFiles?: SandboxFiles;
+	loadingStatus: LoadingStatus;
 }
 
 const initialState: TaskState = {
-	value: 0,
+	description: "",
+	currentFiles: [],
+	defaultFiles: [],
+	loadingStatus: "Idle",
 };
 
 export const taskSlice = createSlice({
 	name: "task",
 	initialState,
 	reducers: {
-		increment: (state) => {
-			state.value += 1;
+		resetTaskState: (state) => {
+			state.description = "";
+			state.currentFiles = [];
+			state.defaultFiles = [];
+			state.successFiles = undefined;
+			state.loadingStatus = "Idle";
 		},
-		decrement: (state) => {
-			state.value -= 1;
+		setCurrentFiles: (state, action: PayloadAction<SandboxFiles>) => {
+			state.currentFiles = action.payload;
 		},
-		incrementByAmount: (state, action: PayloadAction<number>) => {
-			state.value += action.payload;
-		},
+	},
+	extraReducers: (builder) => {
+		builder.addCase(fetchTask.pending, (state) => {
+			state.loadingStatus = "Pending";
+		});
+		builder.addCase(fetchTask.rejected, (state) => {
+			state.loadingStatus = "Error";
+		});
+		builder.addCase(fetchTask.fulfilled, (state, action: PayloadAction<TaskResponse>) => {
+			state.loadingStatus = "Success";
+			state.description = action.payload.description;
+			state.currentFiles = action.payload.currentFiles ?? action.payload.defaultFiles;
+			state.defaultFiles = action.payload.defaultFiles;
+			state.successFiles = action.payload.successFiles ?? undefined;
+		});
 	},
 });
 
-export const { increment, decrement, incrementByAmount } = taskSlice.actions;
+export const { resetTaskState } = taskSlice.actions;
 
 export default taskSlice.reducer;
+
+/* --------- async thunks --------- */
+
+export const fetchTask = createAsyncThunk(
+	"task/fetchTask",
+	async (payload: { taskID: string }, thunkApi) => {
+		const response = await httpRequest.fetchTask(payload.taskID);
+		return response.data;
+	}
+);

@@ -42,4 +42,12 @@ export const httpRequest = {
 	async updateCode(files: SandboxFiles) {
 		return axios.post("/task/updateCode", files);
 	},
+
+	async fetchTask(taskID: string) {
+		return axios.get("/task", {
+			params: {
+				taskID: taskID,
+			},
+		});
+	},
 };
