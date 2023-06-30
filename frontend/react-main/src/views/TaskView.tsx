@@ -5,24 +5,21 @@ import { httpRequest } from "../network/httpRequest";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "../redux/store";
 import { logoutUser } from "../redux/slices/userSlice";
+import EditorComponent from "../components/Task/EditorComponent";
 
 const TaskView = () => {
 	const dispatch = useDispatch<AppDispatch>();
 
 	return (
-		<MDBContainer>
-			<MDBRow>
-				<MDBCol md={6}>
-					<MDBBtn onClick={() => dispatch(logoutUser())}>Logout</MDBBtn>
-					<MDBBtn
-						onClick={() =>
-							httpRequest.updateCode([{ filename: "new.js", code: "console.log('hi')" }])
-						}
-					>
-						Upload
-					</MDBBtn>
+		<MDBContainer fluid className="h-100">
+			<MDBRow className="h-100">
+				<MDBCol md={4} sm={12} style={{ background: "white" }} className="h-100">
+					<h1>Aufgabe:</h1>
 				</MDBCol>
-				<MDBCol md={6}>
+				<MDBCol md={4} sm={12} style={{ height: "90%" }} className="d-flex align-self-center">
+					<EditorComponent />
+				</MDBCol>
+				<MDBCol md={4} sm={12} className="h-100">
 					<PreviewComponent result={""} />
 				</MDBCol>
 			</MDBRow>

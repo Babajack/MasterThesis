@@ -19,7 +19,7 @@ function App() {
 					{/* protected routes */}
 					<Route element={<ProtectedRoute />}>
 						<Route path="/task" element={<TaskView />} />
-						<Route path="/*" element={<EditorComponent />} />
+						{/* <Route path="/*" element={<EditorComponent />} /> */}
 					</Route>
 				</Routes>
 			</header>

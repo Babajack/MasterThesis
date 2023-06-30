@@ -19,3 +19,15 @@ export type User = {
 	username: string;
 	id: string;
 };
+
+export interface TaskResponse {
+	taskID: string;
+	description: string;
+	defaultFiles: SandboxFiles;
+	currentFiles?: SandboxFiles;
+	successFiles?: SandboxFiles;
+}
+
+export interface TaskRequest {
+	taskID: string;
+}

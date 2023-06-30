@@ -13,7 +13,7 @@ interface TaskState {
 const initialState: TaskState = {
 	description: "",
 	currentFiles: [],
-	defaultFiles: [],
+	defaultFiles: [{ filename: "app,js", code: "" }],
 	loadingStatus: "Idle",
 };
 
