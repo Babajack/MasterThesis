@@ -4,7 +4,7 @@ import Editor from "@monaco-editor/react";
 import { editor } from "monaco-editor";
 import { useSelector } from "react-redux";
 import { RootState } from "../../redux/store";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import axios from "axios";
 import { parse } from "@babel/parser";
 import traverse from "@babel/traverse";
@@ -62,7 +62,42 @@ const EditorComponent: React.FC = () => {
 			},
 		});
 
-		fetch("https://cdn.jsdelivr.net/npm/@types/react@16.9.41/index.d.ts")
+		/* const files = {
+			"services/user.d.ts": `
+			  import { Profile } from "./profile";
+		  
+			  export function getUserProfile(uuid: string): Profile {
+				  return { firstName: "John", lastName: "Doe" };
+			  }
+			  `,
+
+			"services/profile.d.ts": `
+			  export interface Profile { firstName: string, lastName: string };
+			  `,
+		};
+
+		for (const fileName in files) {
+			const fakePath = `file:///node_modules/@types/${fileName}`;
+
+			monaco.languages.typescript.typescriptDefaults.addExtraLib(
+				//@ts-ignore
+				files[fileName],
+				fakePath
+			);
+		}
+
+		const model = monaco.editor.createModel(
+			`
+		  import { getUserProfile } from 'services/user';
+		  const profile = getUserProfile("some-id");
+		  console.log(profile.firstName);
+			  `.trim(),
+			"typescript",
+			monaco.Uri.parse("file:///main.tsx")
+		); */
+
+		//return;
+		fetch("https://cdn.jsdelivr.net/npm/@types/react@18.2/index.d.ts")
 			.then((react_def_file) => {
 				react_def_file.text().then((res) => {
 					/* monaco?.languages.typescript.javascriptDefaults.setEagerModelSync(true);
@@ -102,10 +137,30 @@ const EditorComponent: React.FC = () => {
 						noSyntaxValidation: false,
 					});
 
+					/* // validation settings
+					monaco.languages.typescript.javascriptDefaults.setDiagnosticsOptions({
+						noSemanticValidation: true,
+						noSyntaxValidation: false,
+					});
+
+					// compiler options
+					monaco.languages.typescript.javascriptDefaults.setCompilerOptions({
+						target: monaco.languages.typescript.ScriptTarget.Latest,
+						allowNonTsExtensions: true,
+					}); */
+
+					//const libUri = "node_modules/@types/react/index.d.ts";
+					var libUri = "ts:filename/facts.d.ts";
+
 					monaco.languages.typescript.javascriptDefaults.addExtraLib(
 						res,
-						`file:///node_modules/@react/types/index.d.ts`
+						`file:///node_modules/@types/react/index.d.ts`
 					);
+					monaco.editor.createModel("//code", "javascript", monaco.Uri.parse("javascript"));
+
+					//monaco.editor.createModel(res, "javascript", monaco.Uri.parse("file:///App.tsx"));
+					//monaco.editor.createModel(res, "typescript", monaco.Uri.parse(libUri));
+					//monaco.editor.createModel(res, "typescript", monaco.Uri.parse("name"));
 				});
 			})
 			.catch((e) => console.log(e));
@@ -143,8 +198,10 @@ const EditorComponent: React.FC = () => {
 			theme="vs-dark"
 			value={currentFile?.code ?? ""}
 			beforeMount={handleBeforeMount}
-			onMount={handleEditorDidMount}
+			//onMount={handleEditorDidMount}
+			path={"javascript"}
 
+			//path="node_modules/@types/react/index.d.ts"
 			//onValidate={handleEditorValidation}
 			//defaultValue="// some comment"
 		/>
