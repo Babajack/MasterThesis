@@ -20,7 +20,7 @@ const EditorComponent: React.FC = () => {
 	const taskState = useSelector((state: RootState) => state.task);
 	const dispatch = useDispatch<AppDispatch>();
 
-	const [selectedFileName, setSelectedFileName] = useState<string>("app.js");
+	const [selectedFileName, setSelectedFileName] = useState<string>("app.jsx");
 	const currentFile = taskState.currentFiles.find((elem) => elem.filename === selectedFileName)!;
 
 	const editorRef = useRef<editor.IStandaloneCodeEditor>();

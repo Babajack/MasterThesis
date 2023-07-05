@@ -14,7 +14,7 @@ const initialState: TaskState = {
 	description: "",
 	currentFiles: [
 		{
-			filename: "app.js",
+			filename: "app.jsx",
 			code: "import React from 'react';\r\n\r\nexport function App(props) {\r\n    return (\r\n        <div className='App'>\r\n            <h1>Hello React.</h1>\r\n            <h2>Start editing to see some magic happen!</h2>\r\n        </div>\r\n    );\r\n}\r\n\r\n// Log to console\r\nconsole.log('Hello console')",
 		},
 		{ filename: "index.js", code: "" },

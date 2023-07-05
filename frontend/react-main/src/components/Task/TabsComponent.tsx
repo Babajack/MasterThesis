@@ -35,11 +35,18 @@ const TabsComponent: React.FC<TabsComponentProps> = (props) => {
 		fileEndings: [".js", ".jsx"],
 	});
 
+	const [previousActiveFile, setPreviousActiveFile] = useState<any>(
+		configs.reduce((prev, cur) => {
+			return { ...prev, [cur.tabName]: undefined };
+		}, {})
+	);
+
 	const handleFirstLevelClick = (value: TabConfig) => {
 		if (value === basicActive) {
 			return;
 		}
 		setBasicActive(value);
+		if (previousActiveFile[value.tabName]) props.setCurrentFile(previousActiveFile[value.tabName]);
 	};
 
 	/* Second Level */
@@ -49,19 +56,9 @@ const TabsComponent: React.FC<TabsComponentProps> = (props) => {
 		}
 	});
 
-	/* const [fileActive, setfileActive] = useState<string>();
-
-	const handleSecondLevelClick = (value: string) => {
-		if (value === fileActive) {
-			return;
-		}
-		setfileActive(value);
-		props.setCurrentFile(value);
-	}; */
-
 	return (
 		<div style={{ backgroundColor: "grey" }}>
-			<MDBTabs>
+			<MDBTabs fill>
 				{configs.map((elem) => {
 					return (
 						<MDBTabsItem key={elem.tabName + "-first-level"}>
@@ -87,7 +84,13 @@ const TabsComponent: React.FC<TabsComponentProps> = (props) => {
 									return (
 										<MDBTabsItem key={file.filename}>
 											<MDBTabsLink
-												onClick={() => props.setCurrentFile(file.filename)}
+												onClick={() => {
+													props.setCurrentFile(file.filename);
+													setPreviousActiveFile({
+														...previousActiveFile,
+														[basicActive.tabName]: file.filename,
+													});
+												}}
 												active={props.currentFile === file.filename}
 											>
 												{file.filename}
