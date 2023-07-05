@@ -23,7 +23,9 @@ export type User = {
 	id: string;
 };
 
-export type SandboxFiles = {
+export type SandboxFiles = SandboxFile[];
+
+export type SandboxFile = {
 	filename: string;
 	code: string;
-}[];
+};

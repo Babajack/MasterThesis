@@ -13,13 +13,17 @@ const TaskView = () => {
 	return (
 		<MDBContainer fluid className="h-100">
 			<MDBRow className="h-100">
-				<MDBCol md={4} sm={12} style={{ background: "white" }} className="h-100">
+				<MDBCol md={3} sm={12} style={{ background: "white" }} className="h-100">
 					<h1>Aufgabe:</h1>
 				</MDBCol>
-				<MDBCol md={4} sm={12} style={{ height: "90%" }} className="d-flex align-self-center">
+				<MDBCol
+					md={6}
+					sm={12}
+					/* style={{ height: "90%" }} */ className="d-flex align-self-center h-100"
+				>
 					<EditorComponent />
 				</MDBCol>
-				<MDBCol md={4} sm={12} className="h-100">
+				<MDBCol md={3} sm={12} className="h-100">
 					<PreviewComponent result={""} />
 				</MDBCol>
 			</MDBRow>
