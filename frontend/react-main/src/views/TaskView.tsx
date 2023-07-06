@@ -17,14 +17,14 @@ const TaskView = () => {
 					<h1>Aufgabe:</h1>
 				</MDBCol>
 				<MDBCol
-					md={6}
+					md={5}
 					sm={12}
 					/* style={{ height: "90%" }} */ className="d-flex align-self-center h-100"
 				>
 					<EditorComponent />
 				</MDBCol>
-				<MDBCol md={3} sm={12} className="h-100">
-					<PreviewComponent result={""} />
+				<MDBCol md={4} sm={12} className="h-100">
+					<PreviewComponent />
 				</MDBCol>
 			</MDBRow>
 		</MDBContainer>

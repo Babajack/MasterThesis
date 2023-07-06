@@ -70,7 +70,7 @@ authRouter.get("/user", (req, res: Response<AuthResponse>) => {
 	if (!req.session.user) {
 		res.send({ error: "Session does not exist!" });
 	} else {
-		//startSandboxContainer(req.session.user.id);
+		startSandboxContainer(req.session.user.id);
 		res.send({ username: req.session.user.username });
 	}
 });

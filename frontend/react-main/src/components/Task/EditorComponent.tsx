@@ -188,7 +188,9 @@ const EditorComponent: React.FC = () => {
 	}, []);
 
 	const handleRunCode = () => {
-		httpRequest.updateCode(taskState.currentFiles).then((response) => {});
+		httpRequest.updateCode(taskState.currentFiles).then((response) => {
+			//console.log(response);
+		});
 	};
 
 	return (

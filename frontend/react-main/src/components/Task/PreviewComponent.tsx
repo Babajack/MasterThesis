@@ -1,11 +1,11 @@
 import * as React from "react";
 
 interface Props {
-	result: string;
+	//result: string;
 }
 
 const PreviewComponent = (props: Props) => {
-	return <div>{props.result}</div>;
+	return <iframe src="http://localhost:8000/static" className="h-100 w-100"></iframe>;
 };
 
 export default PreviewComponent;

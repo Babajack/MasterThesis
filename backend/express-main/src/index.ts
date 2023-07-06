@@ -1,11 +1,13 @@
 import cors from "cors";
 import dotenv from "dotenv";
-import express from "express";
+import express, { Request, Response } from "express";
 import session from "express-session";
 import { getSessionStore } from "./database/database";
 import { authRouter, requireLogin } from "./routes/authRoutes";
-import { dockerRouter } from "./routes/dockerRoutes";
+import { sessionDockerRouter } from "./routes/sessionDockerRoutes";
 import { taskRouter } from "./routes/taskRoutes";
+import { runCode } from "./docker/dockerControl";
+import { SandboxFiles } from "types";
 
 // env variables
 dotenv.config();
@@ -48,7 +50,7 @@ app.use((req, res, next) => {
 app.use("/", authRouter);
 
 //app.use("/", requireLogin, dockerRouter);
-app.use("/", dockerRouter);
+app.use("/", sessionDockerRouter);
 
 app.use("/", requireLogin, taskRouter);
 
