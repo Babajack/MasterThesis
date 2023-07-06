@@ -12,7 +12,7 @@ dotenv.config();
 
 const app = express();
 const port = 8000;
-const MAX_AGE = 1000 * 60 * 60;
+const MAX_AGE = 1000 * 60 * 60 * 6;
 
 // cors
 app.use(

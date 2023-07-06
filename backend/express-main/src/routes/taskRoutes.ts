@@ -30,3 +30,10 @@ taskRouter.get("/task", (req: Request<TaskRequest, {}, {}>, res: Response<TaskRe
 		description: "empty description",
 	});
 });
+
+taskRouter.post(
+	"/task/updateCode",
+	(req: Request<{}, {}, SandboxFiles>, res: Response<TaskResponse>) => {
+		updateSandboxCode(req.body, req.session.user?.id!);
+	}
+);

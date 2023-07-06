@@ -1,6 +1,7 @@
 import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { LoadingStatus, SandboxFile, SandboxFiles, TaskResponse } from "../../types";
 import { httpRequest } from "../../network/httpRequest";
+import { RootState } from "../store";
 
 interface TaskState {
 	description: string;
@@ -79,6 +80,14 @@ export const fetchTask = createAsyncThunk(
 	"task/fetchTask",
 	async (payload: { taskID: string }, thunkApi) => {
 		const response = await httpRequest.fetchTask(payload.taskID);
+		return response.data;
+	}
+);
+
+export const updateCode = createAsyncThunk<void, void, { state: RootState }>(
+	"task/updateCode",
+	async (payload, thunkApi) => {
+		const response = await httpRequest.updateCode(thunkApi.getState().task.currentFiles);
 		return response.data;
 	}
 );

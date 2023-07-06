@@ -1,4 +1,4 @@
-import { MDBCol, MDBContainer, MDBInput, MDBRow } from "mdb-react-ui-kit";
+import { MDBBtn, MDBCol, MDBContainer, MDBInput, MDBRow } from "mdb-react-ui-kit";
 import * as React from "react";
 import Editor from "@monaco-editor/react";
 import { editor } from "monaco-editor";
@@ -13,6 +13,7 @@ import { updateFile } from "../../redux/slices/taskSlice";
 import * as prettier from "prettier/standalone";
 import * as babel from "prettier/parser-babel";
 import * as typescript from "prettier/parser-typescript";
+import { httpRequest } from "../../network/httpRequest";
 
 //import "./EditorComponent.css";
 
@@ -186,6 +187,10 @@ const EditorComponent: React.FC = () => {
 		});
 	}, []);
 
+	const handleRunCode = () => {
+		httpRequest.updateCode(taskState.currentFiles).then((response) => {});
+	};
+
 	return (
 		<MDBRow>
 			<MDBCol md={12} /* style={{ backgroundColor: "#1e1e1e", backgroundClip: "content-box" }} */>
@@ -235,6 +240,9 @@ const EditorComponent: React.FC = () => {
 						}
 					}}
 				/>
+			</MDBCol>
+			<MDBCol className="my-2" md={12}>
+				<MDBBtn onClick={handleRunCode}>Run</MDBBtn>
 			</MDBCol>
 		</MDBRow>
 	);
