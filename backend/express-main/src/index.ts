@@ -8,6 +8,7 @@ import { sessionDockerRouter } from "./routes/sessionDockerRoutes";
 import { taskRouter } from "./routes/taskRoutes";
 import { runCode } from "./docker/dockerControl";
 import { SandboxFiles } from "types";
+import { createProxyMiddleware } from "http-proxy-middleware";
 
 // env variables
 dotenv.config();
@@ -38,6 +39,33 @@ app.use(
 	})
 );
 
+// proxy
+app.use(
+	"/sessionContainer",
+	createProxyMiddleware({
+		router: (req) => "http://" + req.session.user?.id + ":8000",
+		//router: (req) => "http://master-thesis-backend-express-session-1:8000",
+		/* router: (req) => {
+			//console.log(req);
+
+			return "http://master-thesis-backend-express-session-1:8000";
+		}, */
+		changeOrigin: true,
+		pathRewrite: {
+			"^/sessionContainer": "", // Replace '/api' with the base path of the server you want to proxy to
+		},
+		/* onProxyReq: (proxyReq, req, res, options) => {
+				if (req.body) {
+					const data = JSON.stringify(req.body);
+					proxyReq.setHeader("Content-Type", "application/json");
+					proxyReq.setHeader("Content-Length", Buffer.byteLength(data));
+					// stream the content
+					proxyReq.write(data);
+				}
+			}, */
+	})
+);
+
 // json parser
 app.use(express.json());
 
@@ -49,8 +77,8 @@ app.use((req, res, next) => {
 
 app.use("/", authRouter);
 
-//app.use("/", requireLogin, dockerRouter);
-app.use("/", sessionDockerRouter);
+//app.use("/", requireLogin, sessionDockerRouter);
+//app.use("/", sessionDockerRouter);
 
 app.use("/", requireLogin, taskRouter);
 

@@ -9,7 +9,7 @@ import axios from "axios";
 import { parse } from "@babel/parser";
 import traverse from "@babel/traverse";
 import TabsComponent from "./TabsComponent";
-import { updateFile } from "../../redux/slices/taskSlice";
+import { updateCode, updateFile } from "../../redux/slices/taskSlice";
 import * as prettier from "prettier/standalone";
 import * as babel from "prettier/parser-babel";
 import * as typescript from "prettier/parser-typescript";
@@ -21,7 +21,7 @@ const EditorComponent: React.FC = () => {
 	const taskState = useSelector((state: RootState) => state.task);
 	const dispatch = useDispatch<AppDispatch>();
 
-	const [selectedFileName, setSelectedFileName] = useState<string>("app.jsx");
+	const [selectedFileName, setSelectedFileName] = useState<string>("App.js");
 	const currentFile = taskState.currentFiles.find((elem) => elem.filename === selectedFileName)!;
 
 	const editorRef = useRef<editor.IStandaloneCodeEditor>();
@@ -188,9 +188,7 @@ const EditorComponent: React.FC = () => {
 	}, []);
 
 	const handleRunCode = () => {
-		httpRequest.updateCode(taskState.currentFiles).then((response) => {
-			//console.log(response);
-		});
+		dispatch(updateCode());
 	};
 
 	return (
@@ -223,6 +221,8 @@ const EditorComponent: React.FC = () => {
 					defaultValue={currentFile?.code}
 					saveViewState={true}
 					onChange={(value, event) => {
+						//console.log(JSON.stringify(currentFile.code));
+
 						//console.log(value?.replace("\n", "\r\n"));
 						//console.log(value);
 						//console.log(editorRef.current?.getValue());

@@ -191,6 +191,7 @@ export const startSandboxContainer = async (userID: string) => {
 		let newContainer = await docker.container.create({
 			Image: SANDBOX_IMAGE_NAME,
 			name: userID,
+
 			//ExposedPorts: { [DOCKER_PORT]: {} },
 			HostConfig: {
 				Binds: ["master-thesis_user-code:/usr/user-code"],

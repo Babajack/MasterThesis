@@ -1,87 +1,68 @@
 const path = require("path");
 const express = require("express");
 const util = require("util");
+const fs = require("fs");
 const exec = util.promisify(require("child_process").exec);
 //import * as esbuild from "esbuild";
 const esbuild = require("esbuild");
 
 const app = express(); // create express app
 
-/* app.use((req, res, next) => {
-	console.log("test");
-	 exec(
-		"npm run build",
-		{
-			cwd: "../",
-		},
-		(err, stdout, stderr) => {
-			if (err) {
-				// node couldn't execute the command
-				console.log(err);
-				return;
-			}
-			console.log(`stdout: ${stdout}`);
-			console.log(`stderr: ${stderr}`);
-			next();
-		}
-	); 
-	next();
-}); */
+// json parser
+app.use(express.json());
 
 //app.use(express.static(path.join(__dirname, "..", "build")));
 app.use(express.static("./sandbox/public"));
 
 app.get("/", (req, res) => {
 	//res.send("This is from express.js");
-	res.sendFile(path.join(__dirname, "..", "sandbox/public/index.html"));
+	res.sendFile(path.join(__dirname, "..", "sandbox/src/index.html"));
 });
 
-/* app.get("/update", (req, res) => {
-	console.log("building app...");
-	update().then((e) => {
-		res.send("This is from express.js");
-	});
-}); */
-
-app.get("/test", (req, res) => {
+app.post("/build", (req, res) => {
 	build()
-		.then((result) => res.sendFile(path.join(__dirname, "..", "sandbox/public/index.html")))
+		.then((result) => res.sendFile(path.join(__dirname, "..", "sandbox/src/index.html")))
 		.catch((error) => console.log(error));
 });
 
-app.listen(8000, () => {
-	console.log("server started on port 8000");
-
-	/* esbuild
-		.context({
-			entryPoints: ["./sandbox/src/index.js"],
-			bundle: true,
-			minify: true,
-			sourcemap: true,
-			//target: ["chrome58", "firefox57", "safari11", "edge16"],
-			outfile: "./sandbox/public/build/App.js",
-			loader: { ".js": "jsx" },
-		})
-		.then((e) => e.watch())
-		.catch((error) => console.log(error)); */
+app.post("/updateCode", async (req, res) => {
+	//console.log(req.body);
+	try {
+		updateSandboxCode(req.body);
+		await build();
+		res.send(true);
+	} catch (error) {
+		res.send(false);
+	}
 });
 
-let build = async () =>
-	esbuild.build({
+app.listen(8000, () => {
+	console.log("server started on port 8001");
+});
+
+let build = async () => {
+	return esbuild.build({
 		entryPoints: ["./sandbox/src/index.js"],
 		bundle: true,
 		minify: true,
-		sourcemap: true,
+		//sourcemap: true,
 		//target: ["chrome58", "firefox57", "safari11", "edge16"],
-		outfile: "./public/build/App.js",
+		outfile: "./sandbox/public/build/App.js",
 		loader: { ".js": "jsx" },
 	});
+	/* .then((result) => true)
+	.catch((error) => error); */
+};
 
-async function update() {
-	const { stdout, stderr } = await exec("npm run build", {
-		cwd: "../",
-	});
-	console.log("stdout:", stdout);
-	console.log("stderr:", stderr);
-	return build();
-}
+const updateSandboxCode = (files) => {
+	const dir = "/usr/src/app/sandbox/src";
+	//console.log(files);
+	try {
+		if (!fs.existsSync(dir)) fs.mkdirSync(dir);
+		for (let file of files) {
+			fs.writeFileSync(dir + "/" + JSON.stringify(file.filename).slice(1, -1), file.code);
+		}
+	} catch (error) {
+		console.log(error);
+	}
+};

@@ -7,16 +7,16 @@ axios.defaults.withCredentials = true;
 
 axios.interceptors.request.use((request) => {
 	//console.log("Starting Request", JSON.stringify(request, null, 2));
-	if (process.env.REACT_APP_DEV_MODE)
-		console.log("Starting Request", request.method, request.url, request);
+	//if (process.env.REACT_APP_DEV_MODE)
+	console.log("Starting Request", request.method, request.url, request);
 	return request;
 });
 
 axios.interceptors.response.use(
 	(response) => {
 		//console.log("Response:", JSON.stringify(response, null, 2));
-		if (process.env.REACT_APP_DEV_MODE)
-			console.log("Response:", response.config.method, response.config.url, response);
+		//if (process.env.REACT_APP_DEV_MODE)
+		console.log("Response:", response.config.method, response.config.url, response);
 		return response;
 	},
 	(error) => {
@@ -50,7 +50,7 @@ export const httpRequest = {
 		return axios.post("/docker/data");
 	},
 	async updateCode(files: SandboxFiles) {
-		return axios.post("/task/updateCode", files);
+		return axios.post("/sessionContainer/updateCode", files);
 	},
 
 	async fetchTask(taskID: string) {
