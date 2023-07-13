@@ -193,7 +193,7 @@ const EditorComponent: React.FC = () => {
 	};
 
 	return (
-		<MDBRow className="h-100 w-100 g-0 flex-row" style={{ backgroundColor: "grey" }}>
+		<MDBRow className="h-100 w-100 g-0" style={{ backgroundColor: "grey" }}>
 			<MDBCol
 				md={12}
 
@@ -201,8 +201,9 @@ const EditorComponent: React.FC = () => {
 			>
 				<TabsComponent setCurrentFile={setSelectedFileName} currentFile={selectedFileName} />
 			</MDBCol>
-			<MDBCol md={12} className="px-1 flex-shrink-1">
+			<MDBCol md={12} className="px-1">
 				<Editor
+					height={"99%"}
 					//wrapperProps={{ className: "d-block" }}
 					//className="h-100"
 					options={{
