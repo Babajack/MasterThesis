@@ -120,6 +120,10 @@ export const taskSlice = createSlice({
 			);
 			if (index !== -1) state.currentFiles[index] = action.payload.new;
 		},
+		deleteFileByName: (state, action: PayloadAction<string>) => {
+			const index = state.currentFiles.findIndex((file) => file.filename === action.payload);
+			if (index !== -1) state.currentFiles.splice(index, 1);
+		},
 	},
 	extraReducers: (builder) => {
 		builder.addCase(fetchTask.pending, (state) => {
@@ -145,10 +149,13 @@ export const taskSlice = createSlice({
 			//setTimeout(() => (state.buildStatus = "Success"), 1000);
 			state.buildStatus = "Success";
 		});
+		builder.addCase(addNewFile.fulfilled, (state, action) => {
+			state.currentFiles.push({ filename: action.payload.filename, code: "", isDeletable: true });
+		});
 	},
 });
 
-export const { resetTaskState, setCurrentFiles, updateFile } = taskSlice.actions;
+export const { resetTaskState, setCurrentFiles, updateFile, deleteFileByName } = taskSlice.actions;
 
 export default taskSlice.reducer;
 
@@ -169,3 +176,14 @@ export const updateCode = createAsyncThunk<void, void, { state: RootState }>(
 		return response.data;
 	}
 );
+
+export const addNewFile = createAsyncThunk<
+	{ filename: string },
+	{ filename: string },
+	{ state: RootState }
+>("task/addNewFile", async (payload, thunkApi) => {
+	const files = thunkApi.getState().task.currentFiles;
+	if (files.some((elem) => elem.filename === payload.filename))
+		return thunkApi.rejectWithValue("Datei existiert bereits");
+	else return thunkApi.fulfillWithValue({ filename: payload.filename });
+});

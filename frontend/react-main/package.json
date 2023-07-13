@@ -26,6 +26,7 @@
     "react-redux": "^8.0.7",
     "react-router-dom": "^6.12.0",
     "react-scripts": "5.0.1",
+    "react-tooltip": "^5.18.0",
     "typescript": "^4.9.5",
     "web-vitals": "^2.1.4"
   },
@@ -34,7 +35,7 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "dev": "set PORT=3001 && react-scripts start"
+    "dev": "set PORT=3001 && set REACT_APP_DEV_MODE=true && react-scripts start"
   },
   "eslintConfig": {
     "extends": [

@@ -28,4 +28,5 @@ export type SandboxFiles = SandboxFile[];
 export type SandboxFile = {
 	filename: string;
 	code: string;
+	isDeletable?: boolean;
 };

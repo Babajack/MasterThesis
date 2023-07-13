@@ -32,7 +32,7 @@ app.post("/updateCode", async (req, res) => {
 		await build();
 		res.send(true);
 	} catch (error) {
-		res.send(false);
+		res.send(error);
 	}
 });
 

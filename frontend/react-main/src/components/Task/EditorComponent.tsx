@@ -21,8 +21,8 @@ const EditorComponent: React.FC = () => {
 	const taskState = useSelector((state: RootState) => state.task);
 	const dispatch = useDispatch<AppDispatch>();
 
-	const [selectedFileName, setSelectedFileName] = useState<string>("App.js");
-	const currentFile = taskState.currentFiles.find((elem) => elem.filename === selectedFileName)!;
+	const [currentFilename, setCurrentFilename] = useState<string>("App.js");
+	const currentFile = taskState.currentFiles.find((elem) => elem.filename === currentFilename)!;
 
 	const editorRef = useRef<editor.IStandaloneCodeEditor>();
 	const monacoRef = useRef<any>();
@@ -199,7 +199,17 @@ const EditorComponent: React.FC = () => {
 
 				/* style={{ backgroundColor: "#1e1e1e", backgroundClip: "content-box" }} */
 			>
-				<TabsComponent setCurrentFile={setSelectedFileName} currentFile={selectedFileName} />
+				<TabsComponent
+					setCurrentFilename={setCurrentFilename}
+					currentFilename={currentFilename}
+					onDeleteFile={(filename: string) => {
+						try {
+							monacoRef.current.editor.getModel(monacoRef.current.Uri.parse(filename))?.dispose();
+						} catch (error) {
+							if (process.env.REACT_APP_DEV_MODE) console.log(error);
+						}
+					}}
+				/>
 			</MDBCol>
 			<MDBCol md={12} className="px-1">
 				<Editor
@@ -208,7 +218,6 @@ const EditorComponent: React.FC = () => {
 					//className="h-100"
 					options={{
 						wordWrap: "on",
-
 						padding: { top: 15 },
 						mouseWheelZoom: true,
 						minimap: { enabled: false },
@@ -243,8 +252,8 @@ const EditorComponent: React.FC = () => {
 						//	editor.layout();
 						//};
 					}}
-					path={currentFile?.filename}
-					defaultValue={currentFile?.code}
+					path={currentFile.filename}
+					defaultValue={currentFile.code}
 					saveViewState={true}
 					onChange={(value, event) => {
 						//console.log(JSON.stringify(currentFile.code));
@@ -262,7 +271,7 @@ const EditorComponent: React.FC = () => {
 							dispatch(
 								updateFile({
 									old: currentFile,
-									new: { filename: currentFile.filename, code: value },
+									new: { ...currentFile, filename: currentFile.filename, code: value },
 								})
 							);
 						}
