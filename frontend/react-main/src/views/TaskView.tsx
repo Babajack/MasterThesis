@@ -11,9 +11,14 @@ const TaskView = () => {
 	const dispatch = useDispatch<AppDispatch>();
 
 	return (
-		<MDBContainer fluid className="h-100">
-			<MDBRow className="h-100">
-				<MDBCol md={3} sm={12} style={{ background: "white" }} className="h-100">
+		<MDBContainer fluid className="h-100 g-0">
+			<MDBRow className="h-100 g-0">
+				<MDBCol
+					md={3}
+					sm={12}
+					style={{ background: "lightgray" }}
+					className="h-100 border border-5 border-dark"
+				>
 					<h1>Aufgabe:</h1>
 				</MDBCol>
 				<MDBCol
@@ -23,7 +28,11 @@ const TaskView = () => {
 				>
 					<EditorComponent />
 				</MDBCol>
-				<MDBCol md={4} sm={12} className="h-100">
+				<MDBCol
+					md={4}
+					sm={12}
+					className="d-flex flex-column justify-content-center align-items-center h-100 border border-5 border-dark"
+				>
 					<PreviewComponent />
 				</MDBCol>
 			</MDBRow>

@@ -57,7 +57,7 @@ const TabsComponent: React.FC<TabsComponentProps> = (props) => {
 	});
 
 	return (
-		<div style={{ backgroundColor: "grey" }}>
+		<div>
 			<MDBTabs fill>
 				{configs.map((elem) => {
 					return (

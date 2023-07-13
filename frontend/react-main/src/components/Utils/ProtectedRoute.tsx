@@ -3,7 +3,7 @@ import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../redux/store";
 import { getUserData, loginUser } from "../../redux/slices/userSlice";
-import LoadingComponent from "./LoadingComponent";
+import LoadingWrapper from "./LoadingWrapper";
 import EditorComponent from "../Task/EditorComponent";
 import { useEffect } from "react";
 
@@ -23,13 +23,22 @@ const ProtectedRoute = () => {
 		dispatch(getUserData());
 	}, []);
 
-	let childComponent = <></>;
+	let childComponent = <Navigate to={"/auth"} state={{ from: location }} />;
+
+	return (
+		<LoadingWrapper loadingStatus={userState.loadingStatus} errorComponent={childComponent}>
+			{userState.isLoggedIn && <Outlet />}
+			{!userState.isLoggedIn && childComponent}
+		</LoadingWrapper>
+	);
+
+	/* let childComponent = <></>;
 	// load component based on user data
 	switch (userState.loadingStatus) {
 		case "Idle":
 			break;
 		case "Pending":
-			childComponent = <LoadingComponent />;
+			childComponent = <LoadingWrapper />;
 			break;
 		case "Success":
 			if (userState.isLoggedIn) childComponent = <Outlet />;
@@ -38,7 +47,7 @@ const ProtectedRoute = () => {
 		case "Error":
 			childComponent = <Navigate to={"/auth"} state={{ from: location }} />;
 			break;
-	}
+	} */
 
 	return childComponent;
 };

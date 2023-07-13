@@ -25,10 +25,11 @@ const EditorComponent: React.FC = () => {
 	const currentFile = taskState.currentFiles.find((elem) => elem.filename === selectedFileName)!;
 
 	const editorRef = useRef<editor.IStandaloneCodeEditor>();
-	const monacoRef =
+	const monacoRef = useRef<any>();
+	/* const monacoRef =
 		useRef<
 			typeof import("c:/Users/pheld/Desktop/Master Thesis/Repository/master-thesis/frontend/react-main/node_modules/monaco-editor/esm/vs/editor/editor.api")
-		>();
+		>(); */
 
 	useEffect(() => {
 		editorRef.current?.focus();
@@ -39,14 +40,14 @@ const EditorComponent: React.FC = () => {
 	 * @param monaco
 	 */
 	const handleBeforeMount = (
-		monaco: typeof import("c:/Users/pheld/Desktop/Master Thesis/Repository/master-thesis/frontend/react-main/node_modules/monaco-editor/esm/vs/editor/editor.api")
+		monaco: any /* typeof import("c:/Users/pheld/Desktop/Master Thesis/Repository/master-thesis/frontend/react-main/node_modules/monaco-editor/esm/vs/editor/editor.api") */
 	) => {
 		/**
 		 * autocomplete for JSX HTML Tags
 		 */
 		monaco.languages.registerCompletionItemProvider("javascript", {
 			triggerCharacters: [">"],
-			provideCompletionItems: (model, position) => {
+			provideCompletionItems: (model: any, position: any) => {
 				const codePre: string = model.getValueInRange({
 					startLineNumber: position.lineNumber,
 					startColumn: 1,
@@ -168,7 +169,7 @@ const EditorComponent: React.FC = () => {
 	}, []);
 
 	/**
-	 * remove annoying esizeObserver loop limit exceeded error
+	 * remove annoying resizeObserver loop limit exceeded error
 	 */
 	useEffect(() => {
 		window.addEventListener("error", (e) => {
@@ -192,19 +193,29 @@ const EditorComponent: React.FC = () => {
 	};
 
 	return (
-		<MDBRow>
-			<MDBCol md={12} /* style={{ backgroundColor: "#1e1e1e", backgroundClip: "content-box" }} */>
+		<MDBRow className="h-100 w-100 g-0 flex-row" style={{ backgroundColor: "grey" }}>
+			<MDBCol
+				md={12}
+
+				/* style={{ backgroundColor: "#1e1e1e", backgroundClip: "content-box" }} */
+			>
 				<TabsComponent setCurrentFile={setSelectedFileName} currentFile={selectedFileName} />
 			</MDBCol>
-			<MDBCol md={12}>
+			<MDBCol md={12} className="px-1 flex-shrink-1">
 				<Editor
+					//wrapperProps={{ className: "d-block" }}
 					//className="h-100"
 					options={{
+						wordWrap: "on",
+
+						padding: { top: 15 },
+						mouseWheelZoom: true,
 						minimap: { enabled: false },
 						formatOnPaste: true,
 						autoIndent: "full",
-
-						formatOnType: true /* autoClosingBrackets: "always" */,
+						//automaticLayout: true,
+						formatOnType: true,
+						//autoClosingBrackets: "always",
 					}}
 					//height={"100%"}
 					//defaultLanguage={currentFile.}
@@ -216,6 +227,20 @@ const EditorComponent: React.FC = () => {
 					onMount={(editor, monaco) => {
 						editorRef.current = editor;
 						monacoRef.current = monaco;
+						setTimeout(() => {
+							// add custom commands
+							//editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.KeyS, handleRunCode);
+							editor.addAction({
+								id: "runCode",
+								label: "Run Code",
+								run: handleRunCode,
+								keybindings: [monaco.KeyMod.CtrlCmd | monaco.KeyCode.KeyS],
+							});
+						}, 0);
+
+						//window.onresize = () => {
+						//	editor.layout();
+						//};
 					}}
 					path={currentFile?.filename}
 					defaultValue={currentFile?.code}
@@ -226,10 +251,10 @@ const EditorComponent: React.FC = () => {
 						//console.log(value?.replace("\n", "\r\n"));
 						//console.log(value);
 						//console.log(editorRef.current?.getValue());
-						/* prettier
-							//@ts-ignore
-							.format(value!, { parser: "babel", plugins: [babel] })
-							.then((text) => console.log(text)); */
+						// prettier
+						//@ts-ignore
+						//	.format(value!, { parser: "babel", plugins: [babel] })
+						//	.then((text) => console.log(text));
 						if (value) {
 							//console.log(currentFile.code);
 
@@ -243,7 +268,7 @@ const EditorComponent: React.FC = () => {
 					}}
 				/>
 			</MDBCol>
-			<MDBCol className="my-2" md={12}>
+			<MDBCol className="py-2" style={{}} md={12}>
 				<MDBBtn onClick={handleRunCode}>Run</MDBBtn>
 			</MDBCol>
 		</MDBRow>
