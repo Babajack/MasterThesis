@@ -10,12 +10,23 @@ export interface UserResponse {
 	error?: string;
 }
 
+export interface TaskResponse {
+	taskID: string;
+	description: string;
+	defaultFiles: SandboxFiles;
+	currentFiles?: SandboxFiles;
+	successFiles?: SandboxFiles;
+}
+
 export type User = {
 	username: string;
 	id: string;
 };
 
-export type SandboxFiles = {
+export type SandboxFiles = SandboxFile[];
+
+export type SandboxFile = {
 	filename: string;
 	code: string;
-}[];
+	isDeletable?: boolean;
+};

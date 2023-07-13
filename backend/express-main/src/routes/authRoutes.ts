@@ -66,11 +66,11 @@ authRouter.post("/auth/logout", (req: Request<{}, {}, UserRequest>, res: Respons
 		.finally(() => res.send("logout"));
 });
 
-authRouter.get("/user", (req, res: Response<AuthResponse>) => {
+authRouter.get("/user", async (req, res: Response<AuthResponse>) => {
 	if (!req.session.user) {
 		res.send({ error: "Session does not exist!" });
 	} else {
-		startSandboxContainer(req.session.user.id);
+		await startSandboxContainer(req.session.user.id);
 		res.send({ username: req.session.user.username });
 	}
 });

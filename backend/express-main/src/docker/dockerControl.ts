@@ -3,12 +3,12 @@ import axios from "axios";
 import { Container } from "node-docker-api/lib/container";
 import fs from "fs";
 import { SandboxFiles } from "types";
-import { DOCKER_PORT, getNextPortNumber } from "./portControl";
+//import { DOCKER_PORT, getNextPortNumber } from "./portControl";
 
 const SOCKET_PATH = "/var/run/docker.sock";
 //const TESTENV_IMAGE_NAME = "node-docker";
 const SANDBOX_IMAGE_NAME = "express-session";
-
+const DOCKER_PORT = 8000;
 const TIMEOUT = 5000; //3600000; // milliseconds
 
 /**
@@ -46,6 +46,57 @@ export const cleanupContainer = async (container: Container) => {
 };
 
 /* -------------------------------- Test Env Docker -------------------------------- */
+
+/* export const runCode = async (files: SandboxFiles, userID: string) => {
+	console.log("runCode");
+
+	try {
+		let newContainer = await docker.container.create({
+			Image: SANDBOX_IMAGE_NAME,
+			/* name: userID,
+			ExposedPorts: { [DOCKER_PORT]: {} },
+			HostConfig: {
+				Binds: ["master-thesis_user-code:/usr/user-code"],
+				NetworkMode: "master-thesis_main-network",
+				PortBindings: {
+					[DOCKER_PORT]: [{ HostPort: String(getNextPortNumber()) }],
+				},
+			}, 
+		});
+		// start container
+		newContainer = await newContainer.start();
+
+		for (let file of files) {
+			console.log("writing to file...");
+
+			//fs.writeFileSync(dir + "/" + JSON.stringify(file.filename).slice(1, -1), file.code);
+			let exec = await newContainer.exec.create({
+				Cmd: ["touch", "usr/src/app/sandbox/src/filename.js"],
+			});
+			 exec = await exec.create({
+				Cmd: ["touch", "filename.js"],
+			}); 
+			await exec.start();
+		}
+
+		 let exec = await newContainer.exec
+			.create({
+				AttachStdout: true,
+				AttachStderr: true,
+				//Cmd: ["ln -s /usr/user-code/" + userID + " /usr/src/app/test"],
+				//Cmd: ["ln", "-s", `/usr/user-code/${userID}`, "/usr/src/app/src"],
+				Cmd: []
+			})
+		await exec.start() 
+
+		 .then((exec) => {
+			return exec.start({ Detach: false });
+		})
+		.catch((err) => console.log(err)); 
+	} catch (error) {
+		console.log(error);
+	}
+}; */
 
 /* export const startTestEnvContainer = async () => {
 	return docker.container
@@ -91,6 +142,19 @@ export const runTest = async () => {
 
 /* -------------------------------- React Sandbox Docker -------------------------------- */
 
+export const runCode = async (files: SandboxFiles, userID: string) => {
+	//updateSandboxCode(files, userID);
+	const container = await startSandboxContainer(userID);
+	if (container) {
+		//const port = (container.data as any).Ports[1].PublicPort;
+		const url = "http://" + userID + ":" + DOCKER_PORT + "/test";
+		return await axios
+			.get(url)
+			.then((result) => result)
+			.catch((error) => error);
+	}
+};
+
 export const updateSandboxCode = (files: SandboxFiles, userID: string) => {
 	const dir = "/home/node/user-code/" + userID;
 	try {
@@ -116,22 +180,24 @@ export const startSandboxContainer = async (userID: string) => {
 			if (container.data.State === "running") {
 				//TODO: check if this means that container is healthy
 				// container is already up
-				return true;
+				return container;
 			} else {
 				// container is not up, but exists
 				await cleanupContainer(container);
 			}
 		}
 		// create container
+		//const hostPort = String(getNextPortNumber());
 		let newContainer = await docker.container.create({
 			Image: SANDBOX_IMAGE_NAME,
 			name: userID,
-			ExposedPorts: { [DOCKER_PORT]: {} },
+
+			//ExposedPorts: { [DOCKER_PORT]: {} },
 			HostConfig: {
 				Binds: ["master-thesis_user-code:/usr/user-code"],
 				NetworkMode: "master-thesis_main-network",
 				PortBindings: {
-					[DOCKER_PORT]: [{ HostPort: String(getNextPortNumber()) }],
+					//[DOCKER_PORT]: [{ HostPort: hostPort }],
 				},
 			},
 		});
@@ -139,7 +205,7 @@ export const startSandboxContainer = async (userID: string) => {
 		newContainer = await newContainer.start();
 
 		// execute symlink command to map usercode path to src path
-		newContainer.exec
+		/* newContainer.exec
 			.create({
 				AttachStdout: true,
 				AttachStderr: true,
@@ -149,13 +215,12 @@ export const startSandboxContainer = async (userID: string) => {
 			.then((exec) => {
 				return exec.start({ Detach: false });
 			})
-			.catch((err) => console.log(err));
+			.catch((err) => console.log(err)); */
+		return newContainer;
 	} catch (error) {
 		console.log(error);
-		return false;
+		return undefined;
 	}
-
-	return true;
 };
 
 export const stopSandboxContainer = async (userID: string) => {

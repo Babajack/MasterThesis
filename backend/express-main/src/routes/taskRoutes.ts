@@ -1,10 +1,10 @@
-import { SandboxFiles } from "types";
-import { startSandboxContainer, updateSandboxCode } from "../docker/dockerControl";
-import express, { Request } from "express";
+import { SandboxFiles, TaskRequest, TaskResponse } from "types";
+import { runCode, startSandboxContainer, updateSandboxCode } from "../docker/dockerControl";
+import express, { Request, Response } from "express";
 
 export const taskRouter = express.Router();
 
-taskRouter.post("/task/updateCode", (req: Request<{}, {}, SandboxFiles>, res) => {
+/* taskRouter.post("/task/updateCode", (req: Request<{}, {}, SandboxFiles>, res) => {
 	try {
 		updateSandboxCode(req.body, req.session.user?.id!);
 		//updateSandboxCode([{ filename: "testfile", code: "console.log('hi')" }], req.session.user?.id!);
@@ -20,4 +20,22 @@ taskRouter.get("/docker/start", (req, res) => {
 	//executeTask();
 	//startSandboxContainer(req.session.user?.id!);
 	startSandboxContainer(req.session.user?.id!);
+}); */
+
+taskRouter.get("/task", (req: Request<TaskRequest, {}, {}>, res: Response<TaskResponse>) => {
+	// TODO: get task by taskID, data access ...
+	res.send({
+		taskID: "testID",
+		defaultFiles: [{ filename: "app.js", code: "" }],
+		description: "empty description",
+	});
 });
+
+taskRouter.post(
+	"/task/updateCode",
+	async (req: Request<{}, {}, SandboxFiles>, res: Response<string>) => {
+		const response = await runCode(req.body, req.session.user?.id!);
+		console.log(response.data);
+		res.send(response.data);
+	}
+);

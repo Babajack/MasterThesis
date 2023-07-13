@@ -3,17 +3,22 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@babel/parser": "^7.22.5",
+    "@babel/traverse": "^7.22.5",
     "@fortawesome/fontawesome-free": "^6.4.0",
+    "@monaco-editor/react": "^4.5.1",
     "@reduxjs/toolkit": "^1.9.5",
     "@testing-library/jest-dom": "^5.16.5",
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^13.5.0",
     "@types/jest": "^27.5.2",
     "@types/node": "^16.18.25",
+    "@types/prettier": "^2.7.3",
     "@types/react": "^18.2.0",
     "@types/react-dom": "^18.2.1",
     "axios": "^1.4.0",
     "mdb-react-ui-kit": "^6.0.0",
+    "monaco-jsx-highlighter": "^2.0.4",
     "react": "^18.2.0",
     "react-bootstrap": "^2.7.4",
     "react-dom": "^18.2.0",
@@ -21,6 +26,7 @@
     "react-redux": "^8.0.7",
     "react-router-dom": "^6.12.0",
     "react-scripts": "5.0.1",
+    "react-tooltip": "^5.18.0",
     "typescript": "^4.9.5",
     "web-vitals": "^2.1.4"
   },
@@ -29,7 +35,7 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "dev": "set PORT=3001 && react-scripts start"
+    "dev": "set PORT=3001 && set REACT_APP_DEV_MODE=true && react-scripts start"
   },
   "eslintConfig": {
     "extends": [
@@ -52,6 +58,7 @@
   "devDependencies": {
     "@babel/core": "^7.22.0",
     "@babel/preset-react": "^7.22.0",
-    "jest": "^27.5.1"
+    "jest": "^27.5.1",
+    "prettier": "^3.0.0"
   }
 }
