@@ -58,7 +58,9 @@
   "devDependencies": {
     "@babel/core": "^7.22.0",
     "@babel/preset-react": "^7.22.0",
+    "@types/jshint": "^2.12.2",
     "jest": "^27.5.1",
+    "jshint": "^2.13.6",
     "prettier": "^3.0.0"
   }
 }

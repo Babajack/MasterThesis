@@ -14,7 +14,7 @@ import * as prettier from "prettier/standalone";
 import * as babel from "prettier/parser-babel";
 import * as typescript from "prettier/parser-typescript";
 import { httpRequest } from "../../network/httpRequest";
-
+const { JSHINT } = require("jshint");
 //import "./EditorComponent.css";
 
 const EditorComponent: React.FC = () => {
@@ -37,12 +37,19 @@ const EditorComponent: React.FC = () => {
 		editorRef.current?.focus();
 	}, [currentFile?.filename]);
 
+	useEffect(() => {
+		for (let file of taskState.currentFiles) {
+			JSHINT(file.code);
+			console.log(JSHINT.errors);
+		}
+	}, [taskState.currentFiles]);
+
 	/**
 	 * handle monaco configuration before mount
 	 * @param monaco
 	 */
 	const handleBeforeMount = (
-		monaco: any /* typeof import("c:/Users/pheld/Desktop/Master Thesis/Repository/master-thesis/frontend/react-main/node_modules/monaco-editor/esm/vs/editor/editor.api") */
+		monaco: any //typeof import("c:/Users/pheld/Desktop/Master Thesis/Repository/master-thesis/frontend/react-main/node_modules/monaco-editor/esm/vs/editor/editor.api")
 	) => {
 		/**
 		 * autocomplete for JSX HTML Tags
@@ -137,6 +144,11 @@ const EditorComponent: React.FC = () => {
 					monaco.languages.typescript.javascriptDefaults.setCompilerOptions({
 						target: monaco.languages.typescript.ScriptTarget.ES2015,
 						allowNonTsExtensions: true,
+						jsx: monaco.languages.typescript.JsxEmit.React,
+						allowJs: true,
+						//alwaysStrict: true,
+						checkJs: true,
+						reactNamespace: "React",
 					});
 
 					monaco.languages.typescript.javascriptDefaults.addExtraLib(
@@ -219,6 +231,9 @@ const EditorComponent: React.FC = () => {
 			<MDBCol md={12} className="px-1">
 				<Editor
 					height={"99%"}
+					onValidate={(markers) => {
+						console.log(markers);
+					}}
 					//wrapperProps={{ className: "d-block" }}
 					//className="h-100"
 					options={{

@@ -29,7 +29,9 @@ app.post("/updateCode", async (req, res) => {
 	//console.log(req.body);
 	try {
 		updateSandboxCode(req.body);
-		await build();
+		const test = await build();
+		console.log(test);
+		//await build();
 		res.send(true);
 	} catch (error) {
 		console.log(error);
