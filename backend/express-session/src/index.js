@@ -32,6 +32,7 @@ app.post("/updateCode", async (req, res) => {
 		await build();
 		res.send(true);
 	} catch (error) {
+		console.log(error);
 		res.send(error);
 	}
 });
@@ -57,12 +58,12 @@ let build = async () => {
 const updateSandboxCode = (files) => {
 	const dir = "/usr/src/app/sandbox/src";
 	//console.log(files);
-	try {
-		if (!fs.existsSync(dir)) fs.mkdirSync(dir);
-		for (let file of files) {
-			fs.writeFileSync(dir + "/" + JSON.stringify(file.filename).slice(1, -1), file.code);
-		}
-	} catch (error) {
-		console.log(error);
+	//try {
+	if (!fs.existsSync(dir)) fs.mkdirSync(dir);
+	for (let file of files) {
+		fs.writeFileSync(dir + "/" + JSON.stringify(file.filename).slice(1, -1), file.code);
 	}
+	/* } catch (error) {
+		console.log(error);
+	} */
 };

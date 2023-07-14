@@ -1,4 +1,4 @@
-import { MDBBtn, MDBCol, MDBContainer, MDBInput, MDBRow } from "mdb-react-ui-kit";
+import { MDBBtn, MDBCol, MDBContainer, MDBInput, MDBRow, MDBSpinner } from "mdb-react-ui-kit";
 import * as React from "react";
 import Editor from "@monaco-editor/react";
 import { editor } from "monaco-editor";
@@ -20,6 +20,8 @@ import { httpRequest } from "../../network/httpRequest";
 const EditorComponent: React.FC = () => {
 	const taskState = useSelector((state: RootState) => state.task);
 	const dispatch = useDispatch<AppDispatch>();
+
+	const dirtyFlag = useRef(false);
 
 	const [currentFilename, setCurrentFilename] = useState<string>("App.js");
 	const currentFile = taskState.currentFiles.find((elem) => elem.filename === currentFilename)!;
@@ -189,7 +191,10 @@ const EditorComponent: React.FC = () => {
 	}, []);
 
 	const handleRunCode = () => {
-		dispatch(updateCode());
+		if (dirtyFlag.current) {
+			dispatch(updateCode([...taskState.currentFiles]));
+		}
+		dirtyFlag.current = false;
 	};
 
 	return (
@@ -265,6 +270,7 @@ const EditorComponent: React.FC = () => {
 						//@ts-ignore
 						//	.format(value!, { parser: "babel", plugins: [babel] })
 						//	.then((text) => console.log(text));
+						dirtyFlag.current = true;
 						if (value) {
 							//console.log(currentFile.code);
 
@@ -279,7 +285,15 @@ const EditorComponent: React.FC = () => {
 				/>
 			</MDBCol>
 			<MDBCol className="py-2" style={{}} md={12}>
-				<MDBBtn onClick={handleRunCode}>Run</MDBBtn>
+				<MDBBtn
+					onClick={() => {
+						dirtyFlag.current = true;
+						handleRunCode();
+					}}
+					disabled={taskState.buildStatus === "Pending"}
+				>
+					{taskState.buildStatus === "Pending" ? <MDBSpinner size="sm" /> : "Run"}
+				</MDBBtn>
 			</MDBCol>
 		</MDBRow>
 	);

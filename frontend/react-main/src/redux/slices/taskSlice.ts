@@ -1,7 +1,8 @@
 import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { LoadingStatus, SandboxFile, SandboxFiles, TaskResponse } from "../../types";
 import { httpRequest } from "../../network/httpRequest";
-import { RootState } from "../store";
+import { AppDispatch, RootState } from "../store";
+import { AxiosResponse } from "axios";
 
 interface TaskState {
 	description: string;
@@ -139,14 +140,15 @@ export const taskSlice = createSlice({
 			state.defaultFiles = action.payload.defaultFiles;
 			state.successFiles = action.payload.successFiles ?? undefined;
 		});
-		builder.addCase(updateCode.pending, (state) => {
+		builder.addCase(updateCodeThunk.pending, (state) => {
 			state.buildStatus = "Pending";
 		});
-		builder.addCase(updateCode.rejected, (state) => {
+		builder.addCase(updateCodeThunk.rejected, (state) => {
 			state.buildStatus = "Error";
 		});
-		builder.addCase(updateCode.fulfilled, (state, action) => {
+		builder.addCase(updateCodeThunk.fulfilled, (state, action) => {
 			//setTimeout(() => (state.buildStatus = "Success"), 1000);
+
 			state.buildStatus = "Success";
 		});
 		builder.addCase(addNewFile.fulfilled, (state, action) => {
@@ -159,6 +161,12 @@ export const { resetTaskState, setCurrentFiles, updateFile, deleteFileByName } =
 
 export default taskSlice.reducer;
 
+export const updateCode = (files: SandboxFiles) => (dispatch: AppDispatch) => {
+	dispatch(updateCodeThunk(files)).then((response) => {
+		if (response.payload === 202) dispatch(updateCodeThunk(files));
+	});
+};
+
 /* --------- async thunks --------- */
 
 export const fetchTask = createAsyncThunk(
@@ -169,11 +177,19 @@ export const fetchTask = createAsyncThunk(
 	}
 );
 
-export const updateCode = createAsyncThunk<void, void, { state: RootState }>(
+export const updateCodeThunk = createAsyncThunk<number, SandboxFiles, { state: RootState }>(
 	"task/updateCode",
 	async (payload, thunkApi) => {
-		const response = await httpRequest.updateCode(thunkApi.getState().task.currentFiles);
-		return response.data;
+		const response = await httpRequest.updateCode(payload);
+		if (response.status === 202) {
+			return new Promise((resolve) =>
+				setTimeout(() => {
+					resolve(response.status);
+				}, 5000)
+			);
+		} else {
+			return thunkApi.fulfillWithValue(response.status);
+		}
 	}
 );
 

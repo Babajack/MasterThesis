@@ -6,7 +6,7 @@ import { getSessionStore } from "./database/database";
 import { authRouter, requireLogin } from "./routes/authRoutes";
 import { sessionDockerRouter } from "./routes/sessionDockerRoutes";
 import { taskRouter } from "./routes/taskRoutes";
-import { runCode } from "./docker/dockerControl";
+import { runCode, startSandboxContainer } from "./docker/dockerControl";
 import { SandboxFiles } from "types";
 import { createProxyMiddleware } from "http-proxy-middleware";
 
@@ -53,6 +53,14 @@ app.use(
 		changeOrigin: true,
 		pathRewrite: {
 			"^/sessionContainer": "", // Replace '/api' with the base path of the server you want to proxy to
+		},
+
+		onError: (error, req, res, target) => {
+			console.log(error);
+			if (req.session.user?.id)
+				startSandboxContainer(req.session.user?.id).finally(() =>
+					res.status(202).send({ message: "Container is starting..." })
+				);
 		},
 		/* onProxyReq: (proxyReq, req, res, options) => {
 				if (req.body) {

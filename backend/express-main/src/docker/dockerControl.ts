@@ -3,6 +3,7 @@ import axios from "axios";
 import { Container } from "node-docker-api/lib/container";
 import fs from "fs";
 import { SandboxFiles } from "types";
+import path from "path";
 //import { DOCKER_PORT, getNextPortNumber } from "./portControl";
 
 const SOCKET_PATH = "/var/run/docker.sock";
@@ -194,7 +195,10 @@ export const startSandboxContainer = async (userID: string) => {
 
 			//ExposedPorts: { [DOCKER_PORT]: {} },
 			HostConfig: {
-				Binds: ["master-thesis_user-code:/usr/user-code"],
+				//Binds: ["master-thesis_user-code:/usr/user-code"],
+				Binds: [
+					"C:/Users/pheld/Desktop/Master Thesis/Repository/master-thesis/backend/express-session/src:/usr/src/app/src",
+				],
 				NetworkMode: "master-thesis_main-network",
 				PortBindings: {
 					//[DOCKER_PORT]: [{ HostPort: hostPort }],
