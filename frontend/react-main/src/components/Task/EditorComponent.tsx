@@ -14,7 +14,6 @@ import * as prettier from "prettier/standalone";
 import * as babel from "prettier/parser-babel";
 import * as typescript from "prettier/parser-typescript";
 import { httpRequest } from "../../network/httpRequest";
-const { JSHINT } = require("jshint");
 //import "./EditorComponent.css";
 
 const EditorComponent: React.FC = () => {
@@ -36,13 +35,6 @@ const EditorComponent: React.FC = () => {
 	useEffect(() => {
 		editorRef.current?.focus();
 	}, [currentFile?.filename]);
-
-	useEffect(() => {
-		for (let file of taskState.currentFiles) {
-			JSHINT(file.code);
-			console.log(JSHINT.errors);
-		}
-	}, [taskState.currentFiles]);
 
 	/**
 	 * handle monaco configuration before mount
@@ -147,7 +139,7 @@ const EditorComponent: React.FC = () => {
 						jsx: monaco.languages.typescript.JsxEmit.React,
 						allowJs: true,
 						//alwaysStrict: true,
-						checkJs: true,
+						//checkJs: true,
 						reactNamespace: "React",
 					});
 

@@ -3,6 +3,7 @@ import { LoadingStatus, SandboxFile, SandboxFiles, TaskResponse } from "../../ty
 import { httpRequest } from "../../network/httpRequest";
 import { AppDispatch, RootState } from "../store";
 import { AxiosResponse } from "axios";
+import { error } from "console";
 
 interface TaskState {
 	description: string;
@@ -11,6 +12,7 @@ interface TaskState {
 	successFiles?: SandboxFiles;
 	loadingStatus: LoadingStatus;
 	buildStatus: LoadingStatus;
+	errors?: string;
 }
 
 const initialState: TaskState = {
@@ -47,7 +49,6 @@ export default App;
 			filename: "index.js",
 			code: `import React from "react";
 import ReactDOM from "react-dom/client";
-import "./index.css";
 import App from "./App";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
@@ -60,8 +61,46 @@ root.render(
 			`,
 		},
 		{
-			filename: "style.css",
-			code: "",
+			filename: "App.css",
+			code: `.App {
+				text-align: center;
+			  }
+			  
+			  .App-logo {
+				height: 40vmin;
+				pointer-events: none;
+			  }
+			  
+			  @media (prefers-reduced-motion: no-preference) {
+				.App-logo {
+				  animation: App-logo-spin infinite 20s linear;
+				}
+			  }
+			  
+			  .App-header {
+				background-color: #282c34;
+				min-height: 100vh;
+				display: flex;
+				flex-direction: column;
+				align-items: center;
+				justify-content: center;
+				font-size: calc(10px + 2vmin);
+				color: white;
+			  }
+			  
+			  .App-link {
+				color: #61dafb;
+			  }
+			  
+			  @keyframes App-logo-spin {
+				from {
+				  transform: rotate(0deg);
+				}
+				to {
+				  transform: rotate(360deg);
+				}
+			  }
+			  `,
 		},
 		{
 			filename: "index.html",
@@ -146,10 +185,11 @@ export const taskSlice = createSlice({
 		builder.addCase(updateCodeThunk.rejected, (state) => {
 			state.buildStatus = "Error";
 		});
-		builder.addCase(updateCodeThunk.fulfilled, (state, action) => {
+		builder.addCase(updateCodeThunk.fulfilled, (state, action: PayloadAction<AxiosResponse>) => {
 			//setTimeout(() => (state.buildStatus = "Success"), 1000);
-
 			state.buildStatus = "Success";
+			if (action.payload.data?.error) state.errors = action.payload.data.error;
+			else state.errors = undefined;
 		});
 		builder.addCase(addNewFile.fulfilled, (state, action) => {
 			state.currentFiles.push({ filename: action.payload.filename, code: "", isDeletable: true });
@@ -163,7 +203,7 @@ export default taskSlice.reducer;
 
 export const updateCode = (files: SandboxFiles) => (dispatch: AppDispatch) => {
 	dispatch(updateCodeThunk(files)).then((response) => {
-		if (response.payload === 202) dispatch(updateCodeThunk(files));
+		if (response.payload.status === 202) dispatch(updateCodeThunk(files));
 	});
 };
 
@@ -177,18 +217,18 @@ export const fetchTask = createAsyncThunk(
 	}
 );
 
-export const updateCodeThunk = createAsyncThunk<number, SandboxFiles, { state: RootState }>(
+export const updateCodeThunk = createAsyncThunk<any, SandboxFiles, { state: RootState }>(
 	"task/updateCode",
 	async (payload, thunkApi) => {
 		const response = await httpRequest.updateCode(payload);
 		if (response.status === 202) {
-			return new Promise((resolve) =>
+			return await new Promise((resolve) =>
 				setTimeout(() => {
-					resolve(response.status);
+					resolve({ data: response.data, status: response.status });
 				}, 5000)
 			);
 		} else {
-			return thunkApi.fulfillWithValue(response.status);
+			return thunkApi.fulfillWithValue({ data: response.data, status: response.status });
 		}
 	}
 );

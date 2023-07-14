@@ -5,6 +5,7 @@ const fs = require("fs");
 const exec = util.promisify(require("child_process").exec);
 //import * as esbuild from "esbuild";
 const esbuild = require("esbuild");
+const { ESLint } = require("eslint");
 
 const app = express(); // create express app
 
@@ -29,13 +30,17 @@ app.post("/updateCode", async (req, res) => {
 	//console.log(req.body);
 	try {
 		updateSandboxCode(req.body);
-		const test = await build();
-		console.log(test);
-		//await build();
-		res.send(true);
+		const errors = await lint();
+		if (errors && errors !== "no problems") {
+			// send errors
+			res.send({ error: errors });
+		} else {
+			await build();
+			res.send(true);
+		}
 	} catch (error) {
 		console.log(error);
-		res.send(error);
+		res.send({ error: error });
 	}
 });
 
@@ -43,7 +48,7 @@ app.listen(8000, () => {
 	console.log("server started on port 8001");
 });
 
-let build = async () => {
+const build = async () => {
 	return esbuild.build({
 		entryPoints: ["./sandbox/src/index.js"],
 		bundle: true,
@@ -55,6 +60,42 @@ let build = async () => {
 	});
 	/* .then((result) => true)
 	.catch((error) => error); */
+};
+
+const lint = async () => {
+	const eslint = new ESLint({
+		overrideConfig: {
+			env: {
+				browser: true,
+				es6: true,
+			},
+			extends: ["eslint:recommended", "plugin:react/recommended"],
+			parserOptions: {
+				ecmaVersion: "latest",
+				ecmaFeatures: {
+					jsx: true,
+				},
+				sourceType: "module",
+			},
+			plugins: ["react"],
+			settings: {
+				react: {
+					version: "detect",
+				},
+			},
+			rules: {
+				"react/jsx-uses-react": "error",
+				"react/jsx-uses-vars": "error",
+				"no-unused-expressions": "off",
+				"no-unused-vars": "off",
+			},
+		},
+	});
+	// return await eslint.lintFiles(["/usr/src/app/sandbox/src/*.js"]);
+	const results = await eslint.lintFiles(["/usr/src/app/sandbox/src/*.js"]);
+	const formatter = await eslint.loadFormatter("visualstudio");
+	const resultText = formatter.format(results);
+	return resultText.replaceAll("/usr/src/app/sandbox/src/", "");
 };
 
 const updateSandboxCode = (files) => {

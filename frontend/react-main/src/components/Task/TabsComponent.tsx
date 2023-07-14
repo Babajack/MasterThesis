@@ -62,9 +62,10 @@ const TabsComponent: React.FC<TabsComponentProps> = (props) => {
 
 	/* -------------------- Second Level -------------------- */
 	const [previousActiveFile, setPreviousActiveFile] = useState<any>(
-		configs.reduce((prev, cur) => {
-			return { ...prev, [cur.tabName]: undefined };
-		}, {})
+		// configs.reduce((prev, cur) => {
+		// 	return { ...prev, [cur.tabName]: undefined };
+		// }, {})
+		{ HTML: "index.html", CSS: "App.css", JAVASCRIPT: "App.js" }
 	);
 
 	const [showConfirmationModal, setShowConfirmationModal] = useState(false);

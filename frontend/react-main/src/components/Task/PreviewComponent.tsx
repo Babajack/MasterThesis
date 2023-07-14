@@ -8,11 +8,21 @@ interface Props {
 }
 
 const PreviewComponent = (props: Props) => {
-	const status = useSelector((state: RootState) => state.task.buildStatus);
+	const taskState = useSelector((state: RootState) => state.task);
 
 	return (
-		<LoadingWrapper loadingStatus={status}>
-			<iframe src="http://localhost:8000/sessionContainer" className="h-100 w-100"></iframe>
+		<LoadingWrapper loadingStatus={taskState.buildStatus}>
+			{taskState.errors ? (
+				// <div className="" style={{ color: "red" }}>
+				// 	{taskState.errors}
+				// </div>
+				<div
+					dangerouslySetInnerHTML={{ __html: taskState.errors }}
+					style={{ whiteSpace: "pre-line", color: "red" }}
+				></div>
+			) : (
+				<iframe src="http://localhost:8000/sessionContainer" className="h-100 w-100"></iframe>
+			)}
 		</LoadingWrapper>
 	);
 };
