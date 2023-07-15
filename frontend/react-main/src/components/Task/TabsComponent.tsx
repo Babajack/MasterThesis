@@ -191,6 +191,7 @@ const TabsComponent: React.FC<TabsComponentProps> = (props) => {
 				confirmationFunction={() => {
 					dispatch(deleteFileByName(props.currentFilename));
 					props.onDeleteFile(props.currentFilename);
+					setPreviousActiveFile({ ...previousActiveFile, [basicActive.tabName]: "App.js" });
 					props.setCurrentFilename(files[0].filename);
 				}}
 				titel="Löschen"

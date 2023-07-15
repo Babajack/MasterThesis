@@ -278,16 +278,15 @@ const EditorComponent: React.FC = () => {
 						//	.format(value!, { parser: "babel", plugins: [babel] })
 						//	.then((text) => console.log(text));
 						dirtyFlag.current = true;
-						if (value) {
-							//console.log(currentFile.code);
 
-							dispatch(
-								updateFile({
-									old: currentFile,
-									new: { ...currentFile, filename: currentFile.filename, code: value },
-								})
-							);
-						}
+						//console.log(currentFile.code);
+
+						dispatch(
+							updateFile({
+								old: currentFile,
+								new: { ...currentFile, filename: currentFile.filename, code: value ?? "" },
+							})
+						);
 					}}
 				/>
 			</MDBCol>

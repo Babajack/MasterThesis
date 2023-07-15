@@ -5,6 +5,11 @@ import { AppDispatch, RootState } from "../store";
 import { AxiosResponse } from "axios";
 import { error } from "console";
 
+type Errors = {
+	filename: string;
+	errors: { message: string; line: number }[];
+}[];
+
 interface TaskState {
 	description: string;
 	currentFiles: SandboxFiles;
@@ -12,7 +17,7 @@ interface TaskState {
 	successFiles?: SandboxFiles;
 	loadingStatus: LoadingStatus;
 	buildStatus: LoadingStatus;
-	errors?: string;
+	errors?: Errors;
 }
 
 const initialState: TaskState = {
