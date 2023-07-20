@@ -203,12 +203,8 @@ const EditorComponent: React.FC = () => {
 	};
 
 	return (
-		<MDBRow className="h-100 w-100 g-0" style={{ backgroundColor: "grey" }}>
-			<MDBCol
-				md={12}
-
-				/* style={{ backgroundColor: "#1e1e1e", backgroundClip: "content-box" }} */
-			>
+		<MDBRow className="h-100 w-100 g-0 app-card">
+			<MDBCol md={12}>
 				<TabsComponent
 					setCurrentFilename={setCurrentFilename}
 					currentFilename={currentFilename}
@@ -293,6 +289,7 @@ const EditorComponent: React.FC = () => {
 			</MDBCol>
 			<MDBCol className="py-2" style={{}} md={12}>
 				<MDBBtn
+					className="app-button"
 					onClick={() => {
 						dirtyFlag.current = true;
 						handleRunCode();

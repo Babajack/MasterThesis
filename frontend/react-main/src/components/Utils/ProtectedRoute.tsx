@@ -48,8 +48,6 @@ const ProtectedRoute = () => {
 			childComponent = <Navigate to={"/auth"} state={{ from: location }} />;
 			break;
 	} */
-
-	return navigateToLogin;
 };
 
 export default ProtectedRoute;

@@ -14,13 +14,15 @@ const LoadingWrapper: React.FC<LoadingWrapperProps> = (props) => {
 			return <></>;
 		case "Pending":
 			return (
-				<RotatingLines
-					strokeColor="grey"
-					strokeWidth="5"
-					animationDuration="0.75"
-					width="96"
-					visible={true}
-				/>
+				<div className="align-self-center">
+					<RotatingLines
+						strokeColor="grey"
+						strokeWidth="5"
+						animationDuration="0.75"
+						width="96"
+						visible={true}
+					/>
+				</div>
 			);
 
 		case "Error":

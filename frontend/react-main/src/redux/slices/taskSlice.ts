@@ -129,7 +129,7 @@ root.render(
   <title>React App</title>
 </head>
 
-<body>
+<body style="margin:0;padding:0">
    <noscript>You need to enable JavaScript to run this app.</noscript>
   <div id="root"></div>
 
@@ -226,15 +226,17 @@ export const updateCodeThunk = createAsyncThunk<any, SandboxFiles, { state: Root
 	"task/updateCode",
 	async (payload, thunkApi) => {
 		const response = await httpRequest.updateCode(payload);
+		let delay = 0;
 		if (response.status === 202) {
-			return await new Promise((resolve) =>
-				setTimeout(() => {
-					resolve({ data: response.data, status: response.status });
-				}, 5000)
-			);
+			delay = 5000;
 		} else {
-			return thunkApi.fulfillWithValue({ data: response.data, status: response.status });
+			delay = 500;
 		}
+		return await new Promise((resolve) =>
+			setTimeout(() => {
+				resolve({ data: response.data, status: response.status });
+			}, delay)
+		);
 	}
 );
 

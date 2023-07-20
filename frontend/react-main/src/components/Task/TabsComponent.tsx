@@ -98,6 +98,7 @@ const TabsComponent: React.FC<TabsComponentProps> = (props) => {
 		return (
 			<MDBTabsItem key={file.filename}>
 				<MDBTabsLink
+					className="app-text"
 					style={{ textTransform: "none" }}
 					onClick={() => {
 						props.setCurrentFilename(file.filename);
@@ -145,7 +146,9 @@ const TabsComponent: React.FC<TabsComponentProps> = (props) => {
 				</div>
 			) : (
 				<MDBTabsItem>
-					<MDBTabsLink onClick={toggleEditMode}>+</MDBTabsLink>
+					<MDBTabsLink className="app-text" onClick={toggleEditMode}>
+						+
+					</MDBTabsLink>
 				</MDBTabsItem>
 			)}
 		</div>
@@ -159,6 +162,7 @@ const TabsComponent: React.FC<TabsComponentProps> = (props) => {
 					return (
 						<MDBTabsItem key={elem.tabName + "-first-level"}>
 							<MDBTabsLink
+								className="app-text"
 								style={{ textTransform: "none" }}
 								onClick={() => handleFirstLevelClick(elem)}
 								active={basicActive.tabName === elem.tabName}

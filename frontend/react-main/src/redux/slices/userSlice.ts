@@ -45,7 +45,7 @@ export const userSlice = createSlice({
 				return { ...state, ...action.payload, loadingStatus: "Success", isLoggedIn: true };
 			})
 			.addCase(getUserData.rejected, (state, action) => {
-				state.error = action.payload as string;
+				//state.error = action.payload as string;
 				state.loadingStatus = "Error";
 			})
 			.addCase(loginUser.fulfilled, (state, action) => {
