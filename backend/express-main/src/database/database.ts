@@ -1,5 +1,7 @@
 import MongoStore from "connect-mongo";
 import mongoose from "mongoose";
+import { getTaskDefinitions } from "./taskDefinitions";
+import { populateDatabase } from "./task";
 
 // Connection URI
 const MONGODB_USERNAME = process.env.MONGODB_USERNAME;
@@ -11,6 +13,10 @@ const uri = `mongodb://${MONGODB_USERNAME}:${MONGODB_PASSWORD}@${MONGODB_HOST}/`
 // connect to mongoose
 const client = mongoose.connect(uri, { dbName: DB_NAME }).then((c) => c.connection.getClient());
 
+// init database, set tasks
+populateDatabase(getTaskDefinitions());
+
+// session store
 export const getSessionStore = () => {
 	return MongoStore.create({
 		clientPromise: client,

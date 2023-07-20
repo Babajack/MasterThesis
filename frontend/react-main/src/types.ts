@@ -5,11 +5,6 @@ export type UserRequest = {
 	password: string;
 };
 
-export interface UserResponse {
-	username?: string;
-	error?: string;
-}
-
 export interface TaskResponse {
 	taskID: string;
 	description: string;
@@ -30,3 +25,32 @@ export type SandboxFile = {
 	code: string;
 	isDeletable?: boolean;
 };
+
+/* Data from Backend Types */
+
+export type UserResponse =
+	| {
+			username: string;
+			availableTasks?: {
+				task: TaskSchema;
+				solutionFiles: SandboxFiles;
+				userFiles: SandboxFiles;
+			}[];
+	  }
+	| { error: string };
+
+export interface TaskSchema {
+	index: number;
+	category: TaskCategory;
+	unlocks?: number[];
+	unlocksCategories?: TaskCategory[];
+	description: {
+		displayType: TaskDescriptionDisplayType;
+		text: string;
+	}[];
+	defaultFiles: SandboxFiles;
+}
+
+export type TaskDescriptionDisplayType = "description" | "code" | "hint";
+
+export type TaskCategory = "JSX";

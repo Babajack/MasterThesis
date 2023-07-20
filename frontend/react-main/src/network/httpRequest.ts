@@ -1,5 +1,5 @@
-import axios from "axios";
-import { SandboxFiles, UserRequest } from "../types";
+import axios, { AxiosResponse } from "axios";
+import { SandboxFiles, UserRequest, UserResponse } from "../types";
 
 const BASE_URL = process.env.REACT_APP_BACKEND_URL!;
 axios.defaults.baseURL = "http://localhost:8000"; //`http://${BASE_URL}`;
@@ -28,10 +28,13 @@ axios.interceptors.response.use(
 );
 
 export const httpRequest = {
-	async getUserData() {
+	async getUserData(): Promise<AxiosResponse<UserResponse, UserResponse>> {
 		return axios.get("/user");
 	},
-	async loginUser(username: string, password: string) {
+	async loginUser(
+		username: string,
+		password: string
+	): Promise<AxiosResponse<UserResponse, UserResponse>> {
 		return axios.post<UserRequest>("/auth/login", {
 			username: username,
 			password: password,

@@ -2,6 +2,7 @@ import { startSandboxContainer, stopSandboxContainer } from "../docker/dockerCon
 import { login, logout, register } from "../database/auth";
 import express, { NextFunction, Request, Response } from "express";
 import { UserRequest } from "types";
+import { getUserData, getUserByUsername } from "../database/user";
 
 export const authRouter = express.Router();
 
@@ -66,17 +67,29 @@ authRouter.post("/auth/logout", (req: Request<{}, {}, UserRequest>, res: Respons
 		.finally(() => res.send("logout"));
 });
 
-authRouter.get("/user", async (req, res: Response<AuthResponse>) => {
-	if (!req.session.user) {
+authRouter.get("/user", async (req, res) => {
+	if (!req.session.userId) {
 		res.send({ error: "Session does not exist!" });
 	} else {
-		await startSandboxContainer(req.session.user.id);
-		res.send({ username: req.session.user.username });
+		getUserData(req.session.userId)
+			.then(async (user) => {
+				await startSandboxContainer(req.session.userId!);
+				if (user) {
+					res.send(user);
+				} else {
+					res.send({ error: "Session does not exist!" });
+				}
+			})
+			.catch((error) => {
+				console.log(error);
+
+				res.send({ error: "Session does not exist!" });
+			});
 	}
 });
 
 export const requireLogin = (req: Request, res: Response, next: NextFunction) => {
-	if (req.session.user) {
+	if (req.session.userId) {
 		next();
 	} else {
 		res.status(401).send("Unauthorized");

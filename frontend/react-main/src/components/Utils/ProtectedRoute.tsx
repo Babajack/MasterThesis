@@ -23,12 +23,12 @@ const ProtectedRoute = () => {
 		dispatch(getUserData());
 	}, []);
 
-	let childComponent = <Navigate to={"/auth"} state={{ from: location }} />;
+	let navigateToLogin = <Navigate to={"/auth"} state={{ from: location }} />;
 
 	return (
-		<LoadingWrapper loadingStatus={userState.loadingStatus} errorComponent={childComponent}>
+		<LoadingWrapper loadingStatus={userState.loadingStatus} errorComponent={navigateToLogin}>
 			{userState.isLoggedIn && <Outlet />}
-			{!userState.isLoggedIn && childComponent}
+			{!userState.isLoggedIn && navigateToLogin}
 		</LoadingWrapper>
 	);
 
@@ -49,7 +49,7 @@ const ProtectedRoute = () => {
 			break;
 	} */
 
-	return childComponent;
+	return navigateToLogin;
 };
 
 export default ProtectedRoute;

@@ -43,7 +43,7 @@ app.use(
 app.use(
 	"/sessionContainer",
 	createProxyMiddleware({
-		router: (req) => "http://" + req.session.user?.id + ":8000",
+		router: (req) => "http://" + req.session.userId + ":8000",
 		//router: (req) => "http://master-thesis-backend-express-session-1:8000",
 		/* router: (req) => {
 			//console.log(req);
@@ -57,8 +57,8 @@ app.use(
 
 		onError: (error, req, res, target) => {
 			console.log(error);
-			if (req.session.user?.id)
-				startSandboxContainer(req.session.user?.id).finally(() =>
+			if (req.session.userId)
+				startSandboxContainer(req.session.userId).finally(() =>
 					res.status(202).send({ message: "Container is starting..." })
 				);
 		},

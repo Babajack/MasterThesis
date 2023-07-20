@@ -138,6 +138,7 @@ const EditorComponent: React.FC = () => {
 						allowNonTsExtensions: true,
 						jsx: monaco.languages.typescript.JsxEmit.React,
 						allowJs: true,
+						allowSyntheticDefaultImports: true,
 						//alwaysStrict: true,
 						//checkJs: true,
 						reactNamespace: "React",

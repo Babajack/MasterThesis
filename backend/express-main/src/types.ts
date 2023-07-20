@@ -1,14 +1,16 @@
 // typescript session interface
 declare module "express-session" {
 	interface SessionData {
-		user: User;
+		userId: string;
 	}
 }
 
-export type SandboxFiles = {
+export type SandboxFile = {
 	filename: string;
 	code: string;
-}[];
+};
+
+export type SandboxFiles = SandboxFile[];
 
 export type UserRequest = {
 	username: string;

@@ -1,5 +1,5 @@
 import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { LoadingStatus, UserResponse } from "../../types";
+import { LoadingStatus, SandboxFiles, TaskSchema, UserResponse } from "../../types";
 import { useSelector } from "react-redux";
 import { RootState } from "../store";
 import { httpRequest } from "../../network/httpRequest";
@@ -9,11 +9,17 @@ interface UserState {
 	isLoggedIn: boolean;
 	loadingStatus: LoadingStatus;
 	error?: string;
+	availableTasks: {
+		task: TaskSchema;
+		solutionFiles: SandboxFiles;
+		userFiles: SandboxFiles;
+	}[];
 }
 
 const initialState: UserState = {
 	isLoggedIn: false,
 	loadingStatus: "Idle",
+	availableTasks: [],
 };
 
 export const userSlice = createSlice({
@@ -26,35 +32,37 @@ export const userSlice = createSlice({
 		setIsLoggedIn: (state, action: PayloadAction<boolean>) => {
 			state.isLoggedIn = action.payload;
 		},
+		setError: (state, action: PayloadAction<string | undefined>) => {
+			state.error = action.payload;
+		},
 	},
 	extraReducers: (builder) => {
 		builder
 			.addCase(getUserData.pending, (state) => {
 				state.loadingStatus = "Pending";
 			})
-			.addCase(getUserData.fulfilled, (state, action: PayloadAction<UserResponse>) => {
-				state.loadingStatus = "Success";
-				state.username = action.payload.username;
-				if (action.payload.username) {
-					state.isLoggedIn = true;
-				}
+			.addCase(getUserData.fulfilled, (state, action) => {
+				return { ...state, ...action.payload, loadingStatus: "Success", isLoggedIn: true };
 			})
-			.addCase(getUserData.rejected, (state) => {
+			.addCase(getUserData.rejected, (state, action) => {
+				state.error = action.payload as string;
 				state.loadingStatus = "Error";
 			})
-			.addCase(loginUser.fulfilled, (state, action: PayloadAction<UserResponse>) => {
+			.addCase(loginUser.fulfilled, (state, action) => {
 				state.username = action.payload.username;
-				state.error = action.payload.error;
-				if (action.payload.username) {
-					state.isLoggedIn = true;
-				}
+				state.isLoggedIn = true;
 			})
-			.addCase(registerUser.fulfilled, (state, action: PayloadAction<UserResponse>) => {
+			.addCase(loginUser.rejected, (state, action) => {
+				state.error = action.payload as string;
+				state.isLoggedIn = false;
+			})
+			.addCase(registerUser.fulfilled, (state, action) => {
 				state.username = action.payload.username;
-				state.error = action.payload.error;
-				if (action.payload.username) {
-					state.isLoggedIn = true;
-				}
+				state.isLoggedIn = true;
+			})
+			.addCase(registerUser.rejected, (state, action) => {
+				state.error = action.payload as string;
+				state.isLoggedIn = false;
 			})
 			.addCase(logoutUser.fulfilled, (state, action) => {
 				state.isLoggedIn = false;
@@ -63,22 +71,24 @@ export const userSlice = createSlice({
 	},
 });
 
-export const { setIsLoggedIn, setUsername } = userSlice.actions;
+export const { setIsLoggedIn, setUsername, setError } = userSlice.actions;
 
 export default userSlice.reducer;
 
 /* --------- async thunks --------- */
 
-export const getUserData = createAsyncThunk("auth/getUser", async () => {
+export const getUserData = createAsyncThunk("auth/getUser", async (payload: void, thunkApi) => {
 	const user = await httpRequest.getUserData();
-	return user.data;
+	if ("error" in user.data) return thunkApi.rejectWithValue(user.data.error);
+	else return thunkApi.fulfillWithValue(user.data);
 });
 
 export const loginUser = createAsyncThunk(
 	"auth/login",
 	async (payload: { username: string; password: string }, thunkApi) => {
 		const user = await httpRequest.loginUser(payload.username, payload.password);
-		return user.data;
+		if ("error" in user.data) return thunkApi.rejectWithValue(user.data.error);
+		else return thunkApi.fulfillWithValue(user.data);
 	}
 );
 
@@ -86,7 +96,8 @@ export const registerUser = createAsyncThunk(
 	"auth/register",
 	async (payload: { username: string; password: string }, thunkApi) => {
 		const user = await httpRequest.registerUser(payload.username, payload.password);
-		return user.data;
+		if ("error" in user.data) return thunkApi.rejectWithValue(user.data.error);
+		else return thunkApi.fulfillWithValue(user.data);
 	}
 );
 

@@ -17,7 +17,7 @@ import {
 import logo from "../logo.svg";
 import { Form } from "react-bootstrap";
 import { httpRequest } from "../network/httpRequest";
-import { loginUser, registerUser } from "../redux/slices/userSlice";
+import { getUserData, loginUser, registerUser, setError } from "../redux/slices/userSlice";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../redux/store";
@@ -46,7 +46,7 @@ const AuthView = () => {
 	const navigate = useNavigate();
 	const dispatch = useDispatch<AppDispatch>();
 
-	// effect
+	// effects
 	useEffect(() => {
 		if (isValidated) validateInput();
 	}, [formValue]);
@@ -59,8 +59,12 @@ const AuthView = () => {
 	}, [userState.isLoggedIn]);
 
 	useEffect(() => {
-		setFormError({ username: userState.error });
+		if (userState.error) setFormError({ username: userState.error });
 	}, [userState.error]);
+
+	useEffect(() => {
+		dispatch(getUserData());
+	}, []);
 
 	// ref
 	const usernameFormRef = useRef<HTMLInputElement>(null);
@@ -74,6 +78,7 @@ const AuthView = () => {
 	};
 
 	const onChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+		dispatch(setError(undefined));
 		setFormValue({ ...formValue, [event.target.name]: event.target.value });
 	};
 

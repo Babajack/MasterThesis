@@ -1,5 +1,5 @@
 import { Request } from "express";
-import { createNewUser, getUser } from "./user";
+import { createNewUser, getUserByUsername } from "./user";
 import { UserRequest } from "types";
 import bcrypt from "bcrypt";
 import { stopSandboxContainer } from "../docker/dockerControl";
@@ -12,10 +12,10 @@ const SALT_ROUNDS = 10;
  * @returns true if success, false if not
  */
 export const login = async (req: Request<{}, {}, UserRequest>) => {
-	const user = await getUser(req.body.username);
+	const user = await getUserByUsername(req.body.username);
 	if (user) {
 		if (await bcrypt.compare(req.body.password, user.password)) {
-			req.session.user = { username: user.username, id: user.id };
+			req.session.userId = user.id;
 			return new Promise((resolve, reject) => {
 				req.session.save((err) => {
 					if (err) reject(err);
@@ -37,7 +37,7 @@ export const register = async (req: Request<{}, {}, UserRequest>) => {
 
 	const user = await createNewUser(req.body.username, password);
 	if (user) {
-		req.session.user = { username: user.username, id: user.id };
+		req.session.userId = user.id;
 		return new Promise((resolve, reject) => {
 			req.session.save((err) => {
 				if (err) reject(err);
@@ -54,7 +54,7 @@ export const register = async (req: Request<{}, {}, UserRequest>) => {
  * @returns true if success, false if not
  */
 export const logout = async (req: Request) => {
-	if (req.session.user?.id) stopSandboxContainer(req.session.user?.id);
+	if (req.session.userId) stopSandboxContainer(req.session.userId!);
 	return new Promise((resolve, reject) => {
 		req.session.destroy((err) => {
 			if (err) reject(err);

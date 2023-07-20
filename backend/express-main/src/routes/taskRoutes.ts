@@ -1,6 +1,6 @@
-import { SandboxFiles, TaskRequest, TaskResponse } from "types";
-import { runCode, startSandboxContainer, updateSandboxCode } from "../docker/dockerControl";
 import express, { Request, Response } from "express";
+import { SandboxFiles, TaskRequest, TaskResponse } from "types";
+import { runCode } from "../docker/dockerControl";
 
 export const taskRouter = express.Router();
 
@@ -34,7 +34,7 @@ taskRouter.get("/task", (req: Request<TaskRequest, {}, {}>, res: Response<TaskRe
 taskRouter.post(
 	"/task/updateCode",
 	async (req: Request<{}, {}, SandboxFiles>, res: Response<string>) => {
-		const response = await runCode(req.body, req.session.user?.id!);
+		const response = await runCode(req.body, req.session.userId!);
 		console.log(response.data);
 		res.send(response.data);
 	}
