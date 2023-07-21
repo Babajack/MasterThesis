@@ -19,6 +19,7 @@
     "axios": "^1.4.0",
     "mdb-react-ui-kit": "^6.0.0",
     "monaco-jsx-highlighter": "^2.0.4",
+    "monaco-themes": "^0.4.4",
     "react": "^18.2.0",
     "react-bootstrap": "^2.7.4",
     "react-dom": "^18.2.0",

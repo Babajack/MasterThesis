@@ -20,15 +20,15 @@ const ProtectedRoute = () => {
 
 	useEffect(() => {
 		// fetch user data
-		dispatch(getUserData());
+		if (!userState.isLoggedIn) dispatch(getUserData());
 	}, []);
 
-	let navigateToLogin = <Navigate to={"/auth"} state={{ from: location }} />;
+	// let navigateToLogin = <Navigate to={"/auth"} state={{ from: location }} />;
+	let navigateToLogin = <Navigate to={"/auth"} />;
 
 	return (
 		<LoadingWrapper loadingStatus={userState.loadingStatus} errorComponent={navigateToLogin}>
-			{userState.isLoggedIn && <Outlet />}
-			{!userState.isLoggedIn && navigateToLogin}
+			{userState.isLoggedIn ? <Outlet /> : navigateToLogin}
 		</LoadingWrapper>
 	);
 

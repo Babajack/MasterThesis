@@ -18,7 +18,7 @@ const NavRoute = () => {
 	return (
 		<>
 			<header>
-				<Navbar collapseOnSelect expand="lg" className="app-navbar">
+				<Navbar collapseOnSelect expand="lg" className="app-navbar app-secondary">
 					<Container>
 						<Navbar.Brand className="app-text-primary" as={Link} to="/">
 							Learn React <MDBIcon className="ms-2 app-text-secondary" fab icon="react" />

@@ -133,7 +133,7 @@ const AuthView = () => {
 
 	return (
 		<MDBContainer key={String(isLogin)} className="my-5 ">
-			<MDBCard className="">
+			<MDBCard className="app-text-primary">
 				<MDBRow className="g-0 justify-content-between">
 					<MDBCol md={6}>
 						<MDBCardImage src={logo} className="rounded-start img-fluid" fluid />
@@ -141,7 +141,7 @@ const AuthView = () => {
 					<MDBCol md={6}>
 						<MDBCardBody className=" d-flex flex-column justify-content-center align-items-center">
 							<div className="d-flex flex-row mt-2 ">
-								<MDBIcon fab icon="react fa-3x me-3" style={{ color: "blue" }} />
+								<MDBIcon className="app-text-secondary" fab icon="react fa-3x me-3" />
 								<span className="h1 fw-bold mb-0">Learn React</span>
 							</div>
 
@@ -157,6 +157,7 @@ const AuthView = () => {
 							>
 								<Form.Group className="col-md-8 mb-2">
 									<MDBInput
+										style={{ backgroundColor: "white" }}
 										ref={usernameFormRef}
 										onChange={onChange}
 										value={formValue?.username ?? ""}
@@ -171,6 +172,7 @@ const AuthView = () => {
 								</Form.Group>
 								<Form.Group className="col-md-8 mb-2">
 									<MDBInput
+										style={{ backgroundColor: "white" }}
 										ref={passwordFormRef}
 										onChange={onChange}
 										value={formValue?.password ?? ""}
@@ -187,6 +189,7 @@ const AuthView = () => {
 								{!isLogin && (
 									<Form.Group className="col-md-8 mb-2">
 										<MDBInput
+											style={{ backgroundColor: "white" }}
 											ref={password2FormRef}
 											onChange={onChange}
 											value={formValue?.password2 ?? ""}

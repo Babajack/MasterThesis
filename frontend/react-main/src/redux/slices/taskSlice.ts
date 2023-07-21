@@ -171,6 +171,9 @@ export const taskSlice = createSlice({
 		},
 	},
 	extraReducers: (builder) => {
+		builder.addCase("auth/logout/fulfilled", (state) => {
+			return initialState;
+		});
 		builder.addCase(fetchTask.pending, (state) => {
 			state.loadingStatus = "Pending";
 		});

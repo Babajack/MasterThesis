@@ -65,8 +65,9 @@ export const userSlice = createSlice({
 				state.isLoggedIn = false;
 			})
 			.addCase(logoutUser.fulfilled, (state, action) => {
-				state.isLoggedIn = false;
-				state.username = undefined;
+				// state.isLoggedIn = false;
+				// state.username = undefined;
+				return { ...initialState, loadingStatus: "Success" };
 			});
 	},
 });

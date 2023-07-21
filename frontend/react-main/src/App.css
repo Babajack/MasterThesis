@@ -59,75 +59,65 @@ body {
 }
 
 .app-secondary {
-	background-color: #005a98 !important;
+	background-color: #5197bb !important;
+	background-color: #ffffff !important;
+}
+
+.app-tertiary {
+	background-color: #08ad66 !important;
 }
 
 .app-text-primary {
 	color: #000000 !important;
 }
-.app-text-dark {
-	color: #000000 !important;
-}
+
 .app-text-secondary {
-	color: #005a98 !important;
+	color: #0000ff !important;
 }
 
-.app-card {
-	background-color: #f0faff;
-}
+/* .app-card {
+	background-color: #ecded7;
+} */
 
 /* button */
 .app-button {
-	background-color: #8795a1 !important;
-	border-color: #f2f2f2 !important;
-	box-shadow: inset 0 4px 9px -4px #8795a1 !important;
+	border-color: #08ad66 !important;
+	box-shadow: inset 0 4px 9px -4px #08ad66 !important;
+	transition: all 0.1s ease-in-out;
 }
 
 .app-button:hover,
 .app-button:focus,
 .app-button:active,
 .open > .dropdown-toggle.app-button {
-	background-color: #aabcc6 !important;
+	background-color: #08ad66 !important;
+	transform: scale(1.05);
 }
 
 /* tabs */
-.app-text-tab.active {
-	color: #1e1e1e !important;
-	background-color: #8795a1 !important;
+
+.app-tabs .app-text-primary {
+	margin-bottom: 0 !important;
+	border-width: 0 0 3px 0 !important;
 }
 
-.app-text-tabs:hover {
-	background-color: #8795a1 !important;
+.app-tabs .app-text-primary.active {
+	border-color: #193549 !important;
+	/* background-color: #5eadd5 !important; */
 }
 
-.app-text-tabs {
-	color: #333333 !important;
-	border: unset !important;
-	border-color: unset !important;
-	background-color: #aabcc6 !important;
-}
-
-.app-text-tabs.active {
-	color: #1e1e1e !important;
-	border: unset !important;
-	border-color: unset !important;
-	background-color: #8795a1 !important;
+.app-tabs .app-text-primary:hover {
+	/* background-color: #5eadd5 !important; */
+	background-color: #f0eeee !important;
 }
 
 /* navbar */
-.app-navbar {
-	background-color: #80b2c9;
-}
 
 .app-navbar .app-text-primary {
-	color: #000000 !important;
-	transition: all 0.2s ease-in-out;
+	transition: all 0.1s ease-in-out;
+	margin-left: 15px;
 }
 
 .app-navbar .app-text-primary:hover {
-	transform: scale(1.1);
-}
-
-.app-text-navbar:hover {
-	color: #000000 !important;
+	transform: scale(1.05);
 }

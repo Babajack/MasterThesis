@@ -1,4 +1,12 @@
-import { MDBBtn, MDBCol, MDBContainer, MDBInput, MDBRow, MDBSpinner } from "mdb-react-ui-kit";
+import {
+	MDBBtn,
+	MDBCol,
+	MDBContainer,
+	MDBIcon,
+	MDBInput,
+	MDBRow,
+	MDBSpinner,
+} from "mdb-react-ui-kit";
 import * as React from "react";
 import Editor from "@monaco-editor/react";
 import { editor } from "monaco-editor";
@@ -14,6 +22,8 @@ import * as prettier from "prettier/standalone";
 import * as babel from "prettier/parser-babel";
 import * as typescript from "prettier/parser-typescript";
 import { httpRequest } from "../../network/httpRequest";
+import { Tooltip } from "react-tooltip";
+import EditorButtons from "./EditorButtons";
 //import "./EditorComponent.css";
 
 const EditorComponent: React.FC = () => {
@@ -101,6 +111,11 @@ const EditorComponent: React.FC = () => {
 				];
 			},
 		}); */
+
+		import("monaco-themes/themes/Cobalt2.json").then((data) => {
+			monaco.editor.defineTheme("cobalt2", data);
+			monaco.editor.setTheme("cobalt2");
+		});
 
 		/**
 		 * load react types for autocomplete
@@ -203,7 +218,7 @@ const EditorComponent: React.FC = () => {
 	};
 
 	return (
-		<MDBRow className="h-100 w-100 g-0 app-card">
+		<MDBRow className="h-100 w-100 g-0 app-primary">
 			<MDBCol md={12}>
 				<TabsComponent
 					setCurrentFilename={setCurrentFilename}
@@ -240,7 +255,7 @@ const EditorComponent: React.FC = () => {
 					//defaultLanguage={currentFile.}
 					//defaultLanguage="typescript"
 					//language="javascript"
-					theme="vs-dark"
+					theme={"vs-dark"}
 					//value={currentFile?.code ?? ""}
 					beforeMount={handleBeforeMount}
 					onMount={(editor, monaco) => {
@@ -288,16 +303,12 @@ const EditorComponent: React.FC = () => {
 				/>
 			</MDBCol>
 			<MDBCol className="py-2" style={{}} md={12}>
-				<MDBBtn
-					className="app-button"
-					onClick={() => {
+				<EditorButtons
+					onRunCode={() => {
 						dirtyFlag.current = true;
 						handleRunCode();
 					}}
-					disabled={taskState.buildStatus === "Pending"}
-				>
-					{taskState.buildStatus === "Pending" ? <MDBSpinner size="sm" /> : "Run"}
-				</MDBBtn>
+				/>
 			</MDBCol>
 		</MDBRow>
 	);
