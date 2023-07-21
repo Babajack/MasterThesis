@@ -18,25 +18,41 @@ const NavRoute = () => {
 	return (
 		<>
 			<header>
-				<Navbar collapseOnSelect expand="lg" className="app-menu">
+				<Navbar collapseOnSelect expand="lg" className="app-navbar">
 					<Container>
-						<Navbar.Brand as={Link} to="/">
-							Learn React <MDBIcon className="ms-2" fab icon="react" />
+						<Navbar.Brand className="app-text-primary" as={Link} to="/">
+							Learn React <MDBIcon className="ms-2 app-text-secondary" fab icon="react" />
 						</Navbar.Brand>
 						<Navbar.Toggle aria-controls="basic-navbar-nav">
 							<MDBIcon fas icon="bars" />
 						</Navbar.Toggle>
 						<Navbar.Collapse id="basic-navbar-nav">
 							<Nav className="me-auto">
-								<Nav.Link active={getIsActive("/tasks")} as={Link} eventKey={1} to="/tasks">
+								<Nav.Link
+									className="app-text-primary"
+									active={getIsActive("/tasks")}
+									as={Link}
+									eventKey={1}
+									to="/tasks"
+								>
 									Aufgaben
 								</Nav.Link>
-								<Nav.Link active={getIsActive("/sandbox")} as={Link} eventKey={2} to="/sandbox">
+								<Nav.Link
+									className="app-text-primary"
+									active={getIsActive("/sandbox")}
+									as={Link}
+									eventKey={2}
+									to="/sandbox"
+								>
 									Sandbox
 								</Nav.Link>
 							</Nav>
 							<Nav>
-								<Nav.Link eventKey={3} onClick={() => dispatch(logoutUser())}>
+								<Nav.Link
+									className="app-text-primary"
+									eventKey={3}
+									onClick={() => dispatch(logoutUser())}
+								>
 									Logout <MDBIcon className="ms-2" fas icon="sign-out-alt" />
 								</Nav.Link>
 							</Nav>

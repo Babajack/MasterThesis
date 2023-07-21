@@ -8,7 +8,7 @@ import TaskView from "./views/TaskView";
 
 function App() {
 	return (
-		<div className="App vh-100 app-primary app-text">
+		<div className="App vh-100 app-primary ">
 			<Routes>
 				{/* public routes */}
 				<Route path="/auth" element={<AuthView />} />

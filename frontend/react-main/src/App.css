@@ -53,14 +53,30 @@ body {
 
 /* -------- colors ---------- */
 
+/* basic */
 .app-primary {
-	background-color: #b4d8e7 !important;
+	background-color: #d7e5ec !important;
 }
 
 .app-secondary {
-	background-color: #8cc7de;
+	background-color: #005a98 !important;
 }
 
+.app-text-primary {
+	color: #000000 !important;
+}
+.app-text-dark {
+	color: #000000 !important;
+}
+.app-text-secondary {
+	color: #005a98 !important;
+}
+
+.app-card {
+	background-color: #f0faff;
+}
+
+/* button */
 .app-button {
 	background-color: #8795a1 !important;
 	border-color: #f2f2f2 !important;
@@ -74,35 +90,44 @@ body {
 	background-color: #aabcc6 !important;
 }
 
-.app-menu {
-	background-color: #e0ecf2;
-}
-
-.app-text-dark {
-	color: #000000 !important;
-}
-
-.app-text {
-	color: #333333 !important;
-}
-
-.app-text.active {
+/* tabs */
+.app-text-tab.active {
 	color: #1e1e1e !important;
 	background-color: #8795a1 !important;
 }
 
-.app-card {
-	background-color: #f5f5f5;
+.app-text-tabs:hover {
+	background-color: #8795a1 !important;
 }
 
-.app-text.nav-link {
+.app-text-tabs {
 	color: #333333 !important;
+	border: unset !important;
+	border-color: unset !important;
 	background-color: #aabcc6 !important;
 }
 
-.app-text.nav-link.active {
+.app-text-tabs.active {
 	color: #1e1e1e !important;
 	border: unset !important;
 	border-color: unset !important;
 	background-color: #8795a1 !important;
+}
+
+/* navbar */
+.app-navbar {
+	background-color: #80b2c9;
+}
+
+.app-navbar .app-text-primary {
+	color: #000000 !important;
+	transition: all 0.2s ease-in-out;
+}
+
+.app-navbar .app-text-primary:hover {
+	transform: scale(1.1);
+}
+
+.app-text-navbar:hover {
+	color: #000000 !important;
 }
