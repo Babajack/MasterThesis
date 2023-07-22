@@ -7,7 +7,7 @@ export enum TaskDescriptionDisplayType {
 	"hint" = "hint",
 }
 
-export type TaskCategory = "JSX";
+export type TaskCategory = "JSX" | "State";
 
 export interface TaskSchema {
 	index: number;
@@ -91,17 +91,21 @@ export const getTaskByCategoryAndIndex = async (category: TaskCategory, index: n
 	});
 };
 
-export const getTasksByCategoryAndIndices = async (category: TaskCategory, indices: number[]) => {
-	return await Task.find({
-		category: category,
-		index: {
-			$in: indices,
-		},
-	});
+export const getAllTasks = async (filter?: string | string[]) => {
+	return await Task.find({}, filter ?? "");
 };
 
-export const getTasksByCategory = async (category: TaskCategory) => {
-	return await Task.find({
-		category: category,
-	});
-};
+// export const getTasksByCategoryAndIndices = async (category: TaskCategory, indices: number[]) => {
+// 	return await Task.find({
+// 		category: category,
+// 		index: {
+// 			$in: indices,
+// 		},
+// 	});
+// };
+
+// export const getTasksByCategory = async (category: TaskCategory) => {
+// 	return await Task.find({
+// 		category: category,
+// 	});
+// };

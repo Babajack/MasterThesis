@@ -1,5 +1,5 @@
 import { Request } from "express";
-import { createNewUser, getUserByUsername } from "./user";
+import { addNewlyCreatedTasks, createNewUser, getUserByUsername } from "./user";
 import { UserRequest } from "types";
 import bcrypt from "bcrypt";
 import { stopSandboxContainer } from "../docker/dockerControl";
@@ -14,6 +14,7 @@ const SALT_ROUNDS = 10;
 export const login = async (req: Request<{}, {}, UserRequest>) => {
 	const user = await getUserByUsername(req.body.username);
 	if (user) {
+		await addNewlyCreatedTasks(user.id);
 		if (await bcrypt.compare(req.body.password, user.password)) {
 			req.session.userId = user.id;
 			return new Promise((resolve, reject) => {
@@ -37,6 +38,7 @@ export const register = async (req: Request<{}, {}, UserRequest>) => {
 
 	const user = await createNewUser(req.body.username, password);
 	if (user) {
+		await addNewlyCreatedTasks(user.id);
 		req.session.userId = user.id;
 		return new Promise((resolve, reject) => {
 			req.session.save((err) => {

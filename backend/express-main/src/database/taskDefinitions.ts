@@ -1,5 +1,5 @@
 import { SandboxFile, SandboxFiles } from "types";
-import { TaskDescriptionDisplayType, TaskSchema } from "./task";
+import { TaskCategory, TaskDescriptionDisplayType, TaskSchema } from "./task";
 
 const getIndexFile = (imports?: string, mainBody?: string, extraBody?: string): SandboxFile => {
 	return {
@@ -123,9 +123,9 @@ const getTasks_1 = (): TaskSchema[] => {
 	/**
 	 * Catgeory definition
 	 */
-	const CATEGORY = "JSX";
+	const CATEGORY: TaskCategory = "JSX";
 
-	let index = 0;
+	let index = 1;
 
 	return [
 		{
@@ -136,14 +136,36 @@ const getTasks_1 = (): TaskSchema[] => {
 			description: [
 				{ displayType: TaskDescriptionDisplayType.description, text: "Aufgabentext 1" },
 			],
-			defaultFiles: [getHTMLFile(), getAppFile(), getIndexFile()],
+			defaultFiles: [getHTMLFile(), getAppFile(), getIndexFile(), getCSSFile()],
+		},
+	];
+};
+
+const getTasks_2 = (): TaskSchema[] => {
+	/**
+	 * Catgeory definition
+	 */
+	const CATEGORY: TaskCategory = "State";
+
+	let index = 1;
+
+	return [
+		{
+			// -- TASK 1 --
+			index: index++,
+			category: CATEGORY,
+			unlocks: [index],
+			description: [
+				{ displayType: TaskDescriptionDisplayType.description, text: "Aufgabentext 1" },
+			],
+			defaultFiles: [getHTMLFile(), getAppFile(), getIndexFile(), getCSSFile()],
 		},
 	];
 };
 
 /******************************************************************************************************************************************************/
 
-const allTasks: TaskSchema[][] = [getTasks_1()];
+const allTasks: TaskSchema[][] = [getTasks_1(), getTasks_2()];
 
 export const getTaskDefinitions = (): TaskSchema[] => {
 	return allTasks.reduce((prev, cur) => {

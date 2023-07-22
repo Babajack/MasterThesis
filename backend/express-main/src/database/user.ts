@@ -1,20 +1,15 @@
 import mongoose from "mongoose";
-import {
-	TaskCategory,
-	getTaskByCategoryAndIndex,
-	getTasksByCategoryAndIndices,
-	Task,
-	TaskSchema,
-} from "./task";
 import { SandboxFiles } from "types";
+import { TaskCategory, TaskSchema, getAllTasks } from "./task";
 
 export interface UserSchema {
 	username: string;
 	password: string;
-	availableTasks: {
+	tasks: {
 		task: TaskSchema;
 		solutionFiles: SandboxFiles;
 		userFiles: SandboxFiles;
+		isUnlocked: boolean;
 	}[];
 }
 
@@ -28,30 +23,38 @@ const userSchema = new mongoose.Schema<UserSchema>({
 		type: String,
 		required: true,
 	},
-	availableTasks: [
-		{
-			task: {
-				type: mongoose.Schema.Types.ObjectId,
-				ref: "Task",
-				required: true,
+	tasks: {
+		type: [
+			{
+				task: {
+					type: mongoose.Schema.Types.ObjectId,
+					ref: "Task",
+					required: true,
+				},
+				userSolution: {
+					type: [{ filename: String, code: String }],
+					default: [],
+				},
+				userCode: {
+					type: [{ filename: String, code: String }],
+					default: [],
+				},
+				isUnlocked: {
+					type: Boolean,
+					default: false,
+				},
 			},
-			userSolution: [{ filename: String, code: String }],
-			userCode: [{ filename: String, code: String }],
-		},
-	],
+		],
+		default: [],
+	},
 });
 
 const User = mongoose.model("User", userSchema);
 
 export const createNewUser = async (username: string, password: string) => {
-	// set default tasks
-	const tasks = await getDefaultTasks();
 	return await User.create({
 		username: username,
 		password: password,
-		availableTasks: tasks.map((task) => {
-			return { task: task?.id, userFiles: [], solutionFiles: [] };
-		}),
 	});
 };
 
@@ -62,38 +65,45 @@ export const getUserByUsername = async (username: string) => {
 };
 
 export const getUserData = async (userId: string) => {
-	const user = await User.findById(userId).populate({
-		path: "availableTasks",
+	return await User.findById(userId, "username tasks").populate({
+		path: "tasks",
 		populate: {
 			path: "task",
-			select: "-_id -__v",
+			select: "-_id -__v -unlocks -unlocksCategories",
 		},
 	});
-
-	return { username: user?.username, availableTasks: user?.availableTasks };
 };
 
-export const addAvailableTasks = async (
-	userId: string,
-	category: TaskCategory,
-	taskIndices: number[]
-) => {
-	const tasks = await getTasksByCategoryAndIndices(category, taskIndices);
-	const taskIds = tasks.map((elem) => elem._id);
-	return await User.updateOne({ _id: userId }, { $push: { availableTasks: { $each: taskIds } } });
-};
+export const addNewlyCreatedTasks = async (userId: string) => {
+	const allTasks = await getAllTasks();
+	const taskIds = allTasks.map((task) => task._id.toString());
 
-export const getDefaultTasks = async () => {
-	const task = await getTaskByCategoryAndIndex("JSX", 0);
-	return [task];
+	const user: any = await User.findById(userId);
+
+	const filteredTaskIds = taskIds.filter(
+		(taskId) =>
+			!user?.tasks.some((elem: any) => {
+				return elem.task.toString() === taskId;
+			})
+	);
+
+	return await User.findByIdAndUpdate(userId, {
+		$addToSet: {
+			tasks: {
+				$each: filteredTaskIds.map((taskId) => {
+					return { task: taskId };
+				}),
+			},
+		},
+	});
 };
 
 export const updateUserCode = async (userId: string, taskId: string, userCode: SandboxFiles) => {
 	return await User.updateOne(
-		{ _id: userId, "availableTasks.id": taskId },
+		{ _id: userId, "tasks.id": taskId },
 		{
 			$set: {
-				"availableTasks.$.userCode": userCode,
+				"tasks.$.userCode": userCode,
 			},
 		}
 	);
@@ -105,10 +115,21 @@ export const updateUserSolution = async (
 	userSolution: SandboxFiles
 ) => {
 	return await User.updateOne(
-		{ _id: userId, "availableTasks.id": taskId },
+		{ _id: userId, "tasks.id": taskId },
 		{
 			$set: {
-				"availableTasks.$.userSolution": userSolution,
+				"tasks.$.userSolution": userSolution,
+			},
+		}
+	);
+};
+
+export const unlockTask = async (userId: string, category: string, index: number) => {
+	return await User.updateOne(
+		{ _id: userId, "task.category": category, "task.index": index },
+		{
+			$set: {
+				"tasks.$.isUnlocked": true,
 			},
 		}
 	);

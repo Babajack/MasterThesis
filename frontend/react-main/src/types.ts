@@ -31,7 +31,7 @@ export type SandboxFile = {
 export type UserResponse =
 	| {
 			username: string;
-			availableTasks?: {
+			tasks?: {
 				task: TaskSchema;
 				solutionFiles: SandboxFiles;
 				userFiles: SandboxFiles;

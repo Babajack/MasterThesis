@@ -9,7 +9,7 @@ interface UserState {
 	isLoggedIn: boolean;
 	loadingStatus: LoadingStatus;
 	error?: string;
-	availableTasks: {
+	tasks: {
 		task: TaskSchema;
 		solutionFiles: SandboxFiles;
 		userFiles: SandboxFiles;
@@ -19,7 +19,7 @@ interface UserState {
 const initialState: UserState = {
 	isLoggedIn: false,
 	loadingStatus: "Idle",
-	availableTasks: [],
+	tasks: [],
 };
 
 export const userSlice = createSlice({
