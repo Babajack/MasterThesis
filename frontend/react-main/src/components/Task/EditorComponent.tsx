@@ -195,7 +195,10 @@ const EditorComponent: React.FC = () => {
 	 */
 	useEffect(() => {
 		window.addEventListener("error", (e) => {
-			if (e.message === "ResizeObserver loop limit exceeded") {
+			if (
+				e.message === "ResizeObserver loop limit exceeded" ||
+				e.message === "ResizeObserver loop completed with undelivered notifications."
+			) {
 				const resizeObserverErrDiv = document.getElementById(
 					"webpack-dev-server-client-overlay-div"
 				);
@@ -247,7 +250,7 @@ const EditorComponent: React.FC = () => {
 						minimap: { enabled: false },
 						formatOnPaste: true,
 						autoIndent: "full",
-						//automaticLayout: true,
+						automaticLayout: true,
 						formatOnType: true,
 						//autoClosingBrackets: "always",
 					}}
