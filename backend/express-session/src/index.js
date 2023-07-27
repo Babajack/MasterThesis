@@ -13,11 +13,13 @@ const app = express(); // create express app
 app.use(express.json());
 
 //app.use(express.static(path.join(__dirname, "..", "build")));
-app.use(express.static("./sandbox/public"));
+app.use("/sandbox", express.static("./sandbox/public"));
+app.use("/task", express.static("./task/public"));
 
 app.get("/", (req, res) => {
 	//res.send("This is from express.js");
-	res.sendFile(path.join(__dirname, "..", "sandbox/src/index.html"));
+	const newPath = req.query.type;
+	res.sendFile(path.join(__dirname, "..", newPath, "/src/index.html"));
 });
 
 // app.post("/build", (req, res) => {

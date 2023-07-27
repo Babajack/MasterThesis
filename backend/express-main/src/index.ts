@@ -41,7 +41,7 @@ app.use(
 
 // proxy
 app.use(
-	"/sessionContainer/**",
+	"/sessionContainer",
 	createProxyMiddleware({
 		router: (req) => "http://" + req.session.userId + ":8000",
 		//router: (req) => "http://master-thesis-backend-express-session-1:8000",
@@ -63,8 +63,7 @@ app.use(
 				);
 		},
 		onProxyReq: (proxyReq, req, res, options) => {
-			console.log(proxyReq.path);
-
+			//console.log(proxyReq.path);
 			// if (req.body) {
 			// 	const data = JSON.stringify(req.body);
 			// 	proxyReq.setHeader("Content-Type", "application/json");
@@ -81,7 +80,7 @@ app.use(express.json());
 
 // logging
 app.use((req, res, next) => {
-	console.log(`request: ${JSON.stringify(req.body)}`);
+	console.log("Incoming Request", req.method, req.url, req.body);
 	next();
 });
 

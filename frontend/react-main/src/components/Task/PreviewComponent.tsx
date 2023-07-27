@@ -34,7 +34,10 @@ const PreviewComponent: React.FC<PreviewComponentProps> = (props) => {
 				// </div>
 				<div style={{ whiteSpace: "pre-line", color: "red" }}>{errors}</div>
 			) : (
-				<iframe src="http://localhost:8000/sessionContainer" className="h-100 w-100"></iframe>
+				<iframe
+					src={`http://localhost:8000/sessionContainer?type=${props.type}`}
+					className="h-100 w-100"
+				></iframe>
 			)}
 		</LoadingWrapper>
 	);
