@@ -11,19 +11,26 @@ export type TaskCategory = "JSX" | "State";
 
 export interface TaskSchema {
 	index: number;
+	title: string;
 	category: TaskCategory;
 	unlocks?: number[];
 	unlocksCategories?: TaskCategory[];
+	isDefaultUnlocked?: boolean;
 	description: {
 		displayType: TaskDescriptionDisplayType;
 		text: string;
 	}[];
 	defaultFiles: SandboxFiles;
+	solutionFiles: SandboxFiles;
 }
 
 const taskSchema = new mongoose.Schema<TaskSchema>({
 	index: {
 		type: Number,
+		required: true,
+	},
+	title: {
+		type: String,
 		required: true,
 	},
 	category: {
@@ -35,6 +42,9 @@ const taskSchema = new mongoose.Schema<TaskSchema>({
 	},
 	unlocksCategories: {
 		type: [String],
+	},
+	isDefaultUnlocked: {
+		type: Boolean,
 	},
 	description: {
 		type: [
@@ -53,6 +63,21 @@ const taskSchema = new mongoose.Schema<TaskSchema>({
 		required: true,
 	},
 	defaultFiles: {
+		type: [
+			{
+				filename: {
+					type: String,
+					required: true,
+				},
+				code: {
+					type: String,
+					required: true,
+				},
+			},
+		],
+		required: true,
+	},
+	solutionFiles: {
 		type: [
 			{
 				filename: {

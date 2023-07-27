@@ -7,9 +7,9 @@ export interface UserSchema {
 	password: string;
 	tasks: {
 		task: TaskSchema;
-		solutionFiles: SandboxFiles;
-		userFiles: SandboxFiles;
-		isUnlocked: boolean;
+		userSolution?: SandboxFiles;
+		userCode?: SandboxFiles;
+		isUnlocked?: boolean;
 	}[];
 }
 
@@ -69,7 +69,7 @@ export const getUserData = async (userId: string) => {
 		path: "tasks",
 		populate: {
 			path: "task",
-			select: "-_id -__v -unlocks -unlocksCategories",
+			select: "-_id -__v -unlocks -unlocksCategories -solutionFiles",
 		},
 	});
 };
@@ -78,11 +78,11 @@ export const addNewlyCreatedTasks = async (userId: string) => {
 	const allTasks = await getAllTasks();
 	const taskIds = allTasks.map((task) => task._id.toString());
 
-	const user: any = await User.findById(userId);
+	const user = await User.findById(userId);
 
 	const filteredTaskIds = taskIds.filter(
 		(taskId) =>
-			!user?.tasks.some((elem: any) => {
+			!user?.tasks.some((elem) => {
 				return elem.task.toString() === taskId;
 			})
 	);

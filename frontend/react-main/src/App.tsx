@@ -10,7 +10,7 @@ import SandboxView from "./views/SandboxView";
 
 function App() {
 	return (
-		<div className="App vh-100 app-primary ">
+		<div className="App app-primary">
 			<Routes>
 				{/* public routes */}
 				<Route path="/auth" element={<AuthView />} />

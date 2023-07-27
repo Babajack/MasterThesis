@@ -1,22 +1,16 @@
 import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { LoadingStatus, SandboxFiles, TaskSchema, UserResponse } from "../../types";
-import { useSelector } from "react-redux";
-import { RootState } from "../store";
 import { httpRequest } from "../../network/httpRequest";
+import { LoadingStatus, Task, TaskSchemaFrontend, UserSchemaFrontend } from "../../types";
+import { RootState } from "../store";
 
-interface UserState {
-	username?: string;
+interface UserState extends UserSchemaFrontend {
 	isLoggedIn: boolean;
 	loadingStatus: LoadingStatus;
 	error?: string;
-	tasks: {
-		task: TaskSchema;
-		solutionFiles: SandboxFiles;
-		userFiles: SandboxFiles;
-	}[];
 }
 
 const initialState: UserState = {
+	username: "",
 	isLoggedIn: false,
 	loadingStatus: "Idle",
 	tasks: [],
@@ -75,6 +69,21 @@ export const userSlice = createSlice({
 export const { setIsLoggedIn, setUsername, setError } = userSlice.actions;
 
 export default userSlice.reducer;
+
+export const getTasksByCategory = (state: RootState) => {
+	return state.user.tasks.reduce(
+		(previous, current) => {
+			const index = previous.findIndex((elem) => elem.category === current.task.category);
+			if (index === -1) {
+				previous.push({ category: current.task.category, tasks: [current] });
+			} else {
+				previous[index].tasks.push(current);
+			}
+			return previous;
+		},
+		[] as { category: string; tasks: Task[] }[]
+	);
+};
 
 /* --------- async thunks --------- */
 

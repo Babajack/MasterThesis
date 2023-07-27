@@ -1,39 +1,32 @@
-import {
-	MDBBtn,
-	MDBCol,
-	MDBContainer,
-	MDBIcon,
-	MDBInput,
-	MDBRow,
-	MDBSpinner,
-} from "mdb-react-ui-kit";
-import * as React from "react";
 import Editor from "@monaco-editor/react";
+import { MDBCol, MDBRow } from "mdb-react-ui-kit";
 import { editor } from "monaco-editor";
+import * as React from "react";
+import { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../redux/store";
-import { useEffect, useRef, useState } from "react";
-import axios from "axios";
-import { parse } from "@babel/parser";
-import traverse from "@babel/traverse";
-import TabsComponent from "./TabsComponent";
-import { updateCode, updateFile } from "../../redux/slices/taskSlice";
-import * as prettier from "prettier/standalone";
-import * as babel from "prettier/parser-babel";
-import * as typescript from "prettier/parser-typescript";
-import { httpRequest } from "../../network/httpRequest";
-import { Tooltip } from "react-tooltip";
 import EditorButtons from "./EditorButtons";
-//import "./EditorComponent.css";
+import TabsComponent from "./TabsComponent";
+import { CodeFiles, LoadingStatus, Errors, CodeFile } from "../../types";
+import { ActionCreatorWithPayload } from "@reduxjs/toolkit";
 
-const EditorComponent: React.FC = () => {
-	const taskState = useSelector((state: RootState) => state.task);
+interface EditorComponentProps {
+	currentFiles: CodeFiles;
+	onUpdateCode: (files: CodeFiles) => (dispatch: AppDispatch) => void;
+	onUpdateFile: ActionCreatorWithPayload<{
+		old: CodeFile;
+		new: CodeFile;
+	}>;
+}
+
+const EditorComponent: React.FC<EditorComponentProps> = (props) => {
+	//const taskState = useSelector((state: RootState) => state.task);
 	const dispatch = useDispatch<AppDispatch>();
 
 	const dirtyFlag = useRef(false);
 
 	const [currentFilename, setCurrentFilename] = useState<string>("App.js");
-	const currentFile = taskState.currentFiles.find((elem) => elem.filename === currentFilename)!;
+	const currentFile = props.currentFiles.find((elem) => elem.filename === currentFilename)!;
 
 	const editorRef = useRef<editor.IStandaloneCodeEditor>();
 	const monacoRef = useRef<any>();
@@ -215,7 +208,7 @@ const EditorComponent: React.FC = () => {
 
 	const handleRunCode = () => {
 		if (dirtyFlag.current) {
-			dispatch(updateCode([...taskState.currentFiles]));
+			dispatch(props.onUpdateCode([...props.currentFiles]));
 		}
 		dirtyFlag.current = false;
 	};
@@ -297,7 +290,7 @@ const EditorComponent: React.FC = () => {
 						//console.log(currentFile.code);
 
 						dispatch(
-							updateFile({
+							props.onUpdateFile({
 								old: currentFile,
 								new: { ...currentFile, filename: currentFile.filename, code: value ?? "" },
 							})

@@ -26,13 +26,14 @@ app.get("/", (req, res) => {
 // 		.catch((error) => console.log(error));
 // });
 
-app.post("/updateCode", async (req, res) => {
+app.put("/updateCode", async (req, res) => {
+	const path = req.query.type;
 	try {
 		// 1. update code files
-		updateSandboxCode(req.body);
+		updateSandboxCode(req.body, path);
 
 		// 2. lint code
-		let lintErrors = await lint();
+		let lintErrors = await lint(path);
 		// if (lintErrors && lintErrors.length > 0) {
 		// 	// send lintErrors
 		// 	res.send({ error: lintErrors });
@@ -40,7 +41,7 @@ app.post("/updateCode", async (req, res) => {
 		// }
 
 		// 3.build code
-		let buildErrors = await build();
+		let buildErrors = await build(path);
 		// if (buildErrors && buildErrors.length > 0) {
 		// 	// send buildErrors
 		// 	res.send({ error: buildErrors });
@@ -79,15 +80,15 @@ app.listen(8000, () => {
  * build the code
  * @returns
  */
-const build = async () => {
+const build = async (path) => {
 	try {
 		await esbuild.build({
-			entryPoints: ["./sandbox/src/index.js"],
+			entryPoints: [`./${path}/src/index.js`],
 			bundle: true,
 			minify: true,
 			//sourcemap: true,
 			//target: ["chrome58", "firefox57", "safari11", "edge16"],
-			outfile: "./sandbox/public/build/App.js",
+			outfile: `./${path}/public/build/App.js`,
 			loader: { ".js": "jsx" },
 		});
 		return [];
@@ -95,7 +96,7 @@ const build = async () => {
 		let errors = results.errors
 			.map((error) => {
 				return {
-					filename: error.location.file.replace("sandbox/src/", ""),
+					filename: error.location.file.replace(`${path}/src/`, ""),
 					error: { message: error.text, line: error.location.line },
 				};
 			})
@@ -118,7 +119,7 @@ const build = async () => {
  * lint the code
  * @returns errors found
  */
-const lint = async () => {
+const lint = async (path) => {
 	const eslint = new ESLint({
 		overrideConfig: {
 			env: {
@@ -148,13 +149,13 @@ const lint = async () => {
 		},
 	});
 	// return await eslint.lintFiles(["/usr/src/app/sandbox/src/*.js"]);
-	let results = await eslint.lintFiles(["/usr/src/app/sandbox/src/*.js"]);
+	let results = await eslint.lintFiles([`/usr/src/app/${path}/src/*.js`]);
 	//const formatter = await eslint.loadFormatter("visualstudio");
 	const formatter = await eslint.loadFormatter("json");
 	results = formatter.format(results);
 
 	//console.log(resultText);
-	//results = results.replaceAll("/usr/src/app/sandbox/src/", "");
+	//results = results.replaceAll("/usr/src/app/${path}/src/", "");
 
 	// parse results
 	results = JSON.parse(results);
@@ -168,7 +169,7 @@ const lint = async () => {
 				};
 			});
 			return {
-				filename: result.filePath.replace("/usr/src/app/sandbox/src/", ""),
+				filename: result.filePath.replace(`/usr/src/app/${path}/src/`, ""),
 				errors: errors,
 			};
 		});
@@ -186,8 +187,8 @@ const lint = async () => {
  * write files to file system
  * @param {*} files
  */
-const updateSandboxCode = (files) => {
-	const dir = "/usr/src/app/sandbox/src";
+const updateSandboxCode = (files, path) => {
+	const dir = `/usr/src/app/${path}/src/`;
 
 	// delete files if exists
 	if (fs.existsSync(dir)) {

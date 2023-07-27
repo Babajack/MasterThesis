@@ -8,9 +8,9 @@ export type UserRequest = {
 export interface TaskResponse {
 	taskID: string;
 	description: string;
-	defaultFiles: SandboxFiles;
-	currentFiles?: SandboxFiles;
-	successFiles?: SandboxFiles;
+	defaultFiles: CodeFiles;
+	currentFiles?: CodeFiles;
+	successFiles?: CodeFiles;
 }
 
 export type User = {
@@ -18,39 +18,50 @@ export type User = {
 	id: string;
 };
 
-export type SandboxFiles = SandboxFile[];
+export type CodeFiles = CodeFile[];
 
-export type SandboxFile = {
+export type CodeFile = {
 	filename: string;
 	code: string;
 	isDeletable?: boolean;
 };
 
+export type Errors = {
+	filename: string;
+	errors: { message: string; line: number }[];
+}[];
+
+export type CodeType = "task" | "sandbox";
+
 /* Data from Backend Types */
 
-export type UserResponse =
-	| {
-			username: string;
-			tasks?: {
-				task: TaskSchema;
-				solutionFiles: SandboxFiles;
-				userFiles: SandboxFiles;
-			}[];
-	  }
-	| { error: string };
+export type UserResponse = UserSchemaFrontend | { error: string };
 
-export interface TaskSchema {
+export interface UserSchemaFrontend {
+	username: string;
+	tasks: Task[];
+}
+
+export interface Task {
+	task: TaskSchemaFrontend;
+	userSolution?: CodeFiles;
+	userCode?: CodeFiles;
+	isUnlocked?: boolean;
+}
+
+export interface TaskSchemaFrontend {
 	index: number;
 	category: TaskCategory;
-	unlocks?: number[];
-	unlocksCategories?: TaskCategory[];
+	title: string;
+	isDefaultUnlocked?: boolean;
 	description: {
 		displayType: TaskDescriptionDisplayType;
 		text: string;
 	}[];
-	defaultFiles: SandboxFiles;
+	defaultFiles: CodeFiles;
+	solutionFiles: CodeFiles;
 }
 
 export type TaskDescriptionDisplayType = "description" | "code" | "hint";
 
-export type TaskCategory = "JSX";
+export type TaskCategory = string; //"JSX";

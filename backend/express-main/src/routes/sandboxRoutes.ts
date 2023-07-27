@@ -2,7 +2,7 @@ import express, { Request, Response } from "express";
 import { SandboxFiles, TaskRequest, TaskResponse } from "types";
 import { runCode } from "../docker/dockerControl";
 
-export const taskRouter = express.Router();
+export const sandboxRouter = express.Router();
 
 /* taskRouter.post("/task/updateCode", (req: Request<{}, {}, SandboxFiles>, res) => {
 	try {
@@ -22,7 +22,7 @@ taskRouter.get("/docker/start", (req, res) => {
 	startSandboxContainer(req.session.user?.id!);
 }); */
 
-taskRouter.get("/task", (req: Request<TaskRequest, {}, {}>, res: Response<TaskResponse>) => {
+sandboxRouter.get("/task", (req: Request<TaskRequest, {}, {}>, res: Response<TaskResponse>) => {
 	// TODO: get task by taskID, data access ...
 	res.send({
 		taskID: "testID",
@@ -31,8 +31,8 @@ taskRouter.get("/task", (req: Request<TaskRequest, {}, {}>, res: Response<TaskRe
 	});
 });
 
-// taskRouter.post(
-// 	"/task/updateCode",
+// sandboxRouter.post(
+// 	"/sandbox/updateCode",
 // 	async (req: Request<{}, {}, SandboxFiles>, res: Response<string>) => {
 // 		const response = await runCode(req.body, req.session.userId!);
 // 		console.log(response.data);

@@ -41,7 +41,7 @@ app.use(
 
 // proxy
 app.use(
-	"/sessionContainer",
+	"/sessionContainer/**",
 	createProxyMiddleware({
 		router: (req) => "http://" + req.session.userId + ":8000",
 		//router: (req) => "http://master-thesis-backend-express-session-1:8000",
@@ -62,15 +62,17 @@ app.use(
 					res.status(202).send({ message: "Container is starting..." })
 				);
 		},
-		/* onProxyReq: (proxyReq, req, res, options) => {
-				if (req.body) {
-					const data = JSON.stringify(req.body);
-					proxyReq.setHeader("Content-Type", "application/json");
-					proxyReq.setHeader("Content-Length", Buffer.byteLength(data));
-					// stream the content
-					proxyReq.write(data);
-				}
-			}, */
+		onProxyReq: (proxyReq, req, res, options) => {
+			console.log(proxyReq.path);
+
+			// if (req.body) {
+			// 	const data = JSON.stringify(req.body);
+			// 	proxyReq.setHeader("Content-Type", "application/json");
+			// 	proxyReq.setHeader("Content-Length", Buffer.byteLength(data));
+			// 	// stream the content
+			// 	proxyReq.write(data);
+			// }
+		},
 	})
 );
 

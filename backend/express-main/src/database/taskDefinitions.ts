@@ -131,12 +131,15 @@ const getTasks_1 = (): TaskSchema[] => {
 		{
 			// -- TASK 1 --
 			index: index++,
+			title: "JSX Basics (1/4)",
 			category: CATEGORY,
 			unlocks: [index],
+			isDefaultUnlocked: true,
 			description: [
 				{ displayType: TaskDescriptionDisplayType.description, text: "Aufgabentext 1" },
 			],
 			defaultFiles: [getHTMLFile(), getAppFile(), getIndexFile(), getCSSFile()],
+			solutionFiles: [getHTMLFile(), getAppFile(), getIndexFile(), getCSSFile()],
 		},
 	];
 };
@@ -153,12 +156,14 @@ const getTasks_2 = (): TaskSchema[] => {
 		{
 			// -- TASK 1 --
 			index: index++,
+			title: "State Basics (1/4)",
 			category: CATEGORY,
 			unlocks: [index],
 			description: [
 				{ displayType: TaskDescriptionDisplayType.description, text: "Aufgabentext 1" },
 			],
 			defaultFiles: [getHTMLFile(), getAppFile(), getIndexFile(), getCSSFile()],
+			solutionFiles: [getHTMLFile(), getAppFile(), getIndexFile(), getCSSFile()],
 		},
 	];
 };

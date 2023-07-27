@@ -1,12 +1,17 @@
 import * as React from "react";
-import { useSelector } from "react-redux";
-import { RootState } from "../../redux/store";
+import { CodeType, Errors, LoadingStatus } from "../../types";
 import LoadingWrapper from "../Utils/LoadingWrapper";
 
-const PreviewComponent: React.FC = () => {
-	const taskState = useSelector((state: RootState) => state.task);
+interface PreviewComponentProps {
+	buildStatus: LoadingStatus;
+	errors?: Errors;
+	type: CodeType;
+}
 
-	const errors = taskState.errors?.map((error) => {
+const PreviewComponent: React.FC<PreviewComponentProps> = (props) => {
+	// const taskState = useSelector((state: RootState) => state.task);
+
+	const errors = props.errors?.map((error) => {
 		return (
 			<div key={error.filename}>
 				<h3>{error.filename}</h3>
@@ -22,8 +27,8 @@ const PreviewComponent: React.FC = () => {
 	});
 
 	return (
-		<LoadingWrapper loadingStatus={taskState.buildStatus}>
-			{taskState.errors ? (
+		<LoadingWrapper loadingStatus={props.buildStatus}>
+			{props.errors ? (
 				// <div className="" style={{ color: "red" }}>
 				// 	{taskState.errors}
 				// </div>

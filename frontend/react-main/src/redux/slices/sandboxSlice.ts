@@ -1,10 +1,16 @@
 import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { Errors, LoadingStatus, CodeFile, CodeFiles, TaskResponse } from "../../types";
+import { LoadingStatus, CodeFile, CodeFiles, TaskResponse } from "../../types";
 import { httpRequest } from "../../network/httpRequest";
 import { AppDispatch, RootState } from "../store";
 import { AxiosResponse } from "axios";
+import { error } from "console";
 
-interface TaskState {
+type Errors = {
+	filename: string;
+	errors: { message: string; line: number }[];
+}[];
+
+interface SandboxState {
 	description: string;
 	currentFiles: CodeFiles;
 	defaultFiles: CodeFiles;
@@ -14,7 +20,7 @@ interface TaskState {
 	errors?: Errors;
 }
 
-const initialState: TaskState = {
+const initialState: SandboxState = {
 	description: "",
 	currentFiles: [
 		{
@@ -139,8 +145,8 @@ root.render(
 	buildStatus: "Idle",
 };
 
-export const taskSlice = createSlice({
-	name: "task",
+export const sandboxSlice = createSlice({
+	name: "sandbox",
 	initialState,
 	reducers: {
 		resetTaskState: (state) => {
@@ -168,13 +174,13 @@ export const taskSlice = createSlice({
 		builder.addCase("auth/logout/fulfilled", (state) => {
 			return initialState;
 		});
-		builder.addCase(fetchTask.pending, (state) => {
+		builder.addCase(fetchSandbox.pending, (state) => {
 			state.loadingStatus = "Pending";
 		});
-		builder.addCase(fetchTask.rejected, (state) => {
+		builder.addCase(fetchSandbox.rejected, (state) => {
 			state.loadingStatus = "Error";
 		});
-		builder.addCase(fetchTask.fulfilled, (state, action: PayloadAction<TaskResponse>) => {
+		builder.addCase(fetchSandbox.fulfilled, (state, action: PayloadAction<TaskResponse>) => {
 			state.loadingStatus = "Success";
 			state.description = action.payload.description;
 			state.currentFiles = action.payload.currentFiles ?? action.payload.defaultFiles;
@@ -199,22 +205,21 @@ export const taskSlice = createSlice({
 	},
 });
 
-export const { resetTaskState, setCurrentFiles, updateFile, deleteFileByName } = taskSlice.actions;
+export const { resetTaskState, setCurrentFiles, updateFile, deleteFileByName } =
+	sandboxSlice.actions;
 
-export default taskSlice.reducer;
+export default sandboxSlice.reducer;
 
 export const updateCode = (files: CodeFiles) => (dispatch: AppDispatch) => {
 	dispatch(updateCodeThunk(files)).then((response) => {
-		console.log(response);
-
 		if (response.payload.status === 202) dispatch(updateCodeThunk(files));
 	});
 };
 
 /* --------- async thunks --------- */
 
-export const fetchTask = createAsyncThunk(
-	"task/fetchTask",
+export const fetchSandbox = createAsyncThunk(
+	"sandbox/fetchSandbox",
 	async (payload: { taskID: string }, thunkApi) => {
 		const response = await httpRequest.fetchTask(payload.taskID);
 		return response.data;
@@ -222,10 +227,9 @@ export const fetchTask = createAsyncThunk(
 );
 
 export const updateCodeThunk = createAsyncThunk<any, CodeFiles, { state: RootState }>(
-	"task/updateCode",
+	"sandbox/updateCode",
 	async (payload, thunkApi) => {
-		const response = await httpRequest.updateCode(payload, "task");
-
+		const response = await httpRequest.updateCode(payload, "sandbox");
 		let delay = 0;
 		if (response.status === 202) {
 			delay = 5000;
@@ -244,7 +248,7 @@ export const addNewFile = createAsyncThunk<
 	{ filename: string },
 	{ filename: string },
 	{ state: RootState }
->("task/addNewFile", async (payload, thunkApi) => {
+>("sandbox/addNewFile", async (payload, thunkApi) => {
 	const files = thunkApi.getState().task.currentFiles;
 	if (files.some((elem) => elem.filename === payload.filename))
 		return thunkApi.rejectWithValue("Datei existiert bereits");
