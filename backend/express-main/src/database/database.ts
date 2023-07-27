@@ -1,7 +1,9 @@
 import MongoStore from "connect-mongo";
 import mongoose from "mongoose";
 import { getTaskDefinitions } from "./taskDefinitions";
-import { populateDatabase } from "./task";
+import { populateDatabase as initTasks } from "./task";
+import { populateDatabase as initSandbox } from "./sandbox";
+import { getSandboxDefinition } from "./sandboxDefinition";
 
 // Connection URI
 const MONGODB_USERNAME = process.env.MONGODB_USERNAME;
@@ -13,8 +15,9 @@ const uri = `mongodb://${MONGODB_USERNAME}:${MONGODB_PASSWORD}@${MONGODB_HOST}/`
 // connect to mongoose
 const client = mongoose.connect(uri, { dbName: DB_NAME }).then((c) => c.connection.getClient());
 
-// init database, set tasks
-populateDatabase(getTaskDefinitions());
+// init database, set tasks & sandbox
+initTasks(getTaskDefinitions());
+initSandbox(getSandboxDefinition());
 
 // session store
 export const getSessionStore = () => {

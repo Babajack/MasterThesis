@@ -60,4 +60,11 @@ export const httpRequest = {
 			},
 		});
 	},
+	async fetchSandbox(sandboxId: string) {
+		return axios.get("/sandbox", {
+			params: {
+				sandboxId: sandboxId,
+			},
+		});
+	},
 };

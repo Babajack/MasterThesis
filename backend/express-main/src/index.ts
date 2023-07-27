@@ -1,14 +1,13 @@
 import cors from "cors";
 import dotenv from "dotenv";
-import express, { Request, Response } from "express";
+import express from "express";
 import session from "express-session";
-import { getSessionStore } from "./database/database";
-import { authRouter, requireLogin } from "./routes/authRoutes";
-import { sessionDockerRouter } from "./routes/sessionDockerRoutes";
-import { taskRouter } from "./routes/taskRoutes";
-import { runCode, startSandboxContainer } from "./docker/dockerControl";
-import { SandboxFiles } from "types";
 import { createProxyMiddleware } from "http-proxy-middleware";
+import { getSessionStore } from "./database/database";
+import { startSandboxContainer } from "./docker/dockerControl";
+import { authRouter, requireLogin } from "./routes/authRoutes";
+import { sandboxRouter } from "./routes/sandboxRoutes";
+import { taskRouter } from "./routes/taskRoutes";
 
 // env variables
 dotenv.config();
@@ -90,6 +89,7 @@ app.use("/", authRouter);
 //app.use("/", sessionDockerRouter);
 
 app.use("/", requireLogin, taskRouter);
+app.use("/", requireLogin, sandboxRouter);
 
 app.listen(port, () => {
 	console.log(`Example app listening on port ${port}`);

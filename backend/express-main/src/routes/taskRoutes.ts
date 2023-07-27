@@ -1,5 +1,5 @@
 import express, { Request, Response } from "express";
-import { SandboxFiles, TaskRequest, TaskResponse } from "types";
+import { CodeFiles, TaskRequest, TaskResponse } from "types";
 import { runCode } from "../docker/dockerControl";
 
 export const taskRouter = express.Router();

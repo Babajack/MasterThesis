@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import { SandboxFiles } from "types";
+import { CodeFiles } from "types";
 
 export enum TaskDescriptionDisplayType {
 	"description" = "description",
@@ -20,8 +20,8 @@ export interface TaskSchema {
 		displayType: TaskDescriptionDisplayType;
 		text: string;
 	}[];
-	defaultFiles: SandboxFiles;
-	solutionFiles: SandboxFiles;
+	defaultFiles: CodeFiles;
+	solutionFiles: CodeFiles;
 }
 
 const taskSchema = new mongoose.Schema<TaskSchema>({

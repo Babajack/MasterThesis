@@ -5,12 +5,12 @@ declare module "express-session" {
 	}
 }
 
-export type SandboxFile = {
+export type CodeFile = {
 	filename: string;
 	code: string;
 };
 
-export type SandboxFiles = SandboxFile[];
+export type CodeFiles = CodeFile[];
 
 export type UserRequest = {
 	username: string;
@@ -25,9 +25,9 @@ export type User = {
 export interface TaskResponse {
 	taskID: string;
 	description: string;
-	defaultFiles: SandboxFiles;
-	currentFiles?: SandboxFiles;
-	successFiles?: SandboxFiles;
+	defaultFiles: CodeFiles;
+	currentFiles?: CodeFiles;
+	successFiles?: CodeFiles;
 }
 
 export interface TaskRequest {

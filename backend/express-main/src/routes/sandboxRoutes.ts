@@ -1,6 +1,5 @@
-import express, { Request, Response } from "express";
-import { SandboxFiles, TaskRequest, TaskResponse } from "types";
-import { runCode } from "../docker/dockerControl";
+import { getSandbox } from "../database/sandbox";
+import express from "express";
 
 export const sandboxRouter = express.Router();
 
@@ -22,13 +21,14 @@ taskRouter.get("/docker/start", (req, res) => {
 	startSandboxContainer(req.session.user?.id!);
 }); */
 
-sandboxRouter.get("/task", (req: Request<TaskRequest, {}, {}>, res: Response<TaskResponse>) => {
-	// TODO: get task by taskID, data access ...
-	res.send({
-		taskID: "testID",
-		defaultFiles: [{ filename: "app.js", code: "" }],
-		description: "empty description",
-	});
+sandboxRouter.get("/sandbox", async (req, res) => {
+	try {
+		const sandboxId = req.query.sandboxId as string;
+		const sandbox = await getSandbox(sandboxId);
+		res.send({ defaultFiles: sandbox?.defaultFiles });
+	} catch (error) {
+		res.send({ error: error });
+	}
 });
 
 // sandboxRouter.post(

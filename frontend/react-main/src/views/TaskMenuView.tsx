@@ -45,6 +45,7 @@ const TaskMenuView = () => {
 														return (
 															<MDBListGroupItem
 																tag={"button"}
+																key={task.task._id}
 																action
 																disabled={!(task.isUnlocked || task.task.isDefaultUnlocked)}
 															>

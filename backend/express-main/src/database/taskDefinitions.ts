@@ -1,14 +1,13 @@
-import { SandboxFile, SandboxFiles } from "types";
+import { CodeFile, CodeFiles } from "types";
 import { TaskCategory, TaskDescriptionDisplayType, TaskSchema } from "./task";
 
-const getIndexFile = (imports?: string, mainBody?: string, extraBody?: string): SandboxFile => {
+const getIndexFile = (imports?: string, mainBody?: string, extraBody?: string): CodeFile => {
 	return {
 		filename: "index.js",
 		code: `
         import React from "react"
         import ReactDOM from "react-dom/client";
-        import App from "./App";
-        ${imports}
+        import App from "./App";${imports ? "\n" + imports : ""}
 
         const rootElement = document.getElementById("root");
         const root = createRoot(rootElement);
@@ -19,12 +18,11 @@ const getIndexFile = (imports?: string, mainBody?: string, extraBody?: string): 
 	};
 };
 
-const getAppFile = (imports?: string, mainBody?: string, extraBody?: string): SandboxFile => {
+const getAppFile = (imports?: string, mainBody?: string, extraBody?: string): CodeFile => {
 	return {
 		filename: "App.js",
 		code: `
-        import React from "react"
-        ${imports}
+        import React from "react"${imports ? "\n" + imports : ""}
 
         export default function App() {
             return (
@@ -35,7 +33,7 @@ const getAppFile = (imports?: string, mainBody?: string, extraBody?: string): Sa
 	};
 };
 
-const getHTMLFile = (): SandboxFile => {
+const getHTMLFile = (): CodeFile => {
 	return {
 		filename: "index.html",
 		code: `
@@ -44,18 +42,18 @@ const getHTMLFile = (): SandboxFile => {
 
 <head>
   <meta charset="utf-8" />
-  <link rel="icon" href="sessionContainer/favicon.ico" />
+  <link rel="icon" href="sessionContainer/task/favicon.ico" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="theme-color" content="#000000" />
   <meta name="description" content="Web site created using create-react-app" />
-  <link rel="apple-touch-icon" href="sessionContainer/logo192.png" />
+  <link rel="apple-touch-icon" href="sessionContainer/task/logo192.png" />
   <!--
       manifest.json provides metadata used when your web app is installed on a
       user's mobile device or desktop. See https://developers.google.com/web/fundamentals/web-app-manifest/
     -->
-  <link rel="manifest" href="sessionContainer/manifest.json" />
-  <script src="sessionContainer/build/App.js" async defer></script>
-  <link rel="stylesheet" href="sessionContainer/build/App.css" />
+  <link rel="manifest" href="sessionContainer/task/manifest.json" />
+  <script src="sessionContainer/task/build/App.js" async defer></script>
+  <link rel="stylesheet" href="sessionContainer/task/build/App.css" />
   <title>React App</title>
 </head>
 
@@ -68,7 +66,7 @@ const getHTMLFile = (): SandboxFile => {
 	};
 };
 
-const getCSSFile = (): SandboxFile => {
+const getCSSFile = (): CodeFile => {
 	return {
 		filename: "App.css",
 		code: `

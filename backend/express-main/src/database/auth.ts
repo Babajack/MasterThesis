@@ -1,5 +1,5 @@
 import { Request } from "express";
-import { addNewlyCreatedTasks, createNewUser, getUserByUsername } from "./user";
+import { addNewlyCreatedTasks, addSandboxFiles, createNewUser, getUserByUsername } from "./user";
 import { UserRequest } from "types";
 import bcrypt from "bcrypt";
 import { stopSandboxContainer } from "../docker/dockerControl";
@@ -15,6 +15,7 @@ export const login = async (req: Request<{}, {}, UserRequest>) => {
 	const user = await getUserByUsername(req.body.username);
 	if (user) {
 		await addNewlyCreatedTasks(user.id);
+		await addSandboxFiles(user.id);
 		if (await bcrypt.compare(req.body.password, user.password)) {
 			req.session.userId = user.id;
 			return new Promise((resolve, reject) => {
@@ -35,10 +36,10 @@ export const login = async (req: Request<{}, {}, UserRequest>) => {
  */
 export const register = async (req: Request<{}, {}, UserRequest>) => {
 	const password = await hashPassword(req.body.password);
-
 	const user = await createNewUser(req.body.username, password);
 	if (user) {
 		await addNewlyCreatedTasks(user.id);
+		await addSandboxFiles(user.id);
 		req.session.userId = user.id;
 		return new Promise((resolve, reject) => {
 			req.session.save((err) => {

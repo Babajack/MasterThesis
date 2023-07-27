@@ -5,14 +5,6 @@ export type UserRequest = {
 	password: string;
 };
 
-export interface TaskResponse {
-	taskID: string;
-	description: string;
-	defaultFiles: CodeFiles;
-	currentFiles?: CodeFiles;
-	successFiles?: CodeFiles;
-}
-
 export type User = {
 	username: string;
 	id: string;
@@ -40,7 +32,10 @@ export type UserResponse = UserSchemaFrontend | { error: string };
 export interface UserSchemaFrontend {
 	username: string;
 	tasks: Task[];
+	sandbox: Sandbox;
 }
+
+export type TaskResponse = Task; //| { error: string };
 
 export interface Task {
 	task: TaskSchemaFrontend;
@@ -50,18 +45,30 @@ export interface Task {
 }
 
 export interface TaskSchemaFrontend {
+	_id: string;
 	index: number;
 	category: TaskCategory;
 	title: string;
 	isDefaultUnlocked?: boolean;
-	description: {
+	description?: {
 		displayType: TaskDescriptionDisplayType;
 		text: string;
 	}[];
-	defaultFiles: CodeFiles;
-	solutionFiles: CodeFiles;
+	defaultFiles?: CodeFiles;
+	solutionFiles?: CodeFiles;
 }
 
 export type TaskDescriptionDisplayType = "description" | "code" | "hint";
 
 export type TaskCategory = string; //"JSX";
+
+export interface Sandbox {
+	sandboxId: string;
+	userCode?: CodeFiles;
+}
+
+export interface SandboxSchemaFrontend {
+	defaultFiles?: CodeFiles;
+}
+
+export type SandboxResponse = SandboxSchemaFrontend;

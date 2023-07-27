@@ -1,146 +1,30 @@
 import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { LoadingStatus, CodeFile, CodeFiles, TaskResponse } from "../../types";
+import {
+	LoadingStatus,
+	CodeFile,
+	CodeFiles,
+	SandboxResponse,
+	Sandbox,
+	SandboxSchemaFrontend,
+} from "../../types";
 import { httpRequest } from "../../network/httpRequest";
 import { AppDispatch, RootState } from "../store";
 import { AxiosResponse } from "axios";
-import { error } from "console";
 
 type Errors = {
 	filename: string;
 	errors: { message: string; line: number }[];
 }[];
 
-interface SandboxState {
-	description: string;
+interface SandboxState extends SandboxSchemaFrontend {
 	currentFiles: CodeFiles;
-	defaultFiles: CodeFiles;
-	successFiles?: CodeFiles;
 	loadingStatus: LoadingStatus;
 	buildStatus: LoadingStatus;
 	errors?: Errors;
 }
 
 const initialState: SandboxState = {
-	description: "",
-	currentFiles: [
-		{
-			filename: "App.js",
-			code: `import "./App.css";
-import React from "react";
-
-function App() {
-	return (
-		<div className="App">
-			<header className="App-header">
-				<img src={""} className="App-logo" alt="logo" />
-				<p>TEST</p>
-				<a
-					className="App-link"
-					href="https://reactjs.org"
-					target="_blank"
-					rel="noopener noreferrer"
-				>
-					Learn React
-				</a>
-			</header>
-		</div>
-	);
-}
-
-export default App;
-			`,
-		},
-		{
-			filename: "index.js",
-			code: `import React from "react";
-import ReactDOM from "react-dom/client";
-import App from "./App";
-
-const root = ReactDOM.createRoot(document.getElementById("root"));
-root.render(
-	<React.StrictMode>
-		<App />
-	</React.StrictMode>
-);
-
-			`,
-		},
-		{
-			filename: "App.css",
-			code: `.App {
-				text-align: center;
-			  }
-			  
-			  .App-logo {
-				height: 40vmin;
-				pointer-events: none;
-			  }
-			  
-			  @media (prefers-reduced-motion: no-preference) {
-				.App-logo {
-				  animation: App-logo-spin infinite 20s linear;
-				}
-			  }
-			  
-			  .App-header {
-				background-color: #282c34;
-				min-height: 100vh;
-				display: flex;
-				flex-direction: column;
-				align-items: center;
-				justify-content: center;
-				font-size: calc(10px + 2vmin);
-				color: white;
-			  }
-			  
-			  .App-link {
-				color: #61dafb;
-			  }
-			  
-			  @keyframes App-logo-spin {
-				from {
-				  transform: rotate(0deg);
-				}
-				to {
-				  transform: rotate(360deg);
-				}
-			  }
-			  `,
-		},
-		{
-			filename: "index.html",
-			code: `<!DOCTYPE html>
-<html lang="en">
-
-<head>
-  <meta charset="utf-8" />
-  <link rel="icon" href="sessionContainer/sandbox/favicon.ico" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <meta name="theme-color" content="#000000" />
-  <meta name="description" content="Web site created using create-react-app" />
-  <link rel="apple-touch-icon" href="sessionContainer/sandbox/logo192.png" />
-  <!--
-      manifest.json provides metadata used when your web app is installed on a
-      user's mobile device or desktop. See https://developers.google.com/web/fundamentals/web-app-manifest/
-    -->
-  <link rel="manifest" href="sessionContainer/sandbox/manifest.json" />
-  <script src="sessionContainer/sandbox/build/App.js" async defer></script>
-  <link rel="stylesheet" href="sessionContainer/sandbox/build/App.css" />
-  <title>React App</title>
-</head>
-
-<body style="margin:0;padding:0">
-   <noscript>You need to enable JavaScript to run this app.</noscript>
-  <div id="root"></div>
-
-  
-</body>
-
-</html>
-			`,
-		},
-	],
-	defaultFiles: [{ filename: "app.js", code: "" }],
+	currentFiles: [],
 	loadingStatus: "Idle",
 	buildStatus: "Idle",
 };
@@ -149,12 +33,8 @@ export const sandboxSlice = createSlice({
 	name: "sandbox",
 	initialState,
 	reducers: {
-		resetTaskState: (state) => {
-			state.description = "";
-			state.currentFiles = [];
-			state.defaultFiles = [];
-			state.successFiles = undefined;
-			state.loadingStatus = "Idle";
+		resetSandboxState: (state) => {
+			return initialState;
 		},
 		setCurrentFiles: (state, action: PayloadAction<CodeFiles>) => {
 			state.currentFiles = action.payload;
@@ -180,12 +60,14 @@ export const sandboxSlice = createSlice({
 		builder.addCase(fetchSandbox.rejected, (state) => {
 			state.loadingStatus = "Error";
 		});
-		builder.addCase(fetchSandbox.fulfilled, (state, action: PayloadAction<TaskResponse>) => {
-			state.loadingStatus = "Success";
-			state.description = action.payload.description;
-			state.currentFiles = action.payload.currentFiles ?? action.payload.defaultFiles;
-			state.defaultFiles = action.payload.defaultFiles;
-			state.successFiles = action.payload.successFiles ?? undefined;
+		builder.addCase(fetchSandbox.fulfilled, (state, action: PayloadAction<SandboxResponse>) => {
+			return {
+				...state,
+				...action.payload,
+				currentFiles:
+					state.currentFiles.length > 0 ? state.currentFiles : action.payload.defaultFiles ?? [],
+				loadingStatus: "Success",
+			};
 		});
 		builder.addCase(updateCodeThunk.pending, (state) => {
 			state.buildStatus = "Pending";
@@ -205,7 +87,7 @@ export const sandboxSlice = createSlice({
 	},
 });
 
-export const { resetTaskState, setCurrentFiles, updateFile, deleteFileByName } =
+export const { resetSandboxState, setCurrentFiles, updateFile, deleteFileByName } =
 	sandboxSlice.actions;
 
 export default sandboxSlice.reducer;
@@ -218,10 +100,10 @@ export const updateCode = (files: CodeFiles) => (dispatch: AppDispatch) => {
 
 /* --------- async thunks --------- */
 
-export const fetchSandbox = createAsyncThunk(
+export const fetchSandbox = createAsyncThunk<SandboxResponse, void, { state: RootState }>(
 	"sandbox/fetchSandbox",
-	async (payload: { taskID: string }, thunkApi) => {
-		const response = await httpRequest.fetchTask(payload.taskID);
+	async (payload, thunkApi) => {
+		const response = await httpRequest.fetchSandbox(thunkApi.getState().user.sandbox.sandboxId);
 		return response.data;
 	}
 );
@@ -249,7 +131,7 @@ export const addNewFile = createAsyncThunk<
 	{ filename: string },
 	{ state: RootState }
 >("sandbox/addNewFile", async (payload, thunkApi) => {
-	const files = thunkApi.getState().task.currentFiles;
+	const files = thunkApi.getState().sandbox.currentFiles;
 	if (files.some((elem) => elem.filename === payload.filename))
 		return thunkApi.rejectWithValue("Datei existiert bereits");
 	else return thunkApi.fulfillWithValue({ filename: payload.filename });

@@ -2,7 +2,7 @@ import { Docker } from "node-docker-api";
 import axios from "axios";
 import { Container } from "node-docker-api/lib/container";
 import fs from "fs";
-import { SandboxFiles } from "types";
+import { CodeFiles } from "types";
 import path from "path";
 //import { DOCKER_PORT, getNextPortNumber } from "./portControl";
 
@@ -143,7 +143,7 @@ export const runTest = async () => {
 
 /* -------------------------------- React Sandbox Docker -------------------------------- */
 
-export const runCode = async (files: SandboxFiles, userID: string) => {
+export const runCode = async (files: CodeFiles, userID: string) => {
 	//updateSandboxCode(files, userID);
 	const container = await startSandboxContainer(userID);
 	if (container) {
@@ -156,7 +156,7 @@ export const runCode = async (files: SandboxFiles, userID: string) => {
 	}
 };
 
-export const updateSandboxCode = (files: SandboxFiles, userID: string) => {
+export const updateSandboxCode = (files: CodeFiles, userID: string) => {
 	const dir = "/home/node/user-code/" + userID;
 	try {
 		if (!fs.existsSync(dir)) fs.mkdirSync(dir);

@@ -1,21 +1,25 @@
 import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { Errors, LoadingStatus, CodeFile, CodeFiles, TaskResponse } from "../../types";
+import {
+	Errors,
+	LoadingStatus,
+	CodeFile,
+	CodeFiles,
+	TaskResponse,
+	TaskSchemaFrontend,
+	Task,
+} from "../../types";
 import { httpRequest } from "../../network/httpRequest";
 import { AppDispatch, RootState } from "../store";
 import { AxiosResponse } from "axios";
 
-interface TaskState {
-	description: string;
-	currentFiles: CodeFiles;
-	defaultFiles: CodeFiles;
-	successFiles?: CodeFiles;
+interface TaskState extends Task {
 	loadingStatus: LoadingStatus;
 	buildStatus: LoadingStatus;
 	errors?: Errors;
+	currentFiles: CodeFiles;
 }
 
 const initialState: TaskState = {
-	description: "",
 	currentFiles: [
 		{
 			filename: "App.js",
@@ -134,9 +138,9 @@ root.render(
 			`,
 		},
 	],
-	defaultFiles: [{ filename: "app.js", code: "" }],
 	loadingStatus: "Idle",
 	buildStatus: "Idle",
+	task: { _id: "", category: "", index: 0, title: "" },
 };
 
 export const taskSlice = createSlice({
@@ -144,11 +148,7 @@ export const taskSlice = createSlice({
 	initialState,
 	reducers: {
 		resetTaskState: (state) => {
-			state.description = "";
-			state.currentFiles = [];
-			state.defaultFiles = [];
-			state.successFiles = undefined;
-			state.loadingStatus = "Idle";
+			return initialState;
 		},
 		setCurrentFiles: (state, action: PayloadAction<CodeFiles>) => {
 			state.currentFiles = action.payload;
@@ -175,11 +175,12 @@ export const taskSlice = createSlice({
 			state.loadingStatus = "Error";
 		});
 		builder.addCase(fetchTask.fulfilled, (state, action: PayloadAction<TaskResponse>) => {
-			state.loadingStatus = "Success";
-			state.description = action.payload.description;
-			state.currentFiles = action.payload.currentFiles ?? action.payload.defaultFiles;
-			state.defaultFiles = action.payload.defaultFiles;
-			state.successFiles = action.payload.successFiles ?? undefined;
+			return {
+				...state,
+				...action.payload,
+				currentFiles: action.payload.userCode ?? action.payload.task?.defaultFiles ?? [],
+				loadingStatus: "Success",
+			};
 		});
 		builder.addCase(updateCodeThunk.pending, (state) => {
 			state.buildStatus = "Pending";
