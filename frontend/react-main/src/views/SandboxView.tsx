@@ -28,6 +28,7 @@ const SandboxView = () => {
 							{...sandboxState}
 							onUpdateCode={updateCode}
 							onUpdateFile={updateFile}
+							type="sandbox"
 						/>
 					</MDBCol>
 					<MDBCol

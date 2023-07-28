@@ -85,6 +85,10 @@ export const getUserByUsername = async (username: string) => {
 	});
 };
 
+export const getIsTaskUnlocked = async (userId: string, taskId: string) => {
+	const user = await User.findOne({ _id: userId, "tasks.task._id": taskId }, { "tasks.$": 1 });
+	return user?.tasks.at(0)?.isUnlocked;
+};
 export const getUserData = async (userId: string) => {
 	return await User.findById(userId, "username tasks sandbox -_id").populate([
 		{

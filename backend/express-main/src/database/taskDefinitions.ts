@@ -4,31 +4,28 @@ import { TaskCategory, TaskDescriptionDisplayType, TaskSchema } from "./task";
 const getIndexFile = (imports?: string, mainBody?: string, extraBody?: string): CodeFile => {
 	return {
 		filename: "index.js",
-		code: `
-        import React from "react"
-        import ReactDOM from "react-dom/client";
-        import App from "./App";${imports ? "\n" + imports : ""}
+		code: `import React from "react"
+import ReactDOM from "react-dom/client";
+import App from "./App";${imports ? "\n" + imports : ""}
 
-        const rootElement = document.getElementById("root");
-        const root = createRoot(rootElement);
-        root.render(
-            <App />
-        );
-        `,
+const rootElement = document.getElementById("root");
+const root = ReactDOM.createRoot(rootElement);
+root.render(
+    <App />
+);`,
 	};
 };
 
 const getAppFile = (imports?: string, mainBody?: string, extraBody?: string): CodeFile => {
 	return {
 		filename: "App.js",
-		code: `
-        import React from "react"${imports ? "\n" + imports : ""}
+		code: `import React from "react"${imports ? "\n" + imports : ""}
 
-        export default function App() {
-            return (
-                <div>Hello World!</div>
-            )
-        }
+export default function App() {
+    return (
+        <div>Hello World!</div>
+    )
+}
         `,
 	};
 };
@@ -36,24 +33,23 @@ const getAppFile = (imports?: string, mainBody?: string, extraBody?: string): Co
 const getHTMLFile = (): CodeFile => {
 	return {
 		filename: "index.html",
-		code: `
-<!DOCTYPE html>
+		code: `<!DOCTYPE html>
 <html lang="en">
 
 <head>
   <meta charset="utf-8" />
-  <link rel="icon" href="sessionContainer/task/favicon.ico" />
+  <link rel="icon" href="sessionContainer/sandbox/favicon.ico" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="theme-color" content="#000000" />
   <meta name="description" content="Web site created using create-react-app" />
-  <link rel="apple-touch-icon" href="sessionContainer/task/logo192.png" />
+  <link rel="apple-touch-icon" href="sessionContainer/sandbox/logo192.png" />
   <!--
       manifest.json provides metadata used when your web app is installed on a
       user's mobile device or desktop. See https://developers.google.com/web/fundamentals/web-app-manifest/
     -->
-  <link rel="manifest" href="sessionContainer/task/manifest.json" />
-  <script src="sessionContainer/task/build/App.js" async defer></script>
-  <link rel="stylesheet" href="sessionContainer/task/build/App.css" />
+  <link rel="manifest" href="sessionContainer/sandbox/manifest.json" />
+  <script src="sessionContainer/sandbox/build/App.js" async defer></script>
+  <link rel="stylesheet" href="sessionContainer/sandbox/build/App.css" />
   <title>React App</title>
 </head>
 
@@ -69,46 +65,45 @@ const getHTMLFile = (): CodeFile => {
 const getCSSFile = (): CodeFile => {
 	return {
 		filename: "App.css",
-		code: `
-    .App {
-      text-align: center;
-    }
-    
-    .App-logo {
-      height: 40vmin;
-      pointer-events: none;
-    }
-    
-    @media (prefers-reduced-motion: no-preference) {
-      .App-logo {
-        animation: App-logo-spin infinite 20s linear;
-      }
-    }
-    
-    .App-header {
-      background-color: #282c34;
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      font-size: calc(10px + 2vmin);
-      color: white;
-    }
-    
-    .App-link {
-      color: #61dafb;
-    }
-    
-    @keyframes App-logo-spin {
-      from {
-        transform: rotate(0deg);
-      }
-    
-      to {
-        transform: rotate(360deg);
-      }
-    }
+		code: `.App {
+  text-align: center;
+}
+
+.App-logo {
+  height: 40vmin;
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .App-logo {
+    animation: App-logo-spin infinite 20s linear;
+  }
+}
+
+.App-header {
+  background-color: #282c34;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: calc(10px + 2vmin);
+  color: white;
+}
+
+.App-link {
+  color: #61dafb;
+}
+
+@keyframes App-logo-spin {
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
+}
     `,
 	};
 };

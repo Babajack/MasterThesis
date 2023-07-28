@@ -116,6 +116,10 @@ export const getTaskByCategoryAndIndex = async (category: TaskCategory, index: n
 	});
 };
 
+export const getTaskById = async (taskId: string) => {
+	return await Task.findById(taskId);
+};
+
 export const getAllTasks = async (filter?: string | string[]) => {
 	return await Task.find({}, filter ?? "");
 };

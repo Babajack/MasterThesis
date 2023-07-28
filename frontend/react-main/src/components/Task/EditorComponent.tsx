@@ -11,6 +11,7 @@ import { CodeFiles, LoadingStatus, Errors, CodeFile } from "../../types";
 import { ActionCreatorWithPayload } from "@reduxjs/toolkit";
 
 interface EditorComponentProps {
+	type: string;
 	currentFiles: CodeFiles;
 	onUpdateCode: (files: CodeFiles) => (dispatch: AppDispatch) => void;
 	onUpdateFile: ActionCreatorWithPayload<{
@@ -230,6 +231,7 @@ const EditorComponent: React.FC<EditorComponentProps> = (props) => {
 			</MDBCol>
 			<MDBCol md={12} className="px-1">
 				<Editor
+					key={props.type}
 					height={"99%"}
 					onValidate={(markers) => {
 						console.log(markers);

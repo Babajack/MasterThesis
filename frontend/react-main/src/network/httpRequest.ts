@@ -53,10 +53,10 @@ export const httpRequest = {
 		return axios.put("/sessionContainer/updateCode", files, { params: { type: type } });
 	},
 
-	async fetchTask(taskID: string) {
+	async fetchTask(taskId: string) {
 		return axios.get("/task", {
 			params: {
-				taskID: taskID,
+				taskId: taskId,
 			},
 		});
 	},
