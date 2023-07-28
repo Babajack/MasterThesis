@@ -29,7 +29,6 @@ const LoadingWrapper: React.FC<LoadingWrapperProps> = (props) => {
 			if (props.errorComponent) return <>{props.errorComponent}</>;
 			else return <>ERROR</>;
 		case "Success":
-		default:
 			return <>{props.children}</>;
 	}
 };

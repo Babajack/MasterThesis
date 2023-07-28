@@ -3,7 +3,14 @@ import { useDispatch, useSelector } from "react-redux";
 import EditorComponent from "../components/Task/EditorComponent";
 import PreviewComponent from "../components/Task/PreviewComponent";
 import { AppDispatch, RootState } from "../redux/store";
-import { fetchTask, updateCode, updateFile } from "../redux/slices/taskSlice";
+import {
+	addNewFile,
+	deleteFileByName,
+	fetchTask,
+	setLoadingStatus,
+	updateCode,
+	updateFile,
+} from "../redux/slices/taskSlice";
 import { useEffect } from "react";
 import { useParams } from "react-router-dom";
 import LoadingWrapper from "../components/Utils/LoadingWrapper";
@@ -14,8 +21,19 @@ const TaskMenuView = () => {
 	const { taskId } = useParams();
 
 	useEffect(() => {
-		dispatch(fetchTask({ taskID: taskId ?? "" }));
+		dispatch(fetchTask({ taskId: taskId ?? "" }));
 	}, [, taskId]);
+
+	/**
+	 * cleanup on unmount
+	 */
+	useEffect(() => {
+		//console.log(taskState.loadingStatus);
+
+		return () => {
+			dispatch(setLoadingStatus("Idle"));
+		};
+	}, []);
 
 	return (
 		<LoadingWrapper loadingStatus={taskState.loadingStatus}>
@@ -31,8 +49,19 @@ const TaskMenuView = () => {
 					>
 						<EditorComponent
 							{...taskState}
-							onUpdateCode={updateCode}
-							onUpdateFile={updateFile}
+							onAddFile={(file) => {
+								return new Promise((resolve) => {
+									dispatch(addNewFile({ filename: file.filename })).then((res) => {
+										if (res.meta.requestStatus === "fulfilled") resolve(true);
+										else resolve({ error: res.payload as string });
+									});
+								});
+							}}
+							onDeleteFile={(filename) => dispatch(deleteFileByName(filename))}
+							onUpdateCode={(files) => dispatch(updateCode(files))}
+							onUpdateFile={(oldFile, newFile) =>
+								dispatch(updateFile({ old: oldFile, new: newFile }))
+							}
 							type={"task"}
 						/>
 					</MDBCol>

@@ -31,8 +31,13 @@ export type UserResponse = UserSchemaFrontend | { error: string };
 
 export interface UserSchemaFrontend {
 	username: string;
-	tasks: Task[];
+	tasks: TaskHead[];
 	sandbox: Sandbox;
+}
+
+export interface TaskHead {
+	task: TaskSchemaFrontend;
+	isUnlocked?: boolean;
 }
 
 export type TaskResponse = Task; //| { error: string };

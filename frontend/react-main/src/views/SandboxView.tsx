@@ -3,7 +3,14 @@ import { useDispatch, useSelector } from "react-redux";
 import EditorComponent from "../components/Task/EditorComponent";
 import PreviewComponent from "../components/Task/PreviewComponent";
 import { AppDispatch, RootState } from "../redux/store";
-import { fetchSandbox, updateCode, updateFile } from "../redux/slices/sandboxSlice";
+import {
+	addNewFile,
+	deleteFileByName,
+	fetchSandbox,
+	setLoadingStatus,
+	updateCode,
+	updateFile,
+} from "../redux/slices/sandboxSlice";
 import { useEffect } from "react";
 import LoadingWrapper from "../components/Utils/LoadingWrapper";
 
@@ -13,6 +20,15 @@ const SandboxView = () => {
 
 	useEffect(() => {
 		dispatch(fetchSandbox());
+	}, []);
+
+	/**
+	 * cleanup on unmount
+	 */
+	useEffect(() => {
+		return () => {
+			dispatch(setLoadingStatus("Idle"));
+		};
 	}, []);
 
 	return (
@@ -26,8 +42,19 @@ const SandboxView = () => {
 					>
 						<EditorComponent
 							{...sandboxState}
-							onUpdateCode={updateCode}
-							onUpdateFile={updateFile}
+							onAddFile={(file) => {
+								return new Promise((resolve) => {
+									dispatch(addNewFile({ filename: file.filename })).then((res) => {
+										if (res.meta.requestStatus === "fulfilled") resolve(true);
+										else resolve({ error: res.payload as string });
+									});
+								});
+							}}
+							onDeleteFile={(filename) => dispatch(deleteFileByName(filename))}
+							onUpdateCode={(files) => dispatch(updateCode(files))}
+							onUpdateFile={(oldFile, newFile) =>
+								dispatch(updateFile({ old: oldFile, new: newFile }))
+							}
 							type="sandbox"
 						/>
 					</MDBCol>

@@ -49,6 +49,9 @@ export const sandboxSlice = createSlice({
 			const index = state.currentFiles.findIndex((file) => file.filename === action.payload);
 			if (index !== -1) state.currentFiles.splice(index, 1);
 		},
+		setLoadingStatus: (state, action: PayloadAction<LoadingStatus>) => {
+			state.loadingStatus = action.payload;
+		},
 	},
 	extraReducers: (builder) => {
 		builder.addCase("auth/logout/fulfilled", (state) => {
@@ -87,8 +90,13 @@ export const sandboxSlice = createSlice({
 	},
 });
 
-export const { resetSandboxState, setCurrentFiles, updateFile, deleteFileByName } =
-	sandboxSlice.actions;
+export const {
+	resetSandboxState,
+	setCurrentFiles,
+	updateFile,
+	deleteFileByName,
+	setLoadingStatus,
+} = sandboxSlice.actions;
 
 export default sandboxSlice.reducer;
 

@@ -28,20 +28,20 @@ const initialState: TaskState = {
 
 	// function App() {
 	// 	return (
-	// 		<div className="App">
-	// 			<header className="App-header">
-	// 				<img src={""} className="App-logo" alt="logo" />
-	// 				<p>TEST</p>
-	// 				<a
-	// 					className="App-link"
-	// 					href="https://reactjs.org"
-	// 					target="_blank"
-	// 					rel="noopener noreferrer"
-	// 				>
-	// 					Learn React
-	// 				</a>
-	// 			</header>
-	// 		</div>
+	// <div className="App">
+	// 	<header className="App-header">
+	// 		<img src={""} className="App-logo" alt="logo" />
+	// 		<p>TEST</p>
+	// 		<a
+	// 			className="App-link"
+	// 			href="https://reactjs.org"
+	// 			target="_blank"
+	// 			rel="noopener noreferrer"
+	// 		>
+	// 			Learn React
+	// 		</a>
+	// 	</header>
+	// </div>
 	// 	);
 	// }
 
@@ -163,6 +163,9 @@ export const taskSlice = createSlice({
 			const index = state.currentFiles.findIndex((file) => file.filename === action.payload);
 			if (index !== -1) state.currentFiles.splice(index, 1);
 		},
+		setLoadingStatus: (state, action: PayloadAction<LoadingStatus>) => {
+			state.loadingStatus = action.payload;
+		},
 	},
 	extraReducers: (builder) => {
 		builder.addCase("auth/logout/fulfilled", (state) => {
@@ -175,16 +178,17 @@ export const taskSlice = createSlice({
 			state.loadingStatus = "Error";
 		});
 		builder.addCase(fetchTask.fulfilled, (state, action) => {
-			// if (action.payload.error) {
-			// 	//state.errors = action.payload.error;
-			// 	state.loadingStatus = "Error";
-			// 	return;
-			// } // WTF is this
-
-			state.task = action.payload;
-			state.currentFiles =
-				state.currentFiles.length > 0 ? state.currentFiles : action.payload.defaultFiles ?? [];
 			state.loadingStatus = "Success";
+			state.task = action.payload.task;
+			state.userCode = action.payload.userCode;
+			state.userSolution = action.payload.userSolution;
+			state.isUnlocked = action.payload.isUnlocked;
+			state.currentFiles =
+				state.currentFiles.length > 0
+					? state.currentFiles
+					: action.payload.userCode?.length ?? 0 > 0
+					? action.payload.userCode!
+					: action.payload.task.defaultFiles!;
 		});
 		builder.addCase(updateCodeThunk.pending, (state) => {
 			state.buildStatus = "Pending";
@@ -204,7 +208,8 @@ export const taskSlice = createSlice({
 	},
 });
 
-export const { resetTaskState, setCurrentFiles, updateFile, deleteFileByName } = taskSlice.actions;
+export const { resetTaskState, setCurrentFiles, updateFile, deleteFileByName, setLoadingStatus } =
+	taskSlice.actions;
 
 export default taskSlice.reducer;
 
@@ -216,10 +221,10 @@ export const updateCode = (files: CodeFiles) => (dispatch: AppDispatch) => {
 
 /* --------- async thunks --------- */
 
-export const fetchTask = createAsyncThunk(
+export const fetchTask = createAsyncThunk<Task, { taskId: string }, any>(
 	"task/fetchTask",
-	async (payload: { taskID: string }, thunkApi) => {
-		const response = await httpRequest.fetchTask(payload.taskID);
+	async (payload: { taskId: string }, thunkApi) => {
+		const response = await httpRequest.fetchTask(payload.taskId);
 		if (response) return response.data;
 		else return thunkApi.rejectWithValue("error");
 	}

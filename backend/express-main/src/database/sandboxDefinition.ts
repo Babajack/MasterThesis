@@ -20,7 +20,8 @@ root.render(
 const getAppFile = (imports?: string, mainBody?: string, extraBody?: string): CodeFile => {
 	return {
 		filename: "App.js",
-		code: `import React from "react"${imports ? "\n" + imports : ""}
+		code: `import "./App.css";
+import React from "react"${imports ? "\n" + imports : ""}
 
 export default function App() {
     return (

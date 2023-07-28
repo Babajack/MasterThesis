@@ -91,6 +91,7 @@ const build = async (path) => {
 			//sourcemap: true,
 			//target: ["chrome58", "firefox57", "safari11", "edge16"],
 			outfile: `./${path}/public/build/App.js`,
+			//outdir: `./${path}/public/build/`,
 			loader: { ".js": "jsx" },
 		});
 		return [];

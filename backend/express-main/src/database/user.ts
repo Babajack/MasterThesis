@@ -7,7 +7,7 @@ export interface UserSchema {
 	username: string;
 	password: string;
 	tasks: {
-		task: mongoose.Schema.Types.ObjectId;
+		task: TaskSchema;
 		userSolution?: CodeFiles;
 		userCode?: CodeFiles;
 		isUnlocked?: boolean;
@@ -86,20 +86,51 @@ export const getUserByUsername = async (username: string) => {
 };
 
 export const getIsTaskUnlocked = async (userId: string, taskId: string) => {
-	const user = await User.findOne({ _id: userId, "tasks.task._id": taskId }, { "tasks.$": 1 });
+	const user = await User.findOne({ _id: userId, "tasks.task": taskId }, { "tasks.$": 1 });
 	return user?.tasks.at(0)?.isUnlocked;
 };
-export const getUserData = async (userId: string) => {
-	return await User.findById(userId, "username tasks sandbox -_id").populate([
+
+export const getUsersTask = async (userId: string, taskId: string) => {
+	const user = await User.findOne({ _id: userId, "tasks.task": taskId }, { "tasks.$": 1 }).populate(
 		{
 			path: "tasks",
 			populate: {
 				path: "task",
-				//select: "-_id -__v -unlocks -unlocksCategories -solutionFiles",
-				select: "_id index title category isDefaultUnlocked",
+				//select: "_id index title category isDefaultUnlocked",
 			},
-		},
-	]);
+		}
+	);
+	const task = user?.tasks.at(0);
+	if (task && task.userSolution) {
+		if (task.userSolution.length === 0) {
+			task.task.solutionFiles = [];
+		}
+	}
+
+	return task;
+};
+
+export const getUserData = async (userId: string) => {
+	return await User.findById(userId, "username tasks sandbox -_id").populate(
+		"tasks.task",
+		"_id index title category isDefaultUnlocked"
+	);
+
+	// const user = await User.findById(userId, "username tasks sandbox -_id").populate([
+	// 	{
+	// 		path: "tasks",
+	// 		select: "-tasks._id",
+	// 		populate: {
+	// 			path: "task",
+	// 			//select: "-_id -__v -unlocks -unlocksCategories -solutionFiles",
+	// 			select: "_id index title category isDefaultUnlocked",
+	// 		},
+	// 	},
+	// ]);
+	// console.log(user);
+
+	// return user;
+	//.select("-tasks.userCode");
 };
 
 export const addNewlyCreatedTasks = async (userId: string) => {
