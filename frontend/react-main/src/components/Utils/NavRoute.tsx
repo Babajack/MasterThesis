@@ -3,13 +3,15 @@ import { useBasePath } from "../../hooks/useBasePath";
 import { useState } from "react";
 import { Navbar, Container, Nav, NavDropdown } from "react-bootstrap";
 import { MDBBtn, MDBIcon } from "mdb-react-ui-kit";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { logoutUser } from "../../redux/slices/userSlice";
-import { AppDispatch } from "../../redux/store";
+import { AppDispatch, RootState } from "../../redux/store";
 
 const NavRoute = () => {
 	const dispatch = useDispatch<AppDispatch>();
 	const currentPathname = useBasePath();
+
+	const activeTaskId = useSelector((state: RootState) => state.task.task._id);
 
 	const getIsActive = (pathname: string) => {
 		return currentPathname === pathname;
@@ -46,11 +48,22 @@ const NavRoute = () => {
 								>
 									Sandbox
 								</Nav.Link>
+								{activeTaskId && (
+									<Nav.Link
+										className="app-text-primary"
+										active={getIsActive(`/task`)}
+										as={Link}
+										eventKey={3}
+										to={`/task/${activeTaskId}`}
+									>
+										Aktuelle Aufgabe
+									</Nav.Link>
+								)}
 							</Nav>
 							<Nav>
 								<Nav.Link
 									className="app-text-primary"
-									eventKey={3}
+									eventKey={4}
 									onClick={() => dispatch(logoutUser())}
 								>
 									Logout <MDBIcon className="ms-2" fas icon="sign-out-alt" />
