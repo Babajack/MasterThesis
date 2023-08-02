@@ -11,9 +11,9 @@ import {
 import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../redux/store";
-import { addNewFile, deleteFileByName } from "../../redux/slices/taskSlice";
 import { Tooltip } from "react-tooltip";
 import { ConfirmationModal } from "../Utils/ConfirmationModal";
+import { CodeFile, CodeFiles } from "../../types";
 
 interface TabConfig {
 	tabName: string;
@@ -22,8 +22,10 @@ interface TabConfig {
 
 interface TabsComponentProps {
 	currentFilename: string;
+	currentFiles: CodeFiles;
 	setCurrentFilename: (filename: string) => void;
 	onDeleteFile: (filename: string) => void;
+	onAddFile: (file: CodeFile) => Promise<boolean | { error: string }>;
 }
 
 const TabsComponent: React.FC<TabsComponentProps> = (props) => {
@@ -79,16 +81,24 @@ const TabsComponent: React.FC<TabsComponentProps> = (props) => {
 
 	const submitFile = (filename: string) => {
 		if (basicActive.fileEndings.some((fileEnding) => filename.endsWith(fileEnding))) {
-			dispatch(addNewFile({ filename: filename })).then((res) => {
-				if (res.meta.requestStatus === "fulfilled") toggleEditMode();
-				else setInputError(res.payload as string);
+			props.onAddFile({ filename: filename, code: "" }).then((res) => {
+				if (res === true) toggleEditMode();
+				else setInputError((res as any).error);
 			});
+			// dispatch(addNewFile({ filename: filename })).then((res) => {
+			// 	if (res.meta.requestStatus === "fulfilled") toggleEditMode();
+			// 	else setInputError(res.payload as string);
+			// });
+			// dispatch(addNewFile({ filename: filename })).then((res) => {
+			// 	if (res.meta.requestStatus === "fulfilled") toggleEditMode();
+			// 	else setInputError(res.payload as string);
+			// });
 		} else {
 			setInputError("Datei hat nicht die korrekte Endung: " + basicActive.fileEndings.join(" / "));
 		}
 	};
 
-	const files = useSelector((state: RootState) => state.task.currentFiles).filter((file) => {
+	const files = props.currentFiles.filter((file) => {
 		for (let fileEnding of basicActive.fileEndings) {
 			if (file.filename.endsWith(fileEnding)) return true;
 		}
@@ -193,7 +203,6 @@ const TabsComponent: React.FC<TabsComponentProps> = (props) => {
 				setShowModal={setShowConfirmationModal}
 				textBody={`Datei "${props.currentFilename}" wirklich löschen?`}
 				confirmationFunction={() => {
-					dispatch(deleteFileByName(props.currentFilename));
 					props.onDeleteFile(props.currentFilename);
 					setPreviousActiveFile({ ...previousActiveFile, [basicActive.tabName]: "App.js" });
 					props.setCurrentFilename(files[0].filename);

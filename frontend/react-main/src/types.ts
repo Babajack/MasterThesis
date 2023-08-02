@@ -5,52 +5,75 @@ export type UserRequest = {
 	password: string;
 };
 
-export interface TaskResponse {
-	taskID: string;
-	description: string;
-	defaultFiles: SandboxFiles;
-	currentFiles?: SandboxFiles;
-	successFiles?: SandboxFiles;
-}
-
 export type User = {
 	username: string;
 	id: string;
 };
 
-export type SandboxFiles = SandboxFile[];
+export type CodeFiles = CodeFile[];
 
-export type SandboxFile = {
+export type CodeFile = {
 	filename: string;
 	code: string;
 	isDeletable?: boolean;
 };
 
+export type Errors = {
+	filename: string;
+	errors: { message: string; line: number }[];
+}[];
+
+export type CodeType = "task" | "sandbox";
+
 /* Data from Backend Types */
 
-export type UserResponse =
-	| {
-			username: string;
-			tasks?: {
-				task: TaskSchema;
-				solutionFiles: SandboxFiles;
-				userFiles: SandboxFiles;
-			}[];
-	  }
-	| { error: string };
+export type UserResponse = UserSchemaFrontend | { error: string };
 
-export interface TaskSchema {
+export interface UserSchemaFrontend {
+	username: string;
+	tasks: TaskHead[];
+	sandbox: Sandbox;
+}
+
+export interface TaskHead {
+	task: TaskSchemaFrontend;
+	isUnlocked?: boolean;
+}
+
+export type TaskResponse = Task; //| { error: string };
+
+export interface Task {
+	task: TaskSchemaFrontend;
+	userSolution?: CodeFiles;
+	userCode?: CodeFiles;
+	isUnlocked?: boolean;
+}
+
+export interface TaskSchemaFrontend {
+	_id: string;
 	index: number;
 	category: TaskCategory;
-	unlocks?: number[];
-	unlocksCategories?: TaskCategory[];
-	description: {
+	title: string;
+	isDefaultUnlocked?: boolean;
+	description?: {
 		displayType: TaskDescriptionDisplayType;
 		text: string;
 	}[];
-	defaultFiles: SandboxFiles;
+	defaultFiles?: CodeFiles;
+	solutionFiles?: CodeFiles;
 }
 
 export type TaskDescriptionDisplayType = "description" | "code" | "hint";
 
-export type TaskCategory = "JSX";
+export type TaskCategory = string; //"JSX";
+
+export interface Sandbox {
+	sandboxId: string;
+	userCode?: CodeFiles;
+}
+
+export interface SandboxSchemaFrontend {
+	defaultFiles?: CodeFiles;
+}
+
+export type SandboxResponse = SandboxSchemaFrontend;

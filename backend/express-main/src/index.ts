@@ -1,14 +1,13 @@
 import cors from "cors";
 import dotenv from "dotenv";
-import express, { Request, Response } from "express";
+import express from "express";
 import session from "express-session";
-import { getSessionStore } from "./database/database";
-import { authRouter, requireLogin } from "./routes/authRoutes";
-import { sessionDockerRouter } from "./routes/sessionDockerRoutes";
-import { taskRouter } from "./routes/taskRoutes";
-import { runCode, startSandboxContainer } from "./docker/dockerControl";
-import { SandboxFiles } from "types";
 import { createProxyMiddleware } from "http-proxy-middleware";
+import { getSessionStore } from "./database/database";
+import { startSandboxContainer } from "./docker/dockerControl";
+import { authRouter, requireLogin } from "./routes/authRoutes";
+import { sandboxRouter } from "./routes/sandboxRoutes";
+import { taskRouter } from "./routes/taskRoutes";
 
 // env variables
 dotenv.config();
@@ -62,15 +61,16 @@ app.use(
 					res.status(202).send({ message: "Container is starting..." })
 				);
 		},
-		/* onProxyReq: (proxyReq, req, res, options) => {
-				if (req.body) {
-					const data = JSON.stringify(req.body);
-					proxyReq.setHeader("Content-Type", "application/json");
-					proxyReq.setHeader("Content-Length", Buffer.byteLength(data));
-					// stream the content
-					proxyReq.write(data);
-				}
-			}, */
+		onProxyReq: (proxyReq, req, res, options) => {
+			//console.log(proxyReq.path);
+			// if (req.body) {
+			// 	const data = JSON.stringify(req.body);
+			// 	proxyReq.setHeader("Content-Type", "application/json");
+			// 	proxyReq.setHeader("Content-Length", Buffer.byteLength(data));
+			// 	// stream the content
+			// 	proxyReq.write(data);
+			// }
+		},
 	})
 );
 
@@ -79,7 +79,7 @@ app.use(express.json());
 
 // logging
 app.use((req, res, next) => {
-	console.log(`request: ${JSON.stringify(req.body)}`);
+	console.log("Incoming Request", req.method, req.url, req.body);
 	next();
 });
 
@@ -89,6 +89,7 @@ app.use("/", authRouter);
 //app.use("/", sessionDockerRouter);
 
 app.use("/", requireLogin, taskRouter);
+app.use("/", requireLogin, sandboxRouter);
 
 app.listen(port, () => {
 	console.log(`Example app listening on port ${port}`);

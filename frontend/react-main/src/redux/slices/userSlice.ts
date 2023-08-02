@@ -1,25 +1,22 @@
 import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { LoadingStatus, SandboxFiles, TaskSchema, UserResponse } from "../../types";
-import { useSelector } from "react-redux";
-import { RootState } from "../store";
 import { httpRequest } from "../../network/httpRequest";
+import { LoadingStatus, Task, TaskSchemaFrontend, UserSchemaFrontend } from "../../types";
+import { RootState } from "../store";
 
-interface UserState {
-	username?: string;
+interface UserState extends UserSchemaFrontend {
 	isLoggedIn: boolean;
 	loadingStatus: LoadingStatus;
 	error?: string;
-	tasks: {
-		task: TaskSchema;
-		solutionFiles: SandboxFiles;
-		userFiles: SandboxFiles;
-	}[];
 }
 
 const initialState: UserState = {
+	username: "",
 	isLoggedIn: false,
 	loadingStatus: "Idle",
 	tasks: [],
+	sandbox: {
+		sandboxId: "",
+	},
 };
 
 export const userSlice = createSlice({
@@ -42,7 +39,11 @@ export const userSlice = createSlice({
 				state.loadingStatus = "Pending";
 			})
 			.addCase(getUserData.fulfilled, (state, action) => {
-				return { ...state, ...action.payload, loadingStatus: "Success", isLoggedIn: true };
+				state.loadingStatus = "Success";
+				state.isLoggedIn = true;
+				state.sandbox = action.payload.sandbox;
+				state.tasks = action.payload.tasks;
+				state.username = action.payload.username;
 			})
 			.addCase(getUserData.rejected, (state, action) => {
 				//state.error = action.payload as string;
@@ -75,6 +76,21 @@ export const userSlice = createSlice({
 export const { setIsLoggedIn, setUsername, setError } = userSlice.actions;
 
 export default userSlice.reducer;
+
+export const getTasksByCategory = (state: RootState) => {
+	return state.user.tasks.reduce(
+		(previous, current) => {
+			const index = previous.findIndex((elem) => elem.category === current.task.category);
+			if (index === -1) {
+				previous.push({ category: current.task.category, tasks: [current] });
+			} else {
+				previous[index].tasks.push(current);
+			}
+			return previous;
+		},
+		[] as { category: string; tasks: Task[] }[]
+	);
+};
 
 /* --------- async thunks --------- */
 

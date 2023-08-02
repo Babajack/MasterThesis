@@ -1,58 +1,73 @@
-import {
-	MDBBtn,
-	MDBCol,
-	MDBContainer,
-	MDBIcon,
-	MDBInput,
-	MDBRow,
-	MDBSpinner,
-} from "mdb-react-ui-kit";
-import * as React from "react";
 import Editor from "@monaco-editor/react";
+import { MDBCol, MDBRow } from "mdb-react-ui-kit";
 import { editor } from "monaco-editor";
+import * as React from "react";
+import { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../redux/store";
-import { useEffect, useRef, useState } from "react";
-import axios from "axios";
-import { parse } from "@babel/parser";
-import traverse from "@babel/traverse";
-import TabsComponent from "./TabsComponent";
-import { updateCode, updateFile } from "../../redux/slices/taskSlice";
-import * as prettier from "prettier/standalone";
-import * as babel from "prettier/parser-babel";
-import * as typescript from "prettier/parser-typescript";
-import { httpRequest } from "../../network/httpRequest";
-import { Tooltip } from "react-tooltip";
 import EditorButtons from "./EditorButtons";
-//import "./EditorComponent.css";
+import TabsComponent from "./TabsComponent";
+import { CodeFiles, LoadingStatus, Errors, CodeFile } from "../../types";
+import { ActionCreatorWithPayload } from "@reduxjs/toolkit";
 
-const EditorComponent: React.FC = () => {
-	const taskState = useSelector((state: RootState) => state.task);
+interface EditorComponentProps {
+	type: string;
+	currentFiles: CodeFiles;
+	onUpdateCode: (files: CodeFiles) => void;
+	onUpdateFile: (oldFile: CodeFile, newFile: CodeFile) => void;
+
+	// onUpdateFile: ActionCreatorWithPayload<{
+	// 	old: CodeFile;
+	// 	new: CodeFile;
+	// }>;
+	onDeleteFile: (filename: string) => void;
+	onAddFile: (file: CodeFile) => Promise<boolean | { error: string }>;
+}
+
+const EditorComponent: React.FC<EditorComponentProps> = (props) => {
+	//const taskState = useSelector((state: RootState) => state.task); // REMOVE
 	const dispatch = useDispatch<AppDispatch>();
 
 	const dirtyFlag = useRef(false);
 
 	const [currentFilename, setCurrentFilename] = useState<string>("App.js");
-	const currentFile = taskState.currentFiles.find((elem) => elem.filename === currentFilename)!;
+	const currentFile = props.currentFiles.find((elem) => elem.filename === currentFilename)!;
 
 	const editorRef = useRef<editor.IStandaloneCodeEditor>();
 	const monacoRef = useRef<any>();
-	/* const monacoRef =
-		useRef<
-			typeof import("c:/Users/pheld/Desktop/Master Thesis/Repository/master-thesis/frontend/react-main/node_modules/monaco-editor/esm/vs/editor/editor.api")
-		>(); */
+	// const monacoRef =
+	// 	useRef<
+	// 		typeof import("c:/Users/pheld/Desktop/Master Thesis/Repository/master-thesis/frontend/react-main/node_modules/monaco-editor/esm/vs/editor/editor.api")
+	// 	>();
 
 	useEffect(() => {
 		editorRef.current?.focus();
 	}, [currentFile?.filename]);
+
+	useEffect(() => {
+		return () => {
+			if (monacoRef.current) {
+				for (let model of monacoRef.current.editor.getModels()) {
+					model.dispose();
+				}
+			}
+		};
+	}, []);
 
 	/**
 	 * handle monaco configuration before mount
 	 * @param monaco
 	 */
 	const handleBeforeMount = (
-		monaco: any //typeof import("c:/Users/pheld/Desktop/Master Thesis/Repository/master-thesis/frontend/react-main/node_modules/monaco-editor/esm/vs/editor/editor.api")
+		monaco: any // typeof import("c:/Users/pheld/Desktop/Master Thesis/Repository/master-thesis/frontend/react-main/node_modules/monaco-editor/esm/vs/editor/editor.api")
 	) => {
+		/**
+		 * set the models based on the user files
+		 */
+		for (let file of props.currentFiles) {
+			monaco.editor.createModel(file.code, undefined, monaco.Uri.parse(file.filename));
+		}
+
 		/**
 		 * autocomplete for JSX HTML Tags
 		 */
@@ -113,7 +128,7 @@ const EditorComponent: React.FC = () => {
 		}); */
 
 		import("monaco-themes/themes/Cobalt2.json").then((data) => {
-			monaco.editor.defineTheme("cobalt2", data);
+			monaco.editor.defineTheme("cobalt2", data as any);
 			monaco.editor.setTheme("cobalt2");
 		});
 
@@ -170,25 +185,25 @@ const EditorComponent: React.FC = () => {
 
 	// BROKEN:
 	// This function is used to active the JSX syntax highlighting
-	const activateMonacoJSXHighlighter = async (monacoEditor: any, monaco: any) => {
-		const { default: traverse } = await import("@babel/traverse");
-		const { parse } = await import("@babel/parser");
-		// @ts-ignore
-		const { default: MonacoJSXHighlighter } = await import("monaco-jsx-highlighter");
+	// const activateMonacoJSXHighlighter = async (monacoEditor: any, monaco: any) => {
+	// 	const { default: traverse } = await import("@babel/traverse");
+	// 	const { parse } = await import("@babel/parser");
+	// 	// @ts-ignore
+	// 	const { default: MonacoJSXHighlighter } = await import("monaco-jsx-highlighter");
 
-		const monacoJSXHighlighter = new MonacoJSXHighlighter(monaco, parse, traverse, monacoEditor);
+	// 	const monacoJSXHighlighter = new MonacoJSXHighlighter(monaco, parse, traverse, monacoEditor);
 
-		monacoJSXHighlighter.highlightOnDidChangeModelContent();
-		monacoJSXHighlighter.addJSXCommentCommand();
+	// 	monacoJSXHighlighter.highlightOnDidChangeModelContent();
+	// 	monacoJSXHighlighter.addJSXCommentCommand();
 
-		return {
-			monacoJSXHighlighter,
-		};
-	};
+	// 	return {
+	// 		monacoJSXHighlighter,
+	// 	};
+	// };
 
-	const handleEditorDidMount = React.useCallback(async (editor: any, monaco: any) => {
-		activateMonacoJSXHighlighter(editor, monaco);
-	}, []);
+	// const handleEditorDidMount = React.useCallback(async (editor: any, monaco: any) => {
+	// 	activateMonacoJSXHighlighter(editor, monaco);
+	// }, []);
 
 	/**
 	 * remove annoying resizeObserver loop limit exceeded error
@@ -215,7 +230,7 @@ const EditorComponent: React.FC = () => {
 
 	const handleRunCode = () => {
 		if (dirtyFlag.current) {
-			dispatch(updateCode([...taskState.currentFiles]));
+			props.onUpdateCode([...props.currentFiles]);
 		}
 		dirtyFlag.current = false;
 	};
@@ -224,10 +239,13 @@ const EditorComponent: React.FC = () => {
 		<MDBRow className="h-100 w-100 g-0 app-primary">
 			<MDBCol md={12}>
 				<TabsComponent
+					currentFiles={props.currentFiles}
 					setCurrentFilename={setCurrentFilename}
 					currentFilename={currentFilename}
+					onAddFile={props.onAddFile}
 					onDeleteFile={(filename: string) => {
 						try {
+							props.onDeleteFile(filename);
 							monacoRef.current.editor.getModel(monacoRef.current.Uri.parse(filename))?.dispose();
 						} catch (error) {
 							if (process.env.REACT_APP_DEV_MODE) console.log(error);
@@ -237,6 +255,7 @@ const EditorComponent: React.FC = () => {
 			</MDBCol>
 			<MDBCol md={12} className="px-1">
 				<Editor
+					key={props.type}
 					height={"99%"}
 					onValidate={(markers) => {
 						console.log(markers);
@@ -296,12 +315,11 @@ const EditorComponent: React.FC = () => {
 
 						//console.log(currentFile.code);
 
-						dispatch(
-							updateFile({
-								old: currentFile,
-								new: { ...currentFile, filename: currentFile.filename, code: value ?? "" },
-							})
-						);
+						props.onUpdateFile(currentFile, {
+							...currentFile,
+							filename: currentFile.filename,
+							code: value ?? "",
+						});
 					}}
 				/>
 			</MDBCol>

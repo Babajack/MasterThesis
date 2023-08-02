@@ -1,5 +1,5 @@
 import axios, { AxiosResponse } from "axios";
-import { SandboxFiles, UserRequest, UserResponse } from "../types";
+import { CodeType, CodeFiles, UserRequest, UserResponse } from "../types";
 
 const BASE_URL = process.env.REACT_APP_BACKEND_URL!;
 axios.defaults.baseURL = "http://localhost:8000"; //`http://${BASE_URL}`;
@@ -31,10 +31,7 @@ export const httpRequest = {
 	async getUserData(): Promise<AxiosResponse<UserResponse, UserResponse>> {
 		return axios.get("/user");
 	},
-	async loginUser(
-		username: string,
-		password: string
-	): Promise<AxiosResponse<UserResponse, UserResponse>> {
+	async loginUser(username: string, password: string) {
 		return axios.post<UserRequest>("/auth/login", {
 			username: username,
 			password: password,
@@ -52,14 +49,21 @@ export const httpRequest = {
 	async startDocker() {
 		return axios.post("/docker/data");
 	},
-	async updateCode(files: SandboxFiles) {
-		return axios.post("/sessionContainer/updateCode", files);
+	async updateCode(files: CodeFiles, type: CodeType) {
+		return axios.put("/sessionContainer/updateCode", files, { params: { type: type } });
 	},
 
-	async fetchTask(taskID: string) {
+	async fetchTask(taskId: string) {
 		return axios.get("/task", {
 			params: {
-				taskID: taskID,
+				taskId: taskId,
+			},
+		});
+	},
+	async fetchSandbox(sandboxId: string) {
+		return axios.get("/sandbox", {
+			params: {
+				sandboxId: sandboxId,
 			},
 		});
 	},

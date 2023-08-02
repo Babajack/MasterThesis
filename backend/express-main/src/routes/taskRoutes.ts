@@ -1,6 +1,8 @@
 import express, { Request, Response } from "express";
-import { SandboxFiles, TaskRequest, TaskResponse } from "types";
+import { CodeFiles, TaskRequest, TaskResponse } from "types";
 import { runCode } from "../docker/dockerControl";
+import { getTaskById } from "../database/task";
+import { getIsTaskUnlocked, getUsersTask } from "../database/user";
 
 export const taskRouter = express.Router();
 
@@ -22,20 +24,45 @@ taskRouter.get("/docker/start", (req, res) => {
 	startSandboxContainer(req.session.user?.id!);
 }); */
 
-taskRouter.get("/task", (req: Request<TaskRequest, {}, {}>, res: Response<TaskResponse>) => {
-	// TODO: get task by taskID, data access ...
-	res.send({
-		taskID: "testID",
-		defaultFiles: [{ filename: "app.js", code: "" }],
-		description: "empty description",
-	});
+taskRouter.get("/task", async (req, res) => {
+	try {
+		const taskId = req.query.taskId as string;
+		//const task = await getTaskById(taskId);
+		const usersTask = await getUsersTask(req.session.userId!, taskId);
+		console.log(usersTask);
+
+		if (!(usersTask?.task.isDefaultUnlocked || usersTask?.isUnlocked)) {
+			res.status(401).send({ error: "Aufgabe nicht freigeschaltet!" });
+			//res.send({ error: "error" });
+			return;
+		}
+		res.send(usersTask);
+	} catch (error) {
+		res.status(404).send({ error: error });
+	}
+	// try {
+	// 	const taskId = req.query.taskId as string;
+	// 	const task = await getTaskById(taskId);
+	// 	if (!task?.isDefaultUnlocked) {
+	// 		const isUnlocked = await getIsTaskUnlocked(req.session.userId!, taskId);
+	// 		if (!isUnlocked) {
+	// 			res.status(401).send({ error: "Aufgabe nicht freigeschaltet!" });
+	// 			// BUG: status setzen ???
+	// 			//res.send({ error: "error" });
+	// 			return;
+	// 		}
+	// 	}
+	// 	res.send(task);
+	// } catch (error) {
+	// 	res.status(404).send({ error: error });
+	// }
 });
 
-taskRouter.post(
-	"/task/updateCode",
-	async (req: Request<{}, {}, SandboxFiles>, res: Response<string>) => {
-		const response = await runCode(req.body, req.session.userId!);
-		console.log(response.data);
-		res.send(response.data);
-	}
-);
+// taskRouter.post(
+// 	"/task/updateCode",
+// 	async (req: Request<{}, {}, SandboxFiles>, res: Response<string>) => {
+// 		const response = await runCode(req.body, req.session.userId!);
+// 		console.log(response.data);
+// 		res.send(response.data);
+// 	}
+// );

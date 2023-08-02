@@ -1,148 +1,146 @@
 import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { LoadingStatus, SandboxFile, SandboxFiles, TaskResponse } from "../../types";
+import {
+	Errors,
+	LoadingStatus,
+	CodeFile,
+	CodeFiles,
+	TaskResponse,
+	TaskSchemaFrontend,
+	Task,
+} from "../../types";
 import { httpRequest } from "../../network/httpRequest";
 import { AppDispatch, RootState } from "../store";
 import { AxiosResponse } from "axios";
-import { error } from "console";
 
-type Errors = {
-	filename: string;
-	errors: { message: string; line: number }[];
-}[];
-
-interface TaskState {
-	description: string;
-	currentFiles: SandboxFiles;
-	defaultFiles: SandboxFiles;
-	successFiles?: SandboxFiles;
+interface TaskState extends Task {
 	loadingStatus: LoadingStatus;
 	buildStatus: LoadingStatus;
 	errors?: Errors;
+	currentFiles: CodeFiles;
 }
 
 const initialState: TaskState = {
-	description: "",
-	currentFiles: [
-		{
-			filename: "App.js",
-			code: `import "./App.css";
-import React from "react";
+	// 	currentFiles: [
+	// 		{
+	// 			filename: "App.js",
+	// 			code: `import "./App.css";
+	// import React from "react";
 
-function App() {
-	return (
-		<div className="App">
-			<header className="App-header">
-				<img src={""} className="App-logo" alt="logo" />
-				<p>TEST</p>
-				<a
-					className="App-link"
-					href="https://reactjs.org"
-					target="_blank"
-					rel="noopener noreferrer"
-				>
-					Learn React
-				</a>
-			</header>
-		</div>
-	);
-}
+	// function App() {
+	// 	return (
+	// <div className="App">
+	// 	<header className="App-header">
+	// 		<img src={""} className="App-logo" alt="logo" />
+	// 		<p>TEST</p>
+	// 		<a
+	// 			className="App-link"
+	// 			href="https://reactjs.org"
+	// 			target="_blank"
+	// 			rel="noopener noreferrer"
+	// 		>
+	// 			Learn React
+	// 		</a>
+	// 	</header>
+	// </div>
+	// 	);
+	// }
 
-export default App;
-			`,
-		},
-		{
-			filename: "index.js",
-			code: `import React from "react";
-import ReactDOM from "react-dom/client";
-import App from "./App";
+	// export default App;
+	// 			`,
+	// 		},
+	// 		{
+	// 			filename: "index.js",
+	// 			code: `import React from "react";
+	// import ReactDOM from "react-dom/client";
+	// import App from "./App";
 
-const root = ReactDOM.createRoot(document.getElementById("root"));
-root.render(
-	<React.StrictMode>
-		<App />
-	</React.StrictMode>
-);
+	// const root = ReactDOM.createRoot(document.getElementById("root"));
+	// root.render(
+	// 	<React.StrictMode>
+	// 		<App />
+	// 	</React.StrictMode>
+	// );
 
-			`,
-		},
-		{
-			filename: "App.css",
-			code: `.App {
-				text-align: center;
-			  }
-			  
-			  .App-logo {
-				height: 40vmin;
-				pointer-events: none;
-			  }
-			  
-			  @media (prefers-reduced-motion: no-preference) {
-				.App-logo {
-				  animation: App-logo-spin infinite 20s linear;
-				}
-			  }
-			  
-			  .App-header {
-				background-color: #282c34;
-				min-height: 100vh;
-				display: flex;
-				flex-direction: column;
-				align-items: center;
-				justify-content: center;
-				font-size: calc(10px + 2vmin);
-				color: white;
-			  }
-			  
-			  .App-link {
-				color: #61dafb;
-			  }
-			  
-			  @keyframes App-logo-spin {
-				from {
-				  transform: rotate(0deg);
-				}
-				to {
-				  transform: rotate(360deg);
-				}
-			  }
-			  `,
-		},
-		{
-			filename: "index.html",
-			code: `<!DOCTYPE html>
-<html lang="en">
+	// 			`,
+	// 		},
+	// 		{
+	// 			filename: "App.css",
+	// 			code: `.App {
+	// 				text-align: center;
+	// 			  }
 
-<head>
-  <meta charset="utf-8" />
-  <link rel="icon" href="sessionContainer/favicon.ico" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <meta name="theme-color" content="#000000" />
-  <meta name="description" content="Web site created using create-react-app" />
-  <link rel="apple-touch-icon" href="sessionContainer/logo192.png" />
-  <!--
-      manifest.json provides metadata used when your web app is installed on a
-      user's mobile device or desktop. See https://developers.google.com/web/fundamentals/web-app-manifest/
-    -->
-  <link rel="manifest" href="sessionContainer/manifest.json" />
-  <script src="sessionContainer/build/App.js" async defer></script>
-  <link rel="stylesheet" href="sessionContainer/build/App.css" />
-  <title>React App</title>
-</head>
+	// 			  .App-logo {
+	// 				height: 40vmin;
+	// 				pointer-events: none;
+	// 			  }
 
-<body style="margin:0;padding:0">
-   <noscript>You need to enable JavaScript to run this app.</noscript>
-  <div id="root"></div>
+	// 			  @media (prefers-reduced-motion: no-preference) {
+	// 				.App-logo {
+	// 				  animation: App-logo-spin infinite 20s linear;
+	// 				}
+	// 			  }
 
-  
-</body>
+	// 			  .App-header {
+	// 				background-color: #282c34;
+	// 				min-height: 100vh;
+	// 				display: flex;
+	// 				flex-direction: column;
+	// 				align-items: center;
+	// 				justify-content: center;
+	// 				font-size: calc(10px + 2vmin);
+	// 				color: white;
+	// 			  }
 
-</html>
-			`,
-		},
-	],
-	defaultFiles: [{ filename: "app.js", code: "" }],
+	// 			  .App-link {
+	// 				color: #61dafb;
+	// 			  }
+
+	// 			  @keyframes App-logo-spin {
+	// 				from {
+	// 				  transform: rotate(0deg);
+	// 				}
+	// 				to {
+	// 				  transform: rotate(360deg);
+	// 				}
+	// 			  }
+	// 			  `,
+	// 		},
+	// 		{
+	// 			filename: "index.html",
+	// 			code: `<!DOCTYPE html>
+	// <html lang="en">
+
+	// <head>
+	//   <meta charset="utf-8" />
+	//   <link rel="icon" href="sessionContainer/task/favicon.ico" />
+	//   <meta name="viewport" content="width=device-width, initial-scale=1" />
+	//   <meta name="theme-color" content="#000000" />
+	//   <meta name="description" content="Web site created using create-react-app" />
+	//   <link rel="apple-touch-icon" href="sessionContainer/task/logo192.png" />
+	//   <!--
+	//       manifest.json provides metadata used when your web app is installed on a
+	//       user's mobile device or desktop. See https://developers.google.com/web/fundamentals/web-app-manifest/
+	//     -->
+	//   <link rel="manifest" href="sessionContainer/task/manifest.json" />
+	//   <script src="sessionContainer/task/build/App.js" async defer></script>
+	//   <link rel="stylesheet" href="sessionContainer/task/build/App.css" />
+	//   <title>React App</title>
+	// </head>
+
+	// <body style="margin:0;padding:0">
+	//    <noscript>You need to enable JavaScript to run this app.</noscript>
+	//   <div id="root"></div>
+
+	// </body>
+
+	// </html>
+	// 			`,
+	// 		},
+	// 	],
+	currentFiles: [],
 	loadingStatus: "Idle",
 	buildStatus: "Idle",
+	task: { _id: "", category: "", index: 0, title: "" },
 };
 
 export const taskSlice = createSlice({
@@ -150,16 +148,12 @@ export const taskSlice = createSlice({
 	initialState,
 	reducers: {
 		resetTaskState: (state) => {
-			state.description = "";
-			state.currentFiles = [];
-			state.defaultFiles = [];
-			state.successFiles = undefined;
-			state.loadingStatus = "Idle";
+			return initialState;
 		},
-		setCurrentFiles: (state, action: PayloadAction<SandboxFiles>) => {
+		setCurrentFiles: (state, action: PayloadAction<CodeFiles>) => {
 			state.currentFiles = action.payload;
 		},
-		updateFile: (state, action: PayloadAction<{ old: SandboxFile; new: SandboxFile }>) => {
+		updateFile: (state, action: PayloadAction<{ old: CodeFile; new: CodeFile }>) => {
 			const index = state.currentFiles.findIndex(
 				(file) => file.filename === action.payload.old.filename
 			);
@@ -168,6 +162,9 @@ export const taskSlice = createSlice({
 		deleteFileByName: (state, action: PayloadAction<string>) => {
 			const index = state.currentFiles.findIndex((file) => file.filename === action.payload);
 			if (index !== -1) state.currentFiles.splice(index, 1);
+		},
+		setLoadingStatus: (state, action: PayloadAction<LoadingStatus>) => {
+			state.loadingStatus = action.payload;
 		},
 	},
 	extraReducers: (builder) => {
@@ -180,12 +177,18 @@ export const taskSlice = createSlice({
 		builder.addCase(fetchTask.rejected, (state) => {
 			state.loadingStatus = "Error";
 		});
-		builder.addCase(fetchTask.fulfilled, (state, action: PayloadAction<TaskResponse>) => {
+		builder.addCase(fetchTask.fulfilled, (state, action) => {
 			state.loadingStatus = "Success";
-			state.description = action.payload.description;
-			state.currentFiles = action.payload.currentFiles ?? action.payload.defaultFiles;
-			state.defaultFiles = action.payload.defaultFiles;
-			state.successFiles = action.payload.successFiles ?? undefined;
+			state.task = action.payload.task;
+			state.userCode = action.payload.userCode;
+			state.userSolution = action.payload.userSolution;
+			state.isUnlocked = action.payload.isUnlocked;
+			state.currentFiles =
+				state.currentFiles.length > 0
+					? state.currentFiles
+					: action.payload.userCode?.length ?? 0 > 0
+					? action.payload.userCode!
+					: action.payload.task.defaultFiles!;
 		});
 		builder.addCase(updateCodeThunk.pending, (state) => {
 			state.buildStatus = "Pending";
@@ -205,11 +208,12 @@ export const taskSlice = createSlice({
 	},
 });
 
-export const { resetTaskState, setCurrentFiles, updateFile, deleteFileByName } = taskSlice.actions;
+export const { resetTaskState, setCurrentFiles, updateFile, deleteFileByName, setLoadingStatus } =
+	taskSlice.actions;
 
 export default taskSlice.reducer;
 
-export const updateCode = (files: SandboxFiles) => (dispatch: AppDispatch) => {
+export const updateCode = (files: CodeFiles) => (dispatch: AppDispatch) => {
 	dispatch(updateCodeThunk(files)).then((response) => {
 		if (response.payload.status === 202) dispatch(updateCodeThunk(files));
 	});
@@ -217,18 +221,20 @@ export const updateCode = (files: SandboxFiles) => (dispatch: AppDispatch) => {
 
 /* --------- async thunks --------- */
 
-export const fetchTask = createAsyncThunk(
+export const fetchTask = createAsyncThunk<Task, { taskId: string }, any>(
 	"task/fetchTask",
-	async (payload: { taskID: string }, thunkApi) => {
-		const response = await httpRequest.fetchTask(payload.taskID);
-		return response.data;
+	async (payload: { taskId: string }, thunkApi) => {
+		const response = await httpRequest.fetchTask(payload.taskId);
+		if (response) return response.data;
+		else return thunkApi.rejectWithValue("error");
 	}
 );
 
-export const updateCodeThunk = createAsyncThunk<any, SandboxFiles, { state: RootState }>(
+export const updateCodeThunk = createAsyncThunk<any, CodeFiles, { state: RootState }>(
 	"task/updateCode",
 	async (payload, thunkApi) => {
-		const response = await httpRequest.updateCode(payload);
+		const response = await httpRequest.updateCode(payload, "task");
+
 		let delay = 0;
 		if (response.status === 202) {
 			delay = 5000;

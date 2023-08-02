@@ -15,7 +15,6 @@ interface AuthResponse {
 authRouter.post("/auth/login", (req: Request<{}, {}, UserRequest>, res: Response<AuthResponse>) => {
 	login(req)
 		.then((result) => {
-			console.log(result);
 			if (result) {
 				// user found
 				res.send({ username: req.body.username });

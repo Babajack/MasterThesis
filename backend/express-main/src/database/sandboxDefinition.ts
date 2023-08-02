@@ -1,5 +1,6 @@
 import { CodeFile, CodeFiles } from "types";
 import { TaskCategory, TaskDescriptionDisplayType, TaskSchema } from "./task";
+import { SandboxSchema } from "./sandbox";
 
 const getIndexFile = (imports?: string, mainBody?: string, extraBody?: string): CodeFile => {
 	return {
@@ -24,11 +25,7 @@ import React from "react"${imports ? "\n" + imports : ""}
 
 export default function App() {
     return (
-		<div className="App">
-			<header className="App-header">
-				
-			</header>
-		</div>
+        <div>Hello World!</div>
     )
 }
         `,
@@ -43,18 +40,18 @@ const getHTMLFile = (): CodeFile => {
 
 <head>
   <meta charset="utf-8" />
-  <link rel="icon" href="sessionContainer/task/favicon.ico" />
+  <link rel="icon" href="sessionContainer/sandbox/favicon.ico" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="theme-color" content="#000000" />
   <meta name="description" content="Web site created using create-react-app" />
-  <link rel="apple-touch-icon" href="sessionContainer/task/logo192.png" />
+  <link rel="apple-touch-icon" href="sessionContainer/sandbox/logo192.png" />
   <!--
       manifest.json provides metadata used when your web app is installed on a
       user's mobile device or desktop. See https://developers.google.com/web/fundamentals/web-app-manifest/
     -->
-  <link rel="manifest" href="sessionContainer/task/manifest.json" />
-  <script src="sessionContainer/task/build/App.js" async defer></script>
-  <link rel="stylesheet" href="sessionContainer/task/build/App.css" />
+  <link rel="manifest" href="sessionContainer/sandbox/manifest.json" />
+  <script src="sessionContainer/sandbox/build/App.js" async defer></script>
+  <link rel="stylesheet" href="sessionContainer/sandbox/build/App.css" />
   <title>React App</title>
 </head>
 
@@ -117,61 +114,14 @@ const getCSSFile = (): CodeFile => {
 /**************************************************                                                  **************************************************/
 /******************************************************************************************************************************************************/
 
-const getTasks_1 = (): TaskSchema[] => {
-	/**
-	 * Catgeory definition
-	 */
-	const CATEGORY: TaskCategory = "JSX";
-
-	let index = 1;
-
-	return [
-		{
-			// -- TASK 1 --
-			index: index++,
-			title: "JSX Basics (1/4)",
-			category: CATEGORY,
-			unlocks: [index],
-			isDefaultUnlocked: true,
-			description: [
-				{ displayType: TaskDescriptionDisplayType.description, text: "Aufgabentext 1" },
-			],
-			defaultFiles: [getHTMLFile(), getAppFile(), getIndexFile(), getCSSFile()],
-			solutionFiles: [getHTMLFile(), getAppFile(), getIndexFile(), getCSSFile()],
-		},
-	];
-};
-
-const getTasks_2 = (): TaskSchema[] => {
-	/**
-	 * Catgeory definition
-	 */
-	const CATEGORY: TaskCategory = "State";
-
-	let index = 1;
-
-	return [
-		{
-			// -- TASK 1 --
-			index: index++,
-			title: "State Basics (1/4)",
-			category: CATEGORY,
-			unlocks: [index],
-			description: [
-				{ displayType: TaskDescriptionDisplayType.description, text: "Aufgabentext 1" },
-			],
-			defaultFiles: [getHTMLFile(), getAppFile(), getIndexFile(), getCSSFile()],
-			solutionFiles: [getHTMLFile(), getAppFile(), getIndexFile(), getCSSFile()],
-		},
-	];
+const getSandbox = (): SandboxSchema => {
+	return {
+		defaultFiles: [getHTMLFile(), getIndexFile(), getAppFile(), getCSSFile()],
+	};
 };
 
 /******************************************************************************************************************************************************/
 
-const allTasks: TaskSchema[][] = [getTasks_1(), getTasks_2()];
-
-export const getTaskDefinitions = (): TaskSchema[] => {
-	return allTasks.reduce((prev, cur) => {
-		return prev.concat(cur);
-	}, []);
+export const getSandboxDefinition = (): SandboxSchema => {
+	return getSandbox();
 };

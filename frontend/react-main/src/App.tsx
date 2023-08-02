@@ -10,17 +10,17 @@ import SandboxView from "./views/SandboxView";
 
 function App() {
 	return (
-		<div className="App vh-100 app-primary ">
+		<div className="App app-primary">
 			<Routes>
 				{/* public routes */}
 				<Route path="/auth" element={<AuthView />} />
 				{/* protected routes */}
 				<Route element={<ProtectedRoute />}>
 					<Route element={<NavRoute />}>
-						<Route path="/task" element={<TaskView />} />
+						<Route path="/task/:taskId" element={<TaskView />} />
 						<Route path="/tasks" element={<TaskMenuView />} />
 						<Route path="/sandbox" element={<SandboxView />} />
-						<Route path="/*" element={<TaskView />} />
+						<Route path="/*" element={<TaskMenuView />} />
 					</Route>
 				</Route>
 			</Routes>

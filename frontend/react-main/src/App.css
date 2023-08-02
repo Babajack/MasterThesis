@@ -4,6 +4,7 @@
 	flex-direction: column;
 	/* align-items: center; */
 	justify-content: center;
+	min-height: 100vh;
 }
 
 html,
@@ -28,14 +29,19 @@ body {
 }
 
 .App-body {
-	/*min-height: 100vh;*/
 	display: flex;
 	flex: 1 1 0;
 	flex-direction: column;
 	align-items: center;
-	justify-content: center;
+	/* justify-content: center; */
 	/* font-size: calc(10px + 2vmin); */
 	color: rgb(0, 0, 0);
+}
+
+.app-container {
+	display: flex;
+	min-height: 100vh;
+	flex-direction: column;
 }
 
 .App-link {
@@ -54,6 +60,7 @@ body {
 /* -------- colors ---------- */
 
 /* basic */
+body,
 .app-primary {
 	background-color: #d7e5ec !important;
 }
@@ -67,7 +74,8 @@ body {
 	background-color: #08ad66 !important;
 }
 
-.app-text-primary {
+.app-text-primary,
+.app-text-primary .accordion-button {
 	color: #000000 !important;
 }
 
@@ -120,4 +128,9 @@ body {
 
 .app-navbar .app-text-primary:hover {
 	transform: scale(1.05);
+}
+
+.app-navbar .app-text-primary.active {
+	border-bottom: 3px solid #193549;
+	padding-bottom: 2px;
 }
