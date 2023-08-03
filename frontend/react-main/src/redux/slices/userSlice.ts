@@ -1,6 +1,12 @@
-import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { createAction, createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { httpRequest } from "../../network/httpRequest";
-import { LoadingStatus, Task, TaskSchemaFrontend, UserSchemaFrontend } from "../../types";
+import {
+	LoadingStatus,
+	Task,
+	TaskResponse,
+	TaskSchemaFrontend,
+	UserSchemaFrontend,
+} from "../../types";
 import { RootState } from "../store";
 
 interface UserState extends UserSchemaFrontend {
@@ -44,6 +50,7 @@ export const userSlice = createSlice({
 				state.sandbox = action.payload.sandbox;
 				state.tasks = action.payload.tasks;
 				state.username = action.payload.username;
+				state.currentTaskId = action.payload.currentTaskId;
 			})
 			.addCase(getUserData.rejected, (state, action) => {
 				//state.error = action.payload as string;
@@ -69,6 +76,9 @@ export const userSlice = createSlice({
 				// state.isLoggedIn = false;
 				// state.username = undefined;
 				return { ...initialState, loadingStatus: "Success" };
+			})
+			.addCase("task/fetchTask/fulfilled", (state, action: any) => {
+				state.currentTaskId = action.payload.task._id;
 			});
 	},
 });

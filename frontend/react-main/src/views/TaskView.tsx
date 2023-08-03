@@ -7,6 +7,7 @@ import {
 	addNewFile,
 	deleteFileByName,
 	fetchTask,
+	runTest,
 	setLoadingStatus,
 	updateCode,
 	updateFile,
@@ -58,10 +59,11 @@ const TaskMenuView = () => {
 								});
 							}}
 							onDeleteFile={(filename) => dispatch(deleteFileByName(filename))}
-							onUpdateCode={(files) => dispatch(updateCode(files))}
+							onRunCode={(files) => dispatch(updateCode(files))}
 							onUpdateFile={(oldFile, newFile) =>
 								dispatch(updateFile({ old: oldFile, new: newFile }))
 							}
+							onTestCode={(files) => dispatch(runTest(files))}
 							type={"task"}
 						/>
 					</MDBCol>

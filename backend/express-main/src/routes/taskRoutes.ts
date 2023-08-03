@@ -1,8 +1,5 @@
-import express, { Request, Response } from "express";
-import { CodeFiles, TaskRequest, TaskResponse } from "types";
-import { runCode } from "../docker/dockerControl";
-import { getTaskById } from "../database/task";
-import { getIsTaskUnlocked, getUsersTask } from "../database/user";
+import express from "express";
+import { getUsersTask } from "../database/user";
 
 export const taskRouter = express.Router();
 
@@ -29,13 +26,16 @@ taskRouter.get("/task", async (req, res) => {
 		const taskId = req.query.taskId as string;
 		//const task = await getTaskById(taskId);
 		const usersTask = await getUsersTask(req.session.userId!, taskId);
-		console.log(usersTask);
 
 		if (!(usersTask?.task.isDefaultUnlocked || usersTask?.isUnlocked)) {
 			res.status(401).send({ error: "Aufgabe nicht freigeschaltet!" });
 			//res.send({ error: "error" });
 			return;
 		}
+		// save current task to session
+		req.session.currentTaskId = taskId;
+		//req.session.save();
+
 		res.send(usersTask);
 	} catch (error) {
 		res.status(404).send({ error: error });

@@ -33,6 +33,7 @@ export interface UserSchemaFrontend {
 	username: string;
 	tasks: TaskHead[];
 	sandbox: Sandbox;
+	currentTaskId?: string;
 }
 
 export interface TaskHead {

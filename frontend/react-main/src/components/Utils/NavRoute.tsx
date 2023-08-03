@@ -11,7 +11,7 @@ const NavRoute = () => {
 	const dispatch = useDispatch<AppDispatch>();
 	const currentPathname = useBasePath();
 
-	const activeTaskId = useSelector((state: RootState) => state.task.task._id);
+	const currentTaskId = useSelector((state: RootState) => state.user.currentTaskId);
 
 	const getIsActive = (pathname: string) => {
 		return currentPathname === pathname;
@@ -48,13 +48,13 @@ const NavRoute = () => {
 								>
 									Sandbox
 								</Nav.Link>
-								{activeTaskId && (
+								{currentTaskId && (
 									<Nav.Link
 										className="app-text-primary"
 										active={getIsActive(`/task`)}
 										as={Link}
 										eventKey={3}
-										to={`/task/${activeTaskId}`}
+										to={`/task/${currentTaskId}`}
 									>
 										Aktuelle Aufgabe
 									</Nav.Link>
