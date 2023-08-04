@@ -23,6 +23,11 @@ export type Errors = {
 	errors: { message: string; line: number }[];
 }[];
 
+export type TestResults = {
+	title: string;
+	status: "passed" | "failed";
+}[];
+
 export type CodeType = "task" | "sandbox";
 
 /* Data from Backend Types */
@@ -33,6 +38,7 @@ export interface UserSchemaFrontend {
 	username: string;
 	tasks: TaskHead[];
 	sandbox: Sandbox;
+	currentTaskId?: string;
 }
 
 export interface TaskHead {

@@ -2,7 +2,7 @@ import { startSandboxContainer, stopSandboxContainer } from "../docker/dockerCon
 import { login, logout, register } from "../database/auth";
 import express, { NextFunction, Request, Response } from "express";
 import { UserRequest } from "types";
-import { getUserData, getUserByUsername } from "../database/user";
+import { getUserData, getUserByUsername, UserSchema } from "../database/user";
 
 export const authRouter = express.Router();
 
@@ -74,7 +74,13 @@ authRouter.get("/user", async (req, res) => {
 			.then(async (user) => {
 				await startSandboxContainer(req.session.userId!);
 				if (user) {
-					res.send(user);
+					const response = {
+						username: user.username,
+						sandbox: user.sandbox,
+						tasks: user.tasks,
+						currentTaskId: req.session.currentTaskId,
+					};
+					res.send(response);
 				} else {
 					res.send({ error: "Session does not exist!" });
 				}

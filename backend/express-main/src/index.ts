@@ -8,6 +8,8 @@ import { startSandboxContainer } from "./docker/dockerControl";
 import { authRouter, requireLogin } from "./routes/authRoutes";
 import { sandboxRouter } from "./routes/sandboxRoutes";
 import { taskRouter } from "./routes/taskRoutes";
+import { getTaskById } from "./database/task";
+import { sessionDockerRouter } from "./routes/sessionDockerRoutes";
 
 // env variables
 dotenv.config();
@@ -38,9 +40,13 @@ app.use(
 	})
 );
 
+// init session container configs
+app.use("/sessionContainer", requireLogin, sessionDockerRouter);
+
 // proxy
 app.use(
 	"/sessionContainer",
+	requireLogin,
 	createProxyMiddleware({
 		router: (req) => "http://" + req.session.userId + ":8000",
 		//router: (req) => "http://master-thesis-backend-express-session-1:8000",
@@ -62,14 +68,14 @@ app.use(
 				);
 		},
 		onProxyReq: (proxyReq, req, res, options) => {
-			//console.log(proxyReq.path);
-			// if (req.body) {
-			// 	const data = JSON.stringify(req.body);
-			// 	proxyReq.setHeader("Content-Type", "application/json");
-			// 	proxyReq.setHeader("Content-Length", Buffer.byteLength(data));
-			// 	// stream the content
-			// 	proxyReq.write(data);
-			// }
+			// reset search params (bug?)
+			const baseUrl = `${proxyReq.protocol}//${proxyReq.host}`;
+			const url = new URL(proxyReq.path, baseUrl);
+			url.search = "";
+			for (const [key, value] of Object.entries(req.query)) {
+				url.searchParams.append(key, value?.toString() ?? "");
+			}
+			proxyReq.path = url.pathname + url.search;
 		},
 	})
 );

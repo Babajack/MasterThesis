@@ -2,6 +2,7 @@
     "verbose": true,
     "ignore": [],
     "watch": [
-        "src/**/index.js"
+        "src/**/index.js",
+        "task/tests"
     ]
 }

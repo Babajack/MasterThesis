@@ -13,21 +13,14 @@ import { ActionCreatorWithPayload } from "@reduxjs/toolkit";
 interface EditorComponentProps {
 	type: string;
 	currentFiles: CodeFiles;
-	onUpdateCode: (files: CodeFiles) => void;
+	onRunCode: (files: CodeFiles) => void;
+	onTestCode?: (files: CodeFiles) => void;
 	onUpdateFile: (oldFile: CodeFile, newFile: CodeFile) => void;
-
-	// onUpdateFile: ActionCreatorWithPayload<{
-	// 	old: CodeFile;
-	// 	new: CodeFile;
-	// }>;
 	onDeleteFile: (filename: string) => void;
 	onAddFile: (file: CodeFile) => Promise<boolean | { error: string }>;
 }
 
 const EditorComponent: React.FC<EditorComponentProps> = (props) => {
-	//const taskState = useSelector((state: RootState) => state.task); // REMOVE
-	const dispatch = useDispatch<AppDispatch>();
-
 	const dirtyFlag = useRef(false);
 
 	const [currentFilename, setCurrentFilename] = useState<string>("App.js");
@@ -230,7 +223,7 @@ const EditorComponent: React.FC<EditorComponentProps> = (props) => {
 
 	const handleRunCode = () => {
 		if (dirtyFlag.current) {
-			props.onUpdateCode([...props.currentFiles]);
+			props.onRunCode([...props.currentFiles]);
 		}
 		dirtyFlag.current = false;
 	};
@@ -329,6 +322,7 @@ const EditorComponent: React.FC<EditorComponentProps> = (props) => {
 						dirtyFlag.current = true;
 						handleRunCode();
 					}}
+					onTestCode={props.onTestCode}
 				/>
 			</MDBCol>
 		</MDBRow>

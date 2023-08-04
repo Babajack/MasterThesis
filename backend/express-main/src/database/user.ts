@@ -16,6 +16,7 @@ export interface UserSchema {
 		sandboxId: mongoose.Schema.Types.ObjectId;
 		userCode?: CodeFiles;
 	};
+	currentTaskId?: string;
 }
 
 const userSchema = new mongoose.Schema<UserSchema>({

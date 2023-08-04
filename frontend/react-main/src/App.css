@@ -121,16 +121,16 @@ body,
 
 /* navbar */
 
-.app-navbar .app-text-primary {
+.app-navbar .app-text-primary.nav-link {
 	transition: all 0.1s ease-in-out;
 	margin-left: 15px;
 }
 
-.app-navbar .app-text-primary:hover {
+.app-navbar .app-text-primary.nav-link:hover {
 	transform: scale(1.05);
 }
 
-.app-navbar .app-text-primary.active {
+.app-navbar .app-text-primary.nav-link.active {
 	border-bottom: 3px solid #193549;
 	padding-bottom: 2px;
 }

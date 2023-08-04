@@ -7,6 +7,7 @@ import {
 	TaskResponse,
 	TaskSchemaFrontend,
 	Task,
+	TestResults,
 } from "../../types";
 import { httpRequest } from "../../network/httpRequest";
 import { AppDispatch, RootState } from "../store";
@@ -16,6 +17,7 @@ interface TaskState extends Task {
 	loadingStatus: LoadingStatus;
 	buildStatus: LoadingStatus;
 	errors?: Errors;
+	testResults?: TestResults;
 	currentFiles: CodeFiles;
 }
 
@@ -192,15 +194,28 @@ export const taskSlice = createSlice({
 		});
 		builder.addCase(updateCodeThunk.pending, (state) => {
 			state.buildStatus = "Pending";
+			state.errors = undefined;
+			state.testResults = undefined;
 		});
 		builder.addCase(updateCodeThunk.rejected, (state) => {
 			state.buildStatus = "Error";
 		});
 		builder.addCase(updateCodeThunk.fulfilled, (state, action: PayloadAction<AxiosResponse>) => {
-			//setTimeout(() => (state.buildStatus = "Success"), 1000);
 			state.buildStatus = "Success";
 			if (action.payload.data?.error) state.errors = action.payload.data.error;
-			else state.errors = undefined;
+		});
+		builder.addCase(runTestThunk.pending, (state) => {
+			state.buildStatus = "Pending";
+			state.errors = undefined;
+			state.testResults = undefined;
+		});
+		builder.addCase(runTestThunk.rejected, (state) => {
+			state.buildStatus = "Error";
+		});
+		builder.addCase(runTestThunk.fulfilled, (state, action: PayloadAction<AxiosResponse>) => {
+			state.buildStatus = "Success";
+			if (action.payload.data?.error) state.errors = action.payload.data.error;
+			else state.testResults = action.payload.data;
 		});
 		builder.addCase(addNewFile.fulfilled, (state, action) => {
 			state.currentFiles.push({ filename: action.payload.filename, code: "", isDeletable: true });
@@ -219,6 +234,12 @@ export const updateCode = (files: CodeFiles) => (dispatch: AppDispatch) => {
 	});
 };
 
+export const runTest = (files: CodeFiles) => (dispatch: AppDispatch) => {
+	dispatch(runTestThunk(files)).then((response) => {
+		if (response.payload.status === 202) dispatch(runTestThunk(files));
+	});
+};
+
 /* --------- async thunks --------- */
 
 export const fetchTask = createAsyncThunk<Task, { taskId: string }, any>(
@@ -234,6 +255,24 @@ export const updateCodeThunk = createAsyncThunk<any, CodeFiles, { state: RootSta
 	"task/updateCode",
 	async (payload, thunkApi) => {
 		const response = await httpRequest.updateCode(payload, "task");
+
+		let delay = 0;
+		if (response.status === 202) {
+			delay = 5000;
+		} else {
+			delay = 500;
+		}
+		return await new Promise((resolve) =>
+			setTimeout(() => {
+				resolve({ data: response.data, status: response.status });
+			}, delay)
+		);
+	}
+);
+export const runTestThunk = createAsyncThunk<any, CodeFiles, { state: RootState }>(
+	"task/runTest",
+	async (payload, thunkApi) => {
+		const response = await httpRequest.runTest(payload, thunkApi.getState().task.task._id);
 
 		let delay = 0;
 		if (response.status === 202) {

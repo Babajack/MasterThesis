@@ -143,30 +143,30 @@ export const runTest = async () => {
 
 /* -------------------------------- React Sandbox Docker -------------------------------- */
 
-export const runCode = async (files: CodeFiles, userID: string) => {
-	//updateSandboxCode(files, userID);
-	const container = await startSandboxContainer(userID);
-	if (container) {
-		//const port = (container.data as any).Ports[1].PublicPort;
-		const url = "http://" + userID + ":" + DOCKER_PORT + "/test";
-		return await axios
-			.get(url)
-			.then((result) => result)
-			.catch((error) => error);
-	}
-};
+// export const runCode = async (files: CodeFiles, userID: string) => {
+// 	//updateSandboxCode(files, userID);
+// 	const container = await startSandboxContainer(userID);
+// 	if (container) {
+// 		//const port = (container.data as any).Ports[1].PublicPort;
+// 		const url = "http://" + userID + ":" + DOCKER_PORT + "/test";
+// 		return await axios
+// 			.get(url)
+// 			.then((result) => result)
+// 			.catch((error) => error);
+// 	}
+// };
 
-export const updateSandboxCode = (files: CodeFiles, userID: string) => {
-	const dir = "/home/node/user-code/" + userID;
-	try {
-		if (!fs.existsSync(dir)) fs.mkdirSync(dir);
-		for (let file of files) {
-			fs.writeFileSync(dir + "/" + JSON.stringify(file.filename).slice(1, -1), file.code);
-		}
-	} catch (error) {
-		console.log(error);
-	}
-};
+// export const updateSandboxCode = (files: CodeFiles, userID: string) => {
+// 	const dir = "/home/node/user-code/" + userID;
+// 	try {
+// 		if (!fs.existsSync(dir)) fs.mkdirSync(dir);
+// 		for (let file of files) {
+// 			fs.writeFileSync(dir + "/" + JSON.stringify(file.filename).slice(1, -1), file.code);
+// 		}
+// 	} catch (error) {
+// 		console.log(error);
+// 	}
+// };
 
 export const startSandboxContainer = async (userID: string) => {
 	try {
@@ -198,6 +198,7 @@ export const startSandboxContainer = async (userID: string) => {
 				//Binds: ["master-thesis_user-code:/usr/user-code"],
 				Binds: [
 					"C:/Users/pheld/Desktop/Master Thesis/Repository/master-thesis/backend/express-session/src:/usr/src/app/src",
+					"C:/Users/pheld/Desktop/Master Thesis/Repository/master-thesis/backend/express-session/task/tests:/usr/src/app/task/tests",
 				],
 				NetworkMode: "master-thesis_main-network",
 				PortBindings: {

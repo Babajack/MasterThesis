@@ -6,6 +6,7 @@ const exec = util.promisify(require("child_process").exec);
 //import * as esbuild from "esbuild";
 const esbuild = require("esbuild");
 const { ESLint } = require("eslint");
+const jest = require("jest");
 
 const app = express(); // create express app
 
@@ -28,11 +29,11 @@ app.get("/", (req, res) => {
 // 		.catch((error) => console.log(error));
 // });
 
-app.put("/updateCode", async (req, res) => {
+app.post("/updateCode", async (req, res) => {
 	const path = req.query.type;
 	try {
 		// 1. update code files
-		updateSandboxCode(req.body, path);
+		updateCode(req.body, path);
 
 		// 2. lint code
 		let lintErrors = await lint(path);
@@ -70,7 +71,82 @@ app.put("/updateCode", async (req, res) => {
 		res.send(true);
 	} catch (error) {
 		console.log(error);
-		res.send({ error: error });
+		res.status(500).send({ error: error });
+	}
+});
+
+app.post("/runTest", async (req, res) => {
+	const path = req.query.path;
+
+	try {
+		// 1. update code files
+		updateCode(req.body, "task");
+
+		// 2. lint code
+		let lintErrors = await lint("task");
+
+		// 3.build code
+		let buildErrors = await build("task");
+
+		// 4. merge error lists
+		if (lintErrors.length > 0 || buildErrors.length > 0) {
+			let mergedErrors = [...lintErrors];
+			for (let buildError of buildErrors) {
+				const index = mergedErrors.findIndex(
+					(lintError) => lintError.filename === buildError.filename
+				);
+				if (index !== -1) {
+					mergedErrors[index].errors.concat(buildError.errors);
+				} else {
+					mergedErrors.push({ filename: buildError.filename, errors: buildError.errors });
+				}
+			}
+			res.send({ error: mergedErrors });
+			return;
+		}
+		// 5. run tests
+		// const testResult = await jest.runCLI(
+		// 	{
+		// 		rootDir: "./task/tests/",
+		// 		testMatch: [`**/${path}.test.jss`],
+		// 	},
+		// 	["./task/tests"]
+		// );
+		// console.log(testResult);
+
+		// const { results } = await jest.runCLI(
+		// 	{
+		// 		rootDir: "./task/tests/",
+		// 		testMatch: [`**/${path}.test.js`],
+		// 		silent: true,
+		// 		passWithNoTests: true,
+		// 		transform: "babel-jest",
+		// 	},
+		// 	["./task/tests"]
+		// );
+		const results = await exec(`env NODE_ENV=test jest --json --testRegex="task/tests/${path}"`);
+		const resultsJSON = JSON.parse(results.stdout);
+		const parsedResults = resultsJSON.testResults[0].assertionResults.map((elem) => {
+			return {
+				title: elem.title,
+				status: elem.status,
+			};
+		});
+		//console.log(results);
+		res.send(parsedResults);
+	} catch (error) {
+		console.log(error);
+		if (error.stdout) {
+			const parsedResults = JSON.parse(error.stdout).testResults[0].assertionResults.map((elem) => {
+				return {
+					title: elem.title,
+					status: elem.status,
+				};
+			});
+			res.send(parsedResults);
+		} else {
+			res.status(500).send({ error: error });
+		}
 	}
 });
 
@@ -190,7 +266,7 @@ const lint = async (path) => {
  * write files to file system
  * @param {*} files
  */
-const updateSandboxCode = (files, path) => {
+const updateCode = (files, path) => {
 	const dir = `/usr/src/app/${path}/src/`;
 
 	// delete files if exists

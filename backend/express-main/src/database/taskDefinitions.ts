@@ -16,22 +16,27 @@ root.render(
 	};
 };
 
-const getAppFile = (imports?: string, mainBody?: string, extraBody?: string): CodeFile => {
+const getAppFile = (
+	imports?: string,
+	mainBody?: string,
+	returnBody?: string,
+	extraBody?: string
+): CodeFile => {
 	return {
 		filename: "App.js",
 		code: `import "./App.css";
 import React from "react"${imports ? "\n" + imports : ""}
 
 export default function App() {
+	${mainBody ? mainBody + "\n" : ""}
     return (
 		<div className="App">
-			<header className="App-header">
-				
-			</header>
+			${returnBody ? returnBody : ""}
 		</div>
     )
 }
-        `,
+${extraBody ? "\n" + extraBody : ""}
+`,
 	};
 };
 
@@ -136,7 +141,20 @@ const getTasks_1 = (): TaskSchema[] => {
 			description: [
 				{ displayType: TaskDescriptionDisplayType.description, text: "Aufgabentext 1" },
 			],
-			defaultFiles: [getHTMLFile(), getAppFile(), getIndexFile(), getCSSFile()],
+			defaultFiles: [
+				getHTMLFile(),
+				getAppFile(
+					undefined,
+					"const result = add(2, 3);",
+					"<div>{result}</div>",
+					`
+function add(a, b) {
+	return a + b;
+}`
+				),
+				getIndexFile(),
+				getCSSFile(),
+			],
 			solutionFiles: [getHTMLFile(), getAppFile(), getIndexFile(), getCSSFile()],
 		},
 	];

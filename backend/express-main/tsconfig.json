@@ -4,6 +4,7 @@
 		"module": "CommonJS",
 		"lib": ["es6"],
 		"allowJs": true,
+		"jsx": "react",
 		//"outDir": "build",
 		"rootDir": "src",
 		"strict": true,
