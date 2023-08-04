@@ -71,18 +71,40 @@ app.post("/updateCode", async (req, res) => {
 		res.send(true);
 	} catch (error) {
 		console.log(error);
-		res.send({ error: error });
+		res.status(500).send({ error: error });
 	}
 });
 
 app.post("/runTest", async (req, res) => {
 	const path = req.query.path;
-	console.log(path);
+
 	try {
 		// 1. update code files
 		updateCode(req.body, "task");
 
-		// 2. run test
+		// 2. lint code
+		let lintErrors = await lint("task");
+
+		// 3.build code
+		let buildErrors = await build("task");
+
+		// 4. merge error lists
+		if (lintErrors.length > 0 || buildErrors.length > 0) {
+			let mergedErrors = [...lintErrors];
+			for (let buildError of buildErrors) {
+				const index = mergedErrors.findIndex(
+					(lintError) => lintError.filename === buildError.filename
+				);
+				if (index !== -1) {
+					mergedErrors[index].errors.concat(buildError.errors);
+				} else {
+					mergedErrors.push({ filename: buildError.filename, errors: buildError.errors });
+				}
+			}
+			res.send({ error: mergedErrors });
+			return;
+		}
+		// 5. run tests
 		// const testResult = await jest.runCLI(
 		// 	{
 		// 		rootDir: "./task/tests/",
@@ -92,21 +114,39 @@ app.post("/runTest", async (req, res) => {
 		// );
 		// console.log(testResult);
 
-		const { results } = await jest.runCLI(
-			{
-				rootDir: "./task/tests/",
-				testMatch: [`**/${path}.test.js`],
-				silent: true,
-				passWithNoTests: true,
-			},
-			["./task/tests"]
-		);
-
-		console.log(results);
-		res.send(true);
+		// const { results } = await jest.runCLI(
+		// 	{
+		// 		rootDir: "./task/tests/",
+		// 		testMatch: [`**/${path}.test.js`],
+		// 		silent: true,
+		// 		passWithNoTests: true,
+		// 		transform: "babel-jest",
+		// 	},
+		// 	["./task/tests"]
+		// );
+		const results = await exec(`env NODE_ENV=test jest --json --testRegex="task/tests/${path}"`);
+		const resultsJSON = JSON.parse(results.stdout);
+		const parsedResults = resultsJSON.testResults[0].assertionResults.map((elem) => {
+			return {
+				title: elem.title,
+				status: elem.status,
+			};
+		});
+		//console.log(results);
+		res.send(parsedResults);
 	} catch (error) {
-		//console.log(error);
-		res.send({ error: error });
+		console.log(error);
+		if (error.stdout) {
+			const parsedResults = JSON.parse(error.stdout).testResults[0].assertionResults.map((elem) => {
+				return {
+					title: elem.title,
+					status: elem.status,
+				};
+			});
+			res.send(parsedResults);
+		} else {
+			res.status(500).send({ error: error });
+		}
 	}
 });
 

@@ -1,10 +1,12 @@
 import * as React from "react";
-import { CodeType, Errors, LoadingStatus } from "../../types";
+import { CodeType, Errors, LoadingStatus, TestResults } from "../../types";
 import LoadingWrapper from "../Utils/LoadingWrapper";
+import { MDBIcon } from "mdb-react-ui-kit";
 
 interface PreviewComponentProps {
 	buildStatus: LoadingStatus;
 	errors?: Errors;
+	testResults?: TestResults;
 	type: CodeType;
 }
 
@@ -26,9 +28,31 @@ const PreviewComponent: React.FC<PreviewComponentProps> = (props) => {
 		);
 	});
 
+	const testResults = props.testResults?.map((elem, index) => {
+		return (
+			<div key={index}>
+				<span className="pe-4">{++index + ". " + elem.title}</span>
+				{elem.status === "passed" ? (
+					<span className="float-end" style={{ color: "green" }}>
+						<MDBIcon fas icon="check" />
+					</span>
+				) : (
+					<span className="float-end" style={{ color: "red" }}>
+						<MDBIcon fas icon="times" />
+					</span>
+				)}
+			</div>
+		);
+	});
+
 	return (
 		<LoadingWrapper loadingStatus={props.buildStatus}>
-			{props.errors ? (
+			{props.testResults ? (
+				<>
+					<h3>Test Results:</h3>
+					<div className="text-start">{testResults}</div>
+				</>
+			) : props.errors ? (
 				// <div className="" style={{ color: "red" }}>
 				// 	{taskState.errors}
 				// </div>
