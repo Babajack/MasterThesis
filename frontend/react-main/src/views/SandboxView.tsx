@@ -7,6 +7,7 @@ import {
 	addNewFile,
 	deleteFileByName,
 	fetchSandbox,
+	setCurrentFiles,
 	setLoadingStatus,
 	updateCode,
 	updateFile,
@@ -51,10 +52,11 @@ const SandboxView = () => {
 								});
 							}}
 							onDeleteFile={(filename) => dispatch(deleteFileByName(filename))}
-							onRunCode={(files) => dispatch(updateCode(files))}
+							onRunCode={() => dispatch(updateCode(sandboxState.currentFiles))}
 							onUpdateFile={(oldFile, newFile) =>
 								dispatch(updateFile({ old: oldFile, new: newFile }))
 							}
+							onResetCode={() => dispatch(setCurrentFiles(sandboxState.defaultFiles!))}
 							type="sandbox"
 						/>
 					</MDBCol>

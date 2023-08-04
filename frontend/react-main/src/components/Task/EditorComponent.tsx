@@ -13,11 +13,15 @@ import { ActionCreatorWithPayload } from "@reduxjs/toolkit";
 interface EditorComponentProps {
 	type: string;
 	currentFiles: CodeFiles;
-	onRunCode: (files: CodeFiles) => void;
-	onTestCode?: (files: CodeFiles) => void;
+	buildStatus: LoadingStatus;
+	onRunCode: () => void;
+	onTestCode?: () => void;
 	onUpdateFile: (oldFile: CodeFile, newFile: CodeFile) => void;
 	onDeleteFile: (filename: string) => void;
 	onAddFile: (file: CodeFile) => Promise<boolean | { error: string }>;
+	onResetCode?: () => void;
+	onSetToUserSolution?: () => void;
+	onSetToSampleSolution?: () => void;
 }
 
 const EditorComponent: React.FC<EditorComponentProps> = (props) => {
@@ -223,7 +227,7 @@ const EditorComponent: React.FC<EditorComponentProps> = (props) => {
 
 	const handleRunCode = () => {
 		if (dirtyFlag.current) {
-			props.onRunCode([...props.currentFiles]);
+			props.onRunCode();
 		}
 		dirtyFlag.current = false;
 	};
@@ -292,7 +296,7 @@ const EditorComponent: React.FC<EditorComponentProps> = (props) => {
 						//};
 					}}
 					path={currentFile.filename}
-					defaultValue={currentFile.code}
+					value={currentFile.code}
 					saveViewState={true}
 					onChange={(value, event) => {
 						//console.log(JSON.stringify(currentFile.code));
@@ -318,11 +322,15 @@ const EditorComponent: React.FC<EditorComponentProps> = (props) => {
 			</MDBCol>
 			<MDBCol className="py-2" style={{}} md={12}>
 				<EditorButtons
+					buildStatus={props.buildStatus}
 					onRunCode={() => {
 						dirtyFlag.current = true;
 						handleRunCode();
 					}}
 					onTestCode={props.onTestCode}
+					onResetCode={props.onResetCode}
+					onSetToSampleSolution={props.onSetToSampleSolution}
+					onSetToUserSolution={props.onSetToUserSolution}
 				/>
 			</MDBCol>
 		</MDBRow>

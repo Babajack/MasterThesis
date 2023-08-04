@@ -8,6 +8,7 @@ import {
 	deleteFileByName,
 	fetchTask,
 	runTest,
+	setCurrentFiles,
 	setLoadingStatus,
 	updateCode,
 	updateFile,
@@ -59,11 +60,22 @@ const TaskMenuView = () => {
 								});
 							}}
 							onDeleteFile={(filename) => dispatch(deleteFileByName(filename))}
-							onRunCode={(files) => dispatch(updateCode(files))}
+							onRunCode={() => dispatch(updateCode(taskState.currentFiles))}
 							onUpdateFile={(oldFile, newFile) =>
 								dispatch(updateFile({ old: oldFile, new: newFile }))
 							}
-							onTestCode={(files) => dispatch(runTest(files))}
+							onTestCode={() => dispatch(runTest(taskState.currentFiles))}
+							onResetCode={() => dispatch(setCurrentFiles(taskState.task.defaultFiles!))}
+							onSetToSampleSolution={
+								taskState.task.solutionFiles?.length
+									? () => dispatch(setCurrentFiles(taskState.task.solutionFiles!))
+									: undefined
+							}
+							onSetToUserSolution={
+								taskState.userSolution?.length
+									? () => dispatch(setCurrentFiles(taskState.userSolution!))
+									: undefined
+							}
 							type={"task"}
 						/>
 					</MDBCol>
