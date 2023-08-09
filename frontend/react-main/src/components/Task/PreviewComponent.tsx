@@ -5,7 +5,7 @@ import { MDBIcon } from "mdb-react-ui-kit";
 
 interface PreviewComponentProps {
 	buildStatus: LoadingStatus;
-	errors?: Errors;
+	errors?: Errors | string;
 	testResults?: TestResults;
 	type: CodeType;
 }
@@ -13,20 +13,22 @@ interface PreviewComponentProps {
 const PreviewComponent: React.FC<PreviewComponentProps> = (props) => {
 	// const taskState = useSelector((state: RootState) => state.task);
 
-	const errors = props.errors?.map((error) => {
-		return (
-			<div key={error.filename}>
-				<h3>{error.filename}</h3>
-				{error.errors.map((e) => {
-					return (
-						<div key={e.line}>
-							line {e.line}: {e.message}
-						</div>
-					);
-				})}
-			</div>
-		);
-	});
+	const errors = Array.isArray(props.errors)
+		? props.errors?.map((error) => {
+				return (
+					<div key={error.filename}>
+						<h3>{error.filename}</h3>
+						{error.errors.map((e) => {
+							return (
+								<div key={e.line}>
+									line {e.line}: {e.message}
+								</div>
+							);
+						})}
+					</div>
+				);
+		  })
+		: props.errors;
 
 	const testResults = props.testResults?.map((elem, index) => {
 		return (

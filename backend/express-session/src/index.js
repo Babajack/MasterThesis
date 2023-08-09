@@ -78,6 +78,8 @@ app.post("/updateCode", async (req, res) => {
 app.post("/runTest", async (req, res) => {
 	const path = req.query.path;
 
+	var testResults;
+
 	try {
 		// 1. update code files
 		updateCode(req.body, "task");
@@ -125,29 +127,26 @@ app.post("/runTest", async (req, res) => {
 		// 	["./task/tests"]
 		// );
 		const results = await exec(`env NODE_ENV=test jest --json --testRegex="task/tests/${path}"`);
-		const resultsJSON = JSON.parse(results.stdout);
-		const parsedResults = resultsJSON.testResults[0].assertionResults.map((elem) => {
-			return {
-				title: elem.title,
-				status: elem.status,
-			};
-		});
-		//console.log(results);
-		res.send(parsedResults);
+		testResults = JSON.parse(results.stdout);
 	} catch (error) {
 		console.log(error);
 		if (error.stdout) {
-			const parsedResults = JSON.parse(error.stdout).testResults[0].assertionResults.map((elem) => {
-				return {
-					title: elem.title,
-					status: elem.status,
-				};
-			});
-			res.send(parsedResults);
+			testResults = JSON.parse(error.stdout);
 		} else {
 			res.status(500).send({ error: error });
+			return;
 		}
 	}
+
+	testResults = testResults.testResults[0].assertionResults.map((elem) => {
+		return {
+			title: elem.title,
+			status: elem.status,
+		};
+	});
+	const isPassed = !testResults.some((elem) => elem.status !== "passed");
+	const response = { passed: isPassed, testResults: testResults };
+	res.send(response);
 });
 
 app.listen(8000, () => {

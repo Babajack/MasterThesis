@@ -12,11 +12,12 @@ import {
 import { httpRequest } from "../../network/httpRequest";
 import { AppDispatch, RootState } from "../store";
 import { AxiosResponse } from "axios";
+import { getUserData, updateUserData } from "./userSlice";
 
 interface TaskState extends Task {
 	loadingStatus: LoadingStatus;
 	buildStatus: LoadingStatus;
-	errors?: Errors;
+	errors?: Errors | string;
 	testResults?: TestResults;
 	currentFiles: CodeFiles;
 }
@@ -212,10 +213,15 @@ export const taskSlice = createSlice({
 		builder.addCase(runTestThunk.rejected, (state) => {
 			state.buildStatus = "Error";
 		});
-		builder.addCase(runTestThunk.fulfilled, (state, action: PayloadAction<AxiosResponse>) => {
+		builder.addCase(runTestThunk.fulfilled, (state, action) => {
 			state.buildStatus = "Success";
-			if (action.payload.data?.error) state.errors = action.payload.data.error;
-			else state.testResults = action.payload.data;
+			if ("error" in action.payload) state.errors = action.payload.error;
+			else {
+				state.testResults = action.payload.testResults;
+				if (action.payload.passed) {
+					state.userSolution = action.payload.files;
+				}
+			}
 		});
 		builder.addCase(addNewFile.fulfilled, (state, action) => {
 			state.currentFiles.push({ filename: action.payload.filename, code: "", isDeletable: true });
@@ -234,10 +240,14 @@ export const updateCode = (files: CodeFiles) => (dispatch: AppDispatch) => {
 	});
 };
 
-export const runTest = (files: CodeFiles) => (dispatch: AppDispatch) => {
-	dispatch(runTestThunk(files)).then((response) => {
-		if (response.payload.status === 202) dispatch(runTestThunk(files));
-	});
+export const runTest = (files: CodeFiles) => async (dispatch: AppDispatch) => {
+	var response: any = await dispatch(runTestThunk(files));
+	if (response.payload.status === 202) {
+		response = await dispatch(runTestThunk(files));
+	}
+	if (response.payload.passed) {
+		dispatch(updateUserData());
+	}
 };
 
 /* --------- async thunks --------- */
@@ -269,24 +279,32 @@ export const updateCodeThunk = createAsyncThunk<any, CodeFiles, { state: RootSta
 		);
 	}
 );
-export const runTestThunk = createAsyncThunk<any, CodeFiles, { state: RootState }>(
-	"task/runTest",
-	async (payload, thunkApi) => {
-		const response = await httpRequest.runTest(payload, thunkApi.getState().task.task._id);
+export const runTestThunk = createAsyncThunk<
+	| { testResults: TestResults; passed: boolean; files: CodeFiles; status: number }
+	| { error: string },
+	CodeFiles,
+	{ state: RootState }
+>("task/runTest", async (payload, thunkApi) => {
+	const taskId = thunkApi.getState().task.task._id;
+	const response = await httpRequest.runTest(payload, taskId);
 
-		let delay = 0;
-		if (response.status === 202) {
-			delay = 5000;
-		} else {
-			delay = 500;
-		}
-		return await new Promise((resolve) =>
-			setTimeout(() => {
-				resolve({ data: response.data, status: response.status });
-			}, delay)
-		);
+	let delay = 0;
+	if (response.status === 202) {
+		delay = 5000;
+	} else {
+		delay = 500;
 	}
-);
+	return await new Promise((resolve) =>
+		setTimeout(() => {
+			resolve({
+				passed: response.data.passed,
+				files: payload,
+				testResults: response.data.testResults,
+				status: response.status,
+			});
+		}, delay)
+	);
+});
 
 export const addNewFile = createAsyncThunk<
 	{ filename: string },

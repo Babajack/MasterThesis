@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 import { CodeFile, CodeFiles } from "types";
-import { TaskCategory, TaskSchema, getAllTasks } from "./task";
+import { TaskCategory, TaskSchema, getAllTasks, getTaskById, getTasksByUnlocksList } from "./task";
 import { SandboxSchema, getDefaultSandbox } from "./sandbox";
 
 export interface UserSchema {
@@ -184,21 +184,10 @@ export const updateUserSolution = async (
 	userSolution: CodeFiles
 ) => {
 	return await User.updateOne(
-		{ _id: userId, "tasks.id": taskId },
+		{ _id: userId, "tasks.task._id": taskId },
 		{
 			$set: {
 				"tasks.$.userSolution": userSolution,
-			},
-		}
-	);
-};
-
-export const unlockTask = async (userId: string, category: string, index: number) => {
-	return await User.updateOne(
-		{ _id: userId, "task.category": category, "task.index": index },
-		{
-			$set: {
-				"tasks.$.isUnlocked": true,
 			},
 		}
 	);
@@ -213,4 +202,27 @@ export const updateSandboxCode = async (userId: string, userCode: CodeFiles) => 
 			},
 		}
 	);
+};
+
+export const unlockTasksFromTask = async (userId: string, taskId: string) => {
+	const task = await getTaskById(taskId);
+	if (task?.unlocks) {
+		const unlockedTasksIds = (await getTasksByUnlocksList(task.unlocks)).map((taskId) =>
+			taskId._id.toString()
+		);
+
+		const user = await User.findById(userId);
+		if (user) {
+			const updatedTasks = user.tasks.map((task) => {
+				if (task.task && unlockedTasksIds.includes(task.task.toString())) {
+					task.isUnlocked = true;
+				}
+
+				return task;
+			});
+			user.tasks = updatedTasks;
+
+			await user.save();
+		}
+	}
 };

@@ -8,8 +8,9 @@ import { startSandboxContainer } from "./docker/dockerControl";
 import { authRouter, requireLogin } from "./routes/authRoutes";
 import { sandboxRouter } from "./routes/sandboxRoutes";
 import { taskRouter } from "./routes/taskRoutes";
-import { getTaskById } from "./database/task";
+import { getTaskById, getTasksByUnlocksList } from "./database/task";
 import { sessionDockerRouter } from "./routes/sessionDockerRoutes";
+import { unlockTasksFromTask } from "./database/user";
 
 // env variables
 dotenv.config();
@@ -76,6 +77,24 @@ app.use(
 				url.searchParams.append(key, value?.toString() ?? "");
 			}
 			proxyReq.path = url.pathname + url.search;
+		},
+		onProxyRes: (proxyRes, req, res) => {
+			if (req.path === "/runTest") {
+				let body = Buffer.from([]);
+
+				proxyRes.on("data", (chunk) => {
+					body = Buffer.concat([body, chunk]);
+				});
+
+				proxyRes.on("end", () => {
+					const responseBody = body.toString("utf8");
+					const responseJSON = JSON.parse(responseBody);
+
+					if (responseJSON.passed) {
+						unlockTasksFromTask(req.session.userId!, req.query.taskId as string);
+					}
+				});
+			}
 		},
 	})
 );

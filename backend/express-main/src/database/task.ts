@@ -1,4 +1,4 @@
-import mongoose from "mongoose";
+import mongoose, { Types } from "mongoose";
 import { CodeFiles } from "types";
 
 export enum TaskDescriptionDisplayType {
@@ -10,11 +10,11 @@ export enum TaskDescriptionDisplayType {
 export type TaskCategory = "JSX" | "State";
 
 export interface TaskSchema {
+	_id?: Types.ObjectId;
 	index: number;
 	title: string;
 	category: TaskCategory;
-	unlocks?: number[];
-	unlocksCategories?: TaskCategory[];
+	unlocks?: { category: TaskCategory; index: number }[];
 	isDefaultUnlocked?: boolean;
 	description: {
 		displayType: TaskDescriptionDisplayType;
@@ -38,10 +38,7 @@ const taskSchema = new mongoose.Schema<TaskSchema>({
 		required: true,
 	},
 	unlocks: {
-		type: [Number],
-	},
-	unlocksCategories: {
-		type: [String],
+		type: [{ category: { type: String }, index: { type: Number } }],
 	},
 	isDefaultUnlocked: {
 		type: Boolean,
@@ -113,6 +110,15 @@ export const getTaskByCategoryAndIndex = async (category: TaskCategory, index: n
 	return await Task.findOne({
 		category: category,
 		index: index,
+	});
+};
+
+export const getTasksByUnlocksList = async (
+	unlocks: { category: TaskCategory; index: number }[]
+) => {
+	const unlocksCriteria = unlocks.map(({ category, index }) => ({ category, index }));
+	return await Task.find({
+		$or: unlocksCriteria,
 	});
 };
 

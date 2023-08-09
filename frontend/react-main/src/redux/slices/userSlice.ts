@@ -56,6 +56,12 @@ export const userSlice = createSlice({
 				//state.error = action.payload as string;
 				state.loadingStatus = "Error";
 			})
+			.addCase(updateUserData.fulfilled, (state, action) => {
+				state.sandbox = action.payload.sandbox;
+				state.tasks = action.payload.tasks;
+				state.username = action.payload.username;
+				state.currentTaskId = action.payload.currentTaskId;
+			})
 			.addCase(loginUser.fulfilled, (state, action) => {
 				state.username = action.payload.username;
 				state.isLoggedIn = true;
@@ -79,6 +85,14 @@ export const userSlice = createSlice({
 			})
 			.addCase("task/fetchTask/fulfilled", (state, action: any) => {
 				state.currentTaskId = action.payload.task._id;
+			})
+			.addCase("task/runTestThunk/fullfilled", (state, action: any) => {
+				if (action.payload.passed) {
+					const index = state.tasks.findIndex((elem) => elem.task._id === action.payload.taskId);
+					if (index !== -1) {
+						// unlock tasks
+					}
+				}
 			});
 	},
 });
@@ -109,6 +123,15 @@ export const getUserData = createAsyncThunk("auth/getUser", async (payload: void
 	if ("error" in user.data) return thunkApi.rejectWithValue(user.data.error);
 	else return thunkApi.fulfillWithValue(user.data);
 });
+
+export const updateUserData = createAsyncThunk(
+	"auth/updateUser",
+	async (payload: void, thunkApi) => {
+		const user = await httpRequest.getUserData();
+		if ("error" in user.data) return thunkApi.rejectWithValue(user.data.error);
+		else return thunkApi.fulfillWithValue(user.data);
+	}
+);
 
 export const loginUser = createAsyncThunk(
 	"auth/login",

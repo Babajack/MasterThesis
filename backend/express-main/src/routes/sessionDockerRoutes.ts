@@ -4,7 +4,6 @@ import express from "express";
 export const sessionDockerRouter = express.Router();
 
 sessionDockerRouter.use((req, res, next) => {
-	req.query.path = "JSX";
 	// find task by id, add to the path so we can find the corresponding test
 	if (req.path === "/runTest") {
 		const taskId = req.query.taskId as string;
