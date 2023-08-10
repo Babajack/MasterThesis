@@ -4,7 +4,7 @@ import express from "express";
 
 export const sandboxRouter = express.Router();
 
-/* taskRouter.post("/task/updateCode", (req: Request<{}, {}, SandboxFiles>, res) => {
+/* taskRouter.post("/task/runCode", (req: Request<{}, {}, SandboxFiles>, res) => {
 	try {
 		updateSandboxCode(req.body, req.session.user?.id!);
 		//updateSandboxCode([{ filename: "testfile", code: "console.log('hi')" }], req.session.user?.id!);
@@ -36,7 +36,7 @@ sandboxRouter.get("/sandbox", async (req, res) => {
 });
 
 // sandboxRouter.post(
-// 	"/sandbox/updateCode",
+// 	"/sandbox/runCode",
 // 	async (req: Request<{}, {}, SandboxFiles>, res: Response<string>) => {
 // 		const response = await runCode(req.body, req.session.userId!);
 // 		console.log(response.data);

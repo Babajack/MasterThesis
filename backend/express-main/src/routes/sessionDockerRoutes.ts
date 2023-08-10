@@ -5,7 +5,7 @@ import express from "express";
 export const sessionDockerRouter = express.Router();
 
 sessionDockerRouter.use((req, res, next) => {
-	if (req.path === "/runTest" || req.path === "/updateCode") {
+	if (req.path === "/runTest" || req.path === "/runCode") {
 		// save user code to db
 		updateUserCode(
 			req.session.userId!,

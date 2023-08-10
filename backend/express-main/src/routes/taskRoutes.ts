@@ -3,7 +3,7 @@ import { getUsersTask } from "../database/user";
 
 export const taskRouter = express.Router();
 
-/* taskRouter.post("/task/updateCode", (req: Request<{}, {}, SandboxFiles>, res) => {
+/* taskRouter.post("/task/runCode", (req: Request<{}, {}, SandboxFiles>, res) => {
 	try {
 		updateSandboxCode(req.body, req.session.user?.id!);
 		//updateSandboxCode([{ filename: "testfile", code: "console.log('hi')" }], req.session.user?.id!);
@@ -59,7 +59,7 @@ taskRouter.get("/task", async (req, res) => {
 });
 
 // taskRouter.post(
-// 	"/task/updateCode",
+// 	"/task/runCode",
 // 	async (req: Request<{}, {}, SandboxFiles>, res: Response<string>) => {
 // 		const response = await runCode(req.body, req.session.userId!);
 // 		console.log(response.data);

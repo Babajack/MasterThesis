@@ -9,11 +9,12 @@ import {
 	fetchSandbox,
 	setCurrentFiles,
 	setLoadingStatus,
-	updateCode,
+	runCode,
 	updateFile,
 } from "../redux/slices/sandboxSlice";
 import { useEffect } from "react";
 import LoadingWrapper from "../components/Utils/LoadingWrapper";
+import { updateUserCode } from "../redux/slices/userSlice";
 
 const SandboxView = () => {
 	const dispatch = useDispatch<AppDispatch>();
@@ -29,6 +30,7 @@ const SandboxView = () => {
 	useEffect(() => {
 		return () => {
 			dispatch(setLoadingStatus("Idle"));
+			//dispatch(updateUserCode({ files: sandboxState.currentFiles, type: "sandbox" }));
 		};
 	}, []);
 
@@ -52,7 +54,7 @@ const SandboxView = () => {
 								});
 							}}
 							onDeleteFile={(filename) => dispatch(deleteFileByName(filename))}
-							onRunCode={() => dispatch(updateCode(sandboxState.currentFiles))}
+							onRunCode={() => dispatch(runCode(sandboxState.currentFiles))}
 							onUpdateFile={(oldFile, newFile) =>
 								dispatch(updateFile({ old: oldFile, new: newFile }))
 							}

@@ -1,6 +1,8 @@
 import { createAction, createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { httpRequest } from "../../network/httpRequest";
 import {
+	CodeFiles,
+	CodeType,
 	LoadingStatus,
 	Task,
 	TaskResponse,
@@ -53,6 +55,7 @@ export const userSlice = createSlice({
 			.addCase(getUserData.rejected, (state, action) => {
 				//state.error = action.payload as string;
 				state.loadingStatus = "Error";
+				state.isLoggedIn = false;
 			})
 			.addCase(updateUserData.fulfilled, (state, action) => {
 				state.sandbox = action.payload.sandbox;
@@ -116,20 +119,29 @@ export const getTasksByCategory = (state: RootState) => {
 
 /* --------- async thunks --------- */
 
-export const getUserData = createAsyncThunk("auth/getUser", async (payload: void, thunkApi) => {
+export const getUserData = createAsyncThunk("user/getUser", async (payload: void, thunkApi) => {
 	const user = await httpRequest.getUserData();
-	if ("error" in user.data) return thunkApi.rejectWithValue(user.data.error);
+	if (!user) return thunkApi.rejectWithValue("Error");
+	else if ("error" in user.data) return thunkApi.rejectWithValue(user.data.error);
 	else return thunkApi.fulfillWithValue(user.data);
 });
 
 export const updateUserData = createAsyncThunk(
-	"auth/updateUser",
+	"user/updateUser",
 	async (payload: void, thunkApi) => {
 		const user = await httpRequest.getUserData();
 		if ("error" in user.data) return thunkApi.rejectWithValue(user.data.error);
 		else return thunkApi.fulfillWithValue(user.data);
 	}
 );
+
+export const updateUserCode = createAsyncThunk<
+	any,
+	{ files: CodeFiles; type: CodeType; taskId?: string },
+	{ state: RootState }
+>("user/updateUserCode", async (payload, thunkApi) => {
+	return await httpRequest.updateUserCode(payload.files, payload.type, payload.taskId);
+});
 
 export const loginUser = createAsyncThunk(
 	"auth/login",

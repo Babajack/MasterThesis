@@ -11,6 +11,7 @@ import { sandboxRouter } from "./routes/sandboxRoutes";
 import { sessionDockerRouter } from "./routes/sessionDockerRoutes";
 import { taskRouter } from "./routes/taskRoutes";
 import bodyParser from "body-parser";
+import { userRouter } from "./routes/userRoutes";
 
 // env variables
 dotenv.config();
@@ -138,6 +139,7 @@ app.use("/", authRouter);
 //app.use("/", requireLogin, sessionDockerRouter);
 //app.use("/", sessionDockerRouter);
 
+app.use("/", requireLogin, userRouter);
 app.use("/", requireLogin, taskRouter);
 app.use("/", requireLogin, sandboxRouter);
 

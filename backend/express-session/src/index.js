@@ -29,11 +29,11 @@ app.get("/", (req, res) => {
 // 		.catch((error) => console.log(error));
 // });
 
-app.post("/updateCode", async (req, res) => {
+app.post("/runCode", async (req, res) => {
 	const path = req.query.type;
 	try {
 		// 1. update code files
-		updateCode(req.body, path);
+		runCode(req.body, path);
 
 		// 2. lint code
 		let lintErrors = await lint(path);
@@ -82,7 +82,7 @@ app.post("/runTest", async (req, res) => {
 
 	try {
 		// 1. update code files
-		updateCode(req.body, "task");
+		runCode(req.body, "task");
 
 		// 2. lint code
 		let lintErrors = await lint("task");
@@ -266,7 +266,7 @@ const lint = async (path) => {
  * write files to file system
  * @param {*} files
  */
-const updateCode = (files, path) => {
+const runCode = (files, path) => {
 	const dir = `/usr/src/app/${path}/src/`;
 
 	// delete files if exists

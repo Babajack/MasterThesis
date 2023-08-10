@@ -67,30 +67,26 @@ authRouter.post("/auth/logout", (req: Request<{}, {}, UserRequest>, res: Respons
 });
 
 authRouter.get("/user", async (req, res) => {
-	if (!req.session.userId) {
-		res.send({ error: "Session does not exist!" });
-	} else {
-		getUserData(req.session.userId)
-			.then(async (user) => {
-				await startSandboxContainer(req.session.userId!);
-				if (user) {
-					const response = {
-						username: user.username,
-						sandbox: user.sandbox,
-						tasks: user.tasks,
-						currentTaskId: req.session.currentTaskId,
-					};
-					res.send(response);
-				} else {
-					res.send({ error: "Session does not exist!" });
-				}
-			})
-			.catch((error) => {
-				console.log(error);
-
+	getUserData(req.session.userId!)
+		.then(async (user) => {
+			await startSandboxContainer(req.session.userId!);
+			if (user) {
+				const response = {
+					username: user.username,
+					sandbox: user.sandbox,
+					tasks: user.tasks,
+					currentTaskId: req.session.currentTaskId,
+				};
+				res.send(response);
+			} else {
 				res.send({ error: "Session does not exist!" });
-			});
-	}
+			}
+		})
+		.catch((error) => {
+			console.log(error);
+
+			res.send({ error: "Session does not exist!" });
+		});
 });
 
 export const requireLogin = (req: Request, res: Response, next: NextFunction) => {
@@ -100,5 +96,3 @@ export const requireLogin = (req: Request, res: Response, next: NextFunction) =>
 		res.status(401).send("Unauthorized");
 	}
 };
-
-//module.exports = authRouter;

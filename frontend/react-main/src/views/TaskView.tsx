@@ -10,13 +10,14 @@ import {
 	runTest,
 	setCurrentFiles,
 	setLoadingStatus,
-	updateCode,
+	runCode,
 	updateFile,
 } from "../redux/slices/taskSlice";
 import { useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import LoadingWrapper from "../components/Utils/LoadingWrapper";
 import TaskDescriptionComponent from "../components/Task/TaskDescriptionComponent";
+import { updateUserCode } from "../redux/slices/userSlice";
 
 const TaskMenuView = () => {
 	const dispatch = useDispatch<AppDispatch>();
@@ -40,10 +41,11 @@ const TaskMenuView = () => {
 	 * cleanup on unmount
 	 */
 	useEffect(() => {
-		//console.log(taskState.loadingStatus);
-
 		return () => {
 			dispatch(setLoadingStatus("Idle"));
+			// dispatch(
+			// 	updateUserCode({ files: taskState.currentFiles, type: "task", taskId: taskState.task._id })
+			// );
 		};
 	}, []);
 
@@ -70,7 +72,7 @@ const TaskMenuView = () => {
 								});
 							}}
 							onDeleteFile={(filename) => dispatch(deleteFileByName(filename))}
-							onRunCode={() => dispatch(updateCode(taskState.currentFiles))}
+							onRunCode={() => dispatch(runCode(taskState.currentFiles))}
 							onUpdateFile={(oldFile, newFile) =>
 								dispatch(updateFile({ old: oldFile, new: newFile }))
 							}

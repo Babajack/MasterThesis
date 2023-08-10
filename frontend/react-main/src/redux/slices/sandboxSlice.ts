@@ -64,17 +64,19 @@ export const sandboxSlice = createSlice({
 				currentFiles:
 					state.currentFiles.length > 0
 						? state.currentFiles
-						: action.payload.userCode ?? action.payload.defaultFiles ?? [],
+						: action.payload.userCode?.length ?? 0 > 0
+						? action.payload.userCode ?? []
+						: action.payload.defaultFiles ?? [],
 				loadingStatus: "Success",
 			};
 		});
-		builder.addCase(updateCodeThunk.pending, (state) => {
+		builder.addCase(runCodeThunk.pending, (state) => {
 			state.buildStatus = "Pending";
 		});
-		builder.addCase(updateCodeThunk.rejected, (state) => {
+		builder.addCase(runCodeThunk.rejected, (state) => {
 			state.buildStatus = "Error";
 		});
-		builder.addCase(updateCodeThunk.fulfilled, (state, action: PayloadAction<AxiosResponse>) => {
+		builder.addCase(runCodeThunk.fulfilled, (state, action: PayloadAction<AxiosResponse>) => {
 			//setTimeout(() => (state.buildStatus = "Success"), 1000);
 			state.buildStatus = "Success";
 			if (action.payload.data?.error) state.errors = action.payload.data.error;
@@ -96,9 +98,9 @@ export const {
 
 export default sandboxSlice.reducer;
 
-export const updateCode = (files: CodeFiles) => (dispatch: AppDispatch) => {
-	dispatch(updateCodeThunk(files)).then((response) => {
-		if (response.payload.status === 202) dispatch(updateCodeThunk(files));
+export const runCode = (files: CodeFiles) => (dispatch: AppDispatch) => {
+	dispatch(runCodeThunk(files)).then((response) => {
+		if (response.payload.status === 202) dispatch(runCodeThunk(files));
 	});
 };
 
@@ -112,10 +114,10 @@ export const fetchSandbox = createAsyncThunk<SandboxResponse, void, { state: Roo
 	}
 );
 
-export const updateCodeThunk = createAsyncThunk<any, CodeFiles, { state: RootState }>(
-	"sandbox/updateCode",
+export const runCodeThunk = createAsyncThunk<any, CodeFiles, { state: RootState }>(
+	"sandbox/runCode",
 	async (payload, thunkApi) => {
-		const response = await httpRequest.updateCode(payload, "sandbox");
+		const response = await httpRequest.runCode(payload, "sandbox");
 		let delay = 0;
 		if (response.status === 202) {
 			delay = 5000;
