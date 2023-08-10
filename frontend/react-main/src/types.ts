@@ -76,10 +76,7 @@ export type TaskCategory = string; //"JSX";
 export interface Sandbox {
 	sandboxId: string;
 	userCode?: CodeFiles;
-}
-
-export interface SandboxSchemaFrontend {
 	defaultFiles?: CodeFiles;
 }
 
-export type SandboxResponse = SandboxSchemaFrontend;
+export type SandboxResponse = Sandbox;

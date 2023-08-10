@@ -20,9 +20,7 @@ const initialState: UserState = {
 	isLoggedIn: false,
 	loadingStatus: "Idle",
 	tasks: [],
-	sandbox: {
-		sandboxId: "",
-	},
+	sandbox: { sandboxId: "" },
 };
 
 export const userSlice = createSlice({

@@ -49,8 +49,10 @@ export const httpRequest = {
 	async startDocker() {
 		return axios.post("/docker/data");
 	},
-	async updateCode(files: CodeFiles, type: CodeType) {
-		return axios.post("/sessionContainer/updateCode", files, { params: { type: type } });
+	async updateCode(files: CodeFiles, type: CodeType, taskId?: string) {
+		return axios.post("/sessionContainer/updateCode", files, {
+			params: { type: type, taskId: taskId },
+		});
 	},
 	async runTest(files: CodeFiles, taskId: string) {
 		return axios.post("/sessionContainer/runTest", files, { params: { taskId: taskId } });

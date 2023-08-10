@@ -4,13 +4,13 @@ import express from "express";
 import session from "express-session";
 import { createProxyMiddleware } from "http-proxy-middleware";
 import { getSessionStore } from "./database/database";
+import { handleUserPassedTask } from "./database/user";
 import { startSandboxContainer } from "./docker/dockerControl";
 import { authRouter, requireLogin } from "./routes/authRoutes";
 import { sandboxRouter } from "./routes/sandboxRoutes";
-import { taskRouter } from "./routes/taskRoutes";
-import { getTaskById, getTasksByUnlocksList } from "./database/task";
 import { sessionDockerRouter } from "./routes/sessionDockerRoutes";
-import { unlockTasksFromTask } from "./database/user";
+import { taskRouter } from "./routes/taskRoutes";
+import bodyParser from "body-parser";
 
 // env variables
 dotenv.config();
@@ -41,6 +41,9 @@ app.use(
 	})
 );
 
+// json parser
+app.use(express.json());
+
 // init session container configs
 app.use("/sessionContainer", requireLogin, sessionDockerRouter);
 
@@ -57,6 +60,7 @@ app.use(
 			return "http://master-thesis-backend-express-session-1:8000";
 		}, */
 		changeOrigin: true,
+
 		pathRewrite: {
 			"^/sessionContainer": "", // Replace '/api' with the base path of the server you want to proxy to
 		},
@@ -77,6 +81,26 @@ app.use(
 				url.searchParams.append(key, value?.toString() ?? "");
 			}
 			proxyReq.path = url.pathname + url.search;
+
+			// ----------- needed for correct body parsing ----------
+
+			if (!req.body || !Object.keys(req.body).length) {
+				return;
+			}
+
+			const contentType = proxyReq.getHeader("Content-Type");
+			const writeBody = (bodyData: string) => {
+				proxyReq.setHeader("Content-Length", Buffer.byteLength(bodyData));
+				proxyReq.write(bodyData);
+			};
+
+			if (contentType === "application/json") {
+				writeBody(JSON.stringify(req.body));
+			}
+
+			// if (contentType === "application/x-www-form-urlencoded") {
+			// 	writeBody(queryString.stringify(req.body));
+			// }
 		},
 		onProxyRes: (proxyRes, req, res) => {
 			if (req.path === "/runTest") {
@@ -91,16 +115,17 @@ app.use(
 					const responseJSON = JSON.parse(responseBody);
 
 					if (responseJSON.passed) {
-						unlockTasksFromTask(req.session.userId!, req.query.taskId as string);
+						handleUserPassedTask(
+							req.session.userId!,
+							req.query.taskId as string,
+							responseJSON.files
+						);
 					}
 				});
 			}
 		},
 	})
 );
-
-// json parser
-app.use(express.json());
 
 // logging
 app.use((req, res, next) => {

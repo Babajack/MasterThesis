@@ -145,7 +145,7 @@ app.post("/runTest", async (req, res) => {
 		};
 	});
 	const isPassed = !testResults.some((elem) => elem.status !== "passed");
-	const response = { passed: isPassed, testResults: testResults };
+	const response = { passed: isPassed, testResults: testResults, files: req.body };
 	res.send(response);
 });
 

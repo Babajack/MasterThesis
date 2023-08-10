@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
-import { CodeFile, CodeFiles } from "types";
-import { TaskCategory, TaskSchema, getAllTasks, getTaskById, getTasksByUnlocksList } from "./task";
+import { CodeFiles } from "types";
 import { SandboxSchema, getDefaultSandbox } from "./sandbox";
+import { TaskSchema, getAllTasks, getTaskById, getTasksByUnlocksList } from "./task";
 
 export interface UserSchema {
 	username: string;
@@ -13,7 +13,7 @@ export interface UserSchema {
 		isUnlocked?: boolean;
 	}[];
 	sandbox: {
-		sandboxId: mongoose.Schema.Types.ObjectId;
+		sandboxId: SandboxSchema;
 		userCode?: CodeFiles;
 	};
 	currentTaskId?: string;
@@ -102,6 +102,7 @@ export const getUsersTask = async (userId: string, taskId: string) => {
 		}
 	);
 	const task = user?.tasks.at(0);
+	// only send solution to user if task is solved already
 	if (task && task.userSolution) {
 		if (task.userSolution.length === 0) {
 			task.task.solutionFiles = [];
@@ -109,6 +110,14 @@ export const getUsersTask = async (userId: string, taskId: string) => {
 	}
 
 	return task;
+};
+export const getUsersSandbox = async (userId: string) => {
+	return await User.findById(userId, "sandbox").populate({
+		path: "sandbox",
+		populate: {
+			path: "sandboxId",
+		},
+	});
 };
 
 export const getUserData = async (userId: string) => {
@@ -167,15 +176,30 @@ export const addSandboxFiles = async (userId: string) => {
 	});
 };
 
-export const updateUserCode = async (userId: string, taskId: string, userCode: CodeFiles) => {
-	return await User.updateOne(
-		{ _id: userId, "tasks.id": taskId },
-		{
-			$set: {
-				"tasks.$.userCode": userCode,
-			},
-		}
-	);
+export const updateUserCode = async (
+	userId: string,
+	taskId: string,
+	userCode: CodeFiles,
+	type: string
+) => {
+	if (type === "task")
+		return await User.updateOne(
+			{ _id: userId, "tasks.task": taskId },
+			{
+				$set: {
+					"tasks.$.userCode": userCode,
+				},
+			}
+		);
+	else if (type === "sandbox")
+		return await User.updateOne(
+			{ _id: userId },
+			{
+				$set: {
+					"sandbox.userCode": userCode,
+				},
+			}
+		);
 };
 
 export const updateUserSolution = async (
@@ -184,7 +208,7 @@ export const updateUserSolution = async (
 	userSolution: CodeFiles
 ) => {
 	return await User.updateOne(
-		{ _id: userId, "tasks.task._id": taskId },
+		{ _id: userId, "tasks.task": taskId },
 		{
 			$set: {
 				"tasks.$.userSolution": userSolution,
@@ -193,26 +217,16 @@ export const updateUserSolution = async (
 	);
 };
 
-export const updateSandboxCode = async (userId: string, userCode: CodeFiles) => {
-	return await User.updateOne(
-		{ _id: userId },
-		{
-			$set: {
-				"sandbox.userCode": userCode,
-			},
-		}
-	);
-};
-
-export const unlockTasksFromTask = async (userId: string, taskId: string) => {
+export const handleUserPassedTask = async (userId: string, taskId: string, files: CodeFiles) => {
+	const user = await User.findById(userId);
 	const task = await getTaskById(taskId);
-	if (task?.unlocks) {
-		const unlockedTasksIds = (await getTasksByUnlocksList(task.unlocks)).map((taskId) =>
-			taskId._id.toString()
-		);
 
-		const user = await User.findById(userId);
-		if (user) {
+	if (user) {
+		if (task?.unlocks) {
+			// unlock new tasks
+			const unlockedTasksIds = (await getTasksByUnlocksList(task.unlocks)).map((taskId) =>
+				taskId._id.toString()
+			);
 			const updatedTasks = user.tasks.map((task) => {
 				if (task.task && unlockedTasksIds.includes(task.task.toString())) {
 					task.isUnlocked = true;
@@ -221,8 +235,9 @@ export const unlockTasksFromTask = async (userId: string, taskId: string) => {
 				return task;
 			});
 			user.tasks = updatedTasks;
-
 			await user.save();
 		}
+
+		await updateUserSolution(userId, taskId, files);
 	}
 };

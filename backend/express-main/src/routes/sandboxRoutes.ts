@@ -1,3 +1,4 @@
+import { getUsersSandbox } from "../database/user";
 import { getSandbox } from "../database/sandbox";
 import express from "express";
 
@@ -23,9 +24,12 @@ taskRouter.get("/docker/start", (req, res) => {
 
 sandboxRouter.get("/sandbox", async (req, res) => {
 	try {
-		const sandboxId = req.query.sandboxId as string;
-		const sandbox = await getSandbox(sandboxId);
-		res.send({ defaultFiles: sandbox?.defaultFiles });
+		const usersSandbox = await getUsersSandbox(req.session.userId!);
+
+		res.send({
+			defaultFiles: usersSandbox?.sandbox.sandboxId.defaultFiles,
+			userCode: usersSandbox?.sandbox.userCode,
+		});
 	} catch (error) {
 		res.send({ error: error });
 	}

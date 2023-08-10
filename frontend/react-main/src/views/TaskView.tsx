@@ -23,7 +23,7 @@ const TaskMenuView = () => {
 	const { taskId } = useParams();
 
 	useEffect(() => {
-		dispatch(fetchTask({ taskId: taskId ?? "" }));
+		dispatch(fetchTask(taskId ?? ""));
 	}, [, taskId]);
 
 	/**
@@ -64,7 +64,7 @@ const TaskMenuView = () => {
 							onUpdateFile={(oldFile, newFile) =>
 								dispatch(updateFile({ old: oldFile, new: newFile }))
 							}
-							onTestCode={() => dispatch(runTest(taskState.currentFiles))}
+							onTestCode={() => dispatch(runTest(taskState.currentFiles, taskState.task._id))}
 							onResetCode={() => dispatch(setCurrentFiles(taskState.task.defaultFiles!))}
 							onSetToSampleSolution={
 								taskState.task.solutionFiles?.length

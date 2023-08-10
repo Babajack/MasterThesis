@@ -176,6 +176,7 @@ export const taskSlice = createSlice({
 		});
 		builder.addCase(fetchTask.pending, (state) => {
 			state.loadingStatus = "Pending";
+			state.buildStatus = "Idle";
 		});
 		builder.addCase(fetchTask.rejected, (state) => {
 			state.loadingStatus = "Error";
@@ -192,6 +193,11 @@ export const taskSlice = createSlice({
 					: action.payload.userCode?.length ?? 0 > 0
 					? action.payload.userCode!
 					: action.payload.task.defaultFiles!;
+		});
+		builder.addCase(updateTask.fulfilled, (state, action) => {
+			state.task = action.payload.task;
+			state.userSolution = action.payload.userSolution;
+			state.isUnlocked = action.payload.isUnlocked;
 		});
 		builder.addCase(updateCodeThunk.pending, (state) => {
 			state.buildStatus = "Pending";
@@ -240,22 +246,32 @@ export const updateCode = (files: CodeFiles) => (dispatch: AppDispatch) => {
 	});
 };
 
-export const runTest = (files: CodeFiles) => async (dispatch: AppDispatch) => {
+export const runTest = (files: CodeFiles, taskId: string) => async (dispatch: AppDispatch) => {
 	var response: any = await dispatch(runTestThunk(files));
 	if (response.payload.status === 202) {
 		response = await dispatch(runTestThunk(files));
 	}
 	if (response.payload.passed) {
 		dispatch(updateUserData());
+		dispatch(updateTask(taskId));
 	}
 };
 
 /* --------- async thunks --------- */
 
-export const fetchTask = createAsyncThunk<Task, { taskId: string }, any>(
+export const fetchTask = createAsyncThunk<Task, string, any>(
 	"task/fetchTask",
-	async (payload: { taskId: string }, thunkApi) => {
-		const response = await httpRequest.fetchTask(payload.taskId);
+	async (payload: string, thunkApi) => {
+		const response = await httpRequest.fetchTask(payload);
+		if (response) return response.data;
+		else return thunkApi.rejectWithValue("error");
+	}
+);
+
+export const updateTask = createAsyncThunk<Task, string, any>(
+	"task/updateTask",
+	async (payload: string, thunkApi) => {
+		const response = await httpRequest.fetchTask(payload);
 		if (response) return response.data;
 		else return thunkApi.rejectWithValue("error");
 	}
@@ -264,7 +280,11 @@ export const fetchTask = createAsyncThunk<Task, { taskId: string }, any>(
 export const updateCodeThunk = createAsyncThunk<any, CodeFiles, { state: RootState }>(
 	"task/updateCode",
 	async (payload, thunkApi) => {
-		const response = await httpRequest.updateCode(payload, "task");
+		const response = await httpRequest.updateCode(
+			payload,
+			"task",
+			thunkApi.getState().task.task._id
+		);
 
 		let delay = 0;
 		if (response.status === 202) {

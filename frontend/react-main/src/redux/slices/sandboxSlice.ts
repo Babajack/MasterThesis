@@ -1,12 +1,5 @@
 import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
-import {
-	LoadingStatus,
-	CodeFile,
-	CodeFiles,
-	SandboxResponse,
-	Sandbox,
-	SandboxSchemaFrontend,
-} from "../../types";
+import { LoadingStatus, CodeFile, CodeFiles, SandboxResponse, Sandbox } from "../../types";
 import { httpRequest } from "../../network/httpRequest";
 import { AppDispatch, RootState } from "../store";
 import { AxiosResponse } from "axios";
@@ -16,7 +9,7 @@ type Errors = {
 	errors: { message: string; line: number }[];
 }[];
 
-interface SandboxState extends SandboxSchemaFrontend {
+interface SandboxState extends Sandbox {
 	currentFiles: CodeFiles;
 	loadingStatus: LoadingStatus;
 	buildStatus: LoadingStatus;
@@ -25,6 +18,7 @@ interface SandboxState extends SandboxSchemaFrontend {
 
 const initialState: SandboxState = {
 	currentFiles: [],
+	sandboxId: "",
 	loadingStatus: "Idle",
 	buildStatus: "Idle",
 };
@@ -68,7 +62,9 @@ export const sandboxSlice = createSlice({
 				...state,
 				...action.payload,
 				currentFiles:
-					state.currentFiles.length > 0 ? state.currentFiles : action.payload.defaultFiles ?? [],
+					state.currentFiles.length > 0
+						? state.currentFiles
+						: action.payload.userCode ?? action.payload.defaultFiles ?? [],
 				loadingStatus: "Success",
 			};
 		});
