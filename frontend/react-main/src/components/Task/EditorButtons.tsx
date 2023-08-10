@@ -2,7 +2,7 @@ import { MDBBtn, MDBSpinner, MDBIcon, MDBRow, MDBCol, MDBTooltip } from "mdb-rea
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../redux/store";
 import { Tooltip } from "react-tooltip";
-import { CodeFiles, LoadingStatus } from "../../types";
+import { CodeFiles, CodeType, LoadingStatus } from "../../types";
 import { ConfirmationModal } from "../Utils/ConfirmationModal";
 import { useState } from "react";
 
@@ -12,7 +12,10 @@ interface EditorButtonsProps {
 	onResetCode?: () => void;
 	onSetToUserSolution?: () => void;
 	onSetToSampleSolution?: () => void;
+	onGotoNextTask?: () => void;
+	onGotoPreviousTask?: () => void;
 	buildStatus: LoadingStatus;
+	type: CodeType;
 }
 
 const EditorButtons: React.FC<EditorButtonsProps> = (props) => {
@@ -20,7 +23,7 @@ const EditorButtons: React.FC<EditorButtonsProps> = (props) => {
 
 	return (
 		<MDBRow>
-			<MDBCol className="d-flex ">
+			<MDBCol xxl={3} sm={6} xs={6} className="d-flex order-xxl-0 order-sm-0 order-xs-0">
 				<MDBTooltip
 					title={"Code ausführen (strg + s)"}
 					tag="span"
@@ -28,7 +31,7 @@ const EditorButtons: React.FC<EditorButtonsProps> = (props) => {
 					disableMouseDown
 				>
 					<MDBBtn
-						className="app-tertiary app-text-primary app-button me-3 anchor-element-run-btn"
+						className="app-tertiary app-text-primary app-button app-button-tertiary me-3 anchor-element-run-btn"
 						onClick={props.onRunCode}
 						disabled={props.buildStatus === "Pending"}
 					>
@@ -48,7 +51,7 @@ const EditorButtons: React.FC<EditorButtonsProps> = (props) => {
 						disableMouseDown
 					>
 						<MDBBtn
-							className="app-tertiary app-text-primary app-button anchor-element-test-btn"
+							className="app-tertiary app-text-primary app-button app-button-tertiary anchor-element-test-btn"
 							onClick={props.onTestCode}
 							disabled={props.buildStatus === "Pending"}
 						>
@@ -61,7 +64,51 @@ const EditorButtons: React.FC<EditorButtonsProps> = (props) => {
 					</MDBTooltip>
 				)}
 			</MDBCol>
-			<MDBCol className="d-flex justify-content-end">
+			<MDBCol
+				xxl={4}
+				sm={12}
+				xs={12}
+				className="d-flex justify-content-center order-xxl-1 pt-xxl-0 order-sm-2 pt-sm-2 order-xs-2 pt-xs-2"
+			>
+				{props.type === "task" && (
+					<MDBTooltip
+						title={"Zur vorherigen Aufgabe"}
+						tag="span"
+						wrapperClass="d-inline-block"
+						disableMouseDown
+					>
+						<MDBBtn
+							className="app-quaternary app-text-primary app-button app-button-quaternary anchor-element-user-solution-btn me-3"
+							onClick={props.onGotoPreviousTask}
+							disabled={!props.onGotoPreviousTask}
+						>
+							<MDBIcon fas icon="arrow-left" />
+						</MDBBtn>
+					</MDBTooltip>
+				)}
+				{props.type === "task" && (
+					<MDBTooltip
+						title={"Zur nächsten Aufgabe"}
+						tag="span"
+						wrapperClass="d-inline-block"
+						disableMouseDown
+					>
+						<MDBBtn
+							className="app-quaternary app-text-primary app-button app-button-quaternary anchor-element-user-solution-btn"
+							onClick={props.onGotoNextTask}
+							disabled={!props.onGotoNextTask}
+						>
+							<MDBIcon fas icon="arrow-right" />
+						</MDBBtn>
+					</MDBTooltip>
+				)}
+			</MDBCol>
+			<MDBCol
+				xxl={5}
+				sm={6}
+				xs={6}
+				className="d-flex justify-content-end order-xxl-2 order-sm-1 order-xs-1"
+			>
 				<MDBTooltip
 					title={"Code zurücksetzen"}
 					tag="span"
@@ -69,7 +116,7 @@ const EditorButtons: React.FC<EditorButtonsProps> = (props) => {
 					disableMouseDown
 				>
 					<MDBBtn
-						className="app-tertiary app-text-primary app-button me-3 anchor-element-reset-btn"
+						className="app-tertiary app-text-primary app-button app-button-tertiary anchor-element-reset-btn"
 						onClick={() => setShowConfirmationModal(true)}
 					>
 						<MDBIcon fas icon="sync-alt" />
@@ -84,35 +131,39 @@ const EditorButtons: React.FC<EditorButtonsProps> = (props) => {
 					/>
 				</MDBTooltip>
 
-				<MDBTooltip
-					title={"Eigene Lösung laden"}
-					tag="span"
-					wrapperClass="d-inline-block"
-					disableMouseDown
-				>
-					<MDBBtn
-						className="app-tertiary app-text-primary app-button me-3 anchor-element-user-solution-btn"
-						onClick={props.onSetToUserSolution}
-						disabled={!props.onSetToUserSolution}
+				{props.type === "task" && (
+					<MDBTooltip
+						title={"Eigene Lösung laden"}
+						tag="span"
+						wrapperClass="d-inline-block"
+						disableMouseDown
 					>
-						<MDBIcon fas icon="user-check" />
-					</MDBBtn>
-				</MDBTooltip>
+						<MDBBtn
+							className="app-tertiary app-text-primary app-button app-button-tertiary anchor-element-user-solution-btn ms-3"
+							onClick={props.onSetToUserSolution}
+							disabled={!props.onSetToUserSolution}
+						>
+							<MDBIcon fas icon="user-check" />
+						</MDBBtn>
+					</MDBTooltip>
+				)}
 
-				<MDBTooltip
-					title={"Musterlösung laden"}
-					tag="span"
-					wrapperClass="d-inline-block"
-					disableMouseDown
-				>
-					<MDBBtn
-						className="app-tertiary app-text-primary app-button "
-						onClick={props.onSetToSampleSolution}
-						disabled={!props.onSetToSampleSolution}
+				{props.type === "task" && (
+					<MDBTooltip
+						title={"Musterlösung laden"}
+						tag="span"
+						wrapperClass="d-inline-block"
+						disableMouseDown
 					>
-						<MDBIcon fas icon="check" />
-					</MDBBtn>
-				</MDBTooltip>
+						<MDBBtn
+							className="app-tertiary app-text-primary app-button app-button-tertiary ms-3"
+							onClick={props.onSetToSampleSolution}
+							disabled={!props.onSetToSampleSolution}
+						>
+							<MDBIcon fas icon="check" />
+						</MDBBtn>
+					</MDBTooltip>
+				)}
 			</MDBCol>
 		</MDBRow>
 	);

@@ -7,11 +7,11 @@ import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../redux/store";
 import EditorButtons from "./EditorButtons";
 import TabsComponent from "./TabsComponent";
-import { CodeFiles, LoadingStatus, Errors, CodeFile } from "../../types";
+import { CodeFiles, LoadingStatus, Errors, CodeFile, CodeType } from "../../types";
 import { ActionCreatorWithPayload } from "@reduxjs/toolkit";
 
 interface EditorComponentProps {
-	type: string;
+	type: CodeType;
 	currentFiles: CodeFiles;
 	buildStatus: LoadingStatus;
 	onRunCode: () => void;
@@ -22,6 +22,8 @@ interface EditorComponentProps {
 	onResetCode?: () => void;
 	onSetToUserSolution?: () => void;
 	onSetToSampleSolution?: () => void;
+	onGotoNextTask?: () => void;
+	onGotoPreviousTask?: () => void;
 }
 
 const EditorComponent: React.FC<EditorComponentProps> = (props) => {
@@ -331,6 +333,9 @@ const EditorComponent: React.FC<EditorComponentProps> = (props) => {
 					onResetCode={props.onResetCode}
 					onSetToSampleSolution={props.onSetToSampleSolution}
 					onSetToUserSolution={props.onSetToUserSolution}
+					onGotoNextTask={props.onGotoNextTask}
+					onGotoPreviousTask={props.onGotoPreviousTask}
+					type={props.type}
 				/>
 			</MDBCol>
 		</MDBRow>

@@ -74,6 +74,10 @@ body,
 	background-color: #08ad66 !important;
 }
 
+.app-quaternary {
+	background-color: #00a4e8 !important;
+}
+
 .app-text-primary,
 .app-text-primary .accordion-button {
 	color: #000000 !important;
@@ -89,17 +93,35 @@ body,
 
 /* button */
 .app-button {
+	transition: all 0.1s ease-in-out;
+}
+.app-button-tertiary {
 	border-color: #08ad66 !important;
 	box-shadow: inset 0 4px 9px -4px #08ad66 !important;
-	transition: all 0.1s ease-in-out;
+}
+
+.app-button-quaternary {
+	border-color: #00a4e8 !important;
+	box-shadow: inset 0 4px 9px -4px #00a4e8 !important;
 }
 
 .app-button:hover,
 .app-button:focus,
 .app-button:active,
 .open > .dropdown-toggle.app-button {
-	background-color: #08ad66 !important;
 	transform: scale(1.05);
+}
+.app-button-tertiary:hover,
+.app-button-tertiary:focus,
+.app-button-tertiary:active,
+.open > .dropdown-toggle.app-button-tertiary {
+	background-color: #08ad66 !important;
+}
+.app-button-quaternary:hover,
+.app-button-quaternary:focus,
+.app-button-quaternary:active,
+.open > .dropdown-toggle.app-button-quaternary {
+	background-color: #00a4e8 !important;
 }
 
 /* tabs */

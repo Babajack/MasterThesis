@@ -14,13 +14,23 @@ import {
 	updateFile,
 } from "../redux/slices/taskSlice";
 import { useEffect } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import LoadingWrapper from "../components/Utils/LoadingWrapper";
+import TaskDescriptionComponent from "../components/Task/TaskDescriptionComponent";
 
 const TaskMenuView = () => {
 	const dispatch = useDispatch<AppDispatch>();
 	const taskState = useSelector((state: RootState) => state.task);
+	const userState = useSelector((state: RootState) => state.user);
 	const { taskId } = useParams();
+	const navigate = useNavigate();
+
+	const nextTask = userState.tasks.find(
+		(elem) =>
+			elem.task.index === taskState.task.index + 1 &&
+			(elem.isUnlocked || elem.task.isDefaultUnlocked)
+	);
+	const previousTask = userState.tasks.find((elem) => elem.task.index === taskState.task.index - 1);
 
 	useEffect(() => {
 		dispatch(fetchTask(taskId ?? ""));
@@ -41,12 +51,12 @@ const TaskMenuView = () => {
 		<LoadingWrapper loadingStatus={taskState.loadingStatus}>
 			<MDBContainer fluid className="g-0 d-flex flex-column flex-grow-1">
 				<MDBRow className="g-0 flex-grow-1">
-					<MDBCol md={3} sm={12} className="flex-grow-1 p-2">
-						<h1>Aufgabe:</h1>
+					<MDBCol lg={3} md={12} className="flex-grow-1 p-2">
+						<TaskDescriptionComponent />
 					</MDBCol>
 					<MDBCol
-						md={5}
-						sm={12}
+						lg={5}
+						md={12}
 						/* style={{ height: "90%" }} */ className="d-flex flex-grow-1 px-2 py-1"
 					>
 						<EditorComponent
@@ -76,12 +86,16 @@ const TaskMenuView = () => {
 									? () => dispatch(setCurrentFiles(taskState.userSolution!))
 									: undefined
 							}
+							onGotoNextTask={nextTask ? () => navigate(`/task/${nextTask.task._id}`) : undefined}
+							onGotoPreviousTask={
+								previousTask ? () => navigate(`/task/${previousTask.task._id}`) : undefined
+							}
 							type={"task"}
 						/>
 					</MDBCol>
 					<MDBCol
-						md={4}
-						sm={12}
+						lg={4}
+						md={12}
 						className="d-flex flex-column justify-content-center align-items-center flex-grow-1 p-2"
 					>
 						<PreviewComponent {...taskState} type="task" />

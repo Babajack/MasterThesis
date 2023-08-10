@@ -103,6 +103,7 @@ app.post("/runTest", async (req, res) => {
 					mergedErrors.push({ filename: buildError.filename, errors: buildError.errors });
 				}
 			}
+
 			res.send({ error: mergedErrors });
 			return;
 		}

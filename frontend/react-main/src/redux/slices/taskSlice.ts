@@ -221,10 +221,10 @@ export const taskSlice = createSlice({
 		});
 		builder.addCase(runTestThunk.fulfilled, (state, action) => {
 			state.buildStatus = "Success";
-			if ("error" in action.payload) state.errors = action.payload.error;
+			if ("error" in action.payload.data) state.errors = action.payload.data.error;
 			else {
-				state.testResults = action.payload.testResults;
-				if (action.payload.passed) {
+				state.testResults = action.payload.data.testResults;
+				if (action.payload.data.passed) {
 					state.userSolution = action.payload.files;
 				}
 			}
@@ -299,32 +299,29 @@ export const updateCodeThunk = createAsyncThunk<any, CodeFiles, { state: RootSta
 		);
 	}
 );
-export const runTestThunk = createAsyncThunk<
-	| { testResults: TestResults; passed: boolean; files: CodeFiles; status: number }
-	| { error: string },
-	CodeFiles,
-	{ state: RootState }
->("task/runTest", async (payload, thunkApi) => {
-	const taskId = thunkApi.getState().task.task._id;
-	const response = await httpRequest.runTest(payload, taskId);
+export const runTestThunk = createAsyncThunk<any, CodeFiles, { state: RootState }>(
+	"task/runTest",
+	async (payload, thunkApi) => {
+		const taskId = thunkApi.getState().task.task._id;
+		const response = await httpRequest.runTest(payload, taskId);
 
-	let delay = 0;
-	if (response.status === 202) {
-		delay = 5000;
-	} else {
-		delay = 500;
+		let delay = 0;
+		if (response.status === 202) {
+			delay = 5000;
+		} else {
+			delay = 500;
+		}
+		return await new Promise((resolve) =>
+			setTimeout(() => {
+				resolve({
+					data: response.data,
+					files: payload,
+					status: response.status,
+				});
+			}, delay)
+		);
 	}
-	return await new Promise((resolve) =>
-		setTimeout(() => {
-			resolve({
-				passed: response.data.passed,
-				files: payload,
-				testResults: response.data.testResults,
-				status: response.status,
-			});
-		}, delay)
-	);
-});
+);
 
 export const addNewFile = createAsyncThunk<
 	{ filename: string },
