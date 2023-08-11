@@ -24,12 +24,7 @@ const EditorButtons: React.FC<EditorButtonsProps> = (props) => {
 	return (
 		<MDBRow>
 			<MDBCol xxl={3} sm={6} xs={6} className="d-flex order-xxl-0 order-sm-0 order-xs-0">
-				<MDBTooltip
-					title={"Code ausführen (strg + s)"}
-					tag="span"
-					wrapperClass="d-inline-block"
-					disableMouseDown
-				>
+				<MDBTooltip title={"run code"} tag="span" wrapperClass="d-inline-block" disableMouseDown>
 					<MDBBtn
 						className="app-tertiary app-text-primary app-button app-button-tertiary me-3 anchor-element-run-btn"
 						onClick={props.onRunCode}
@@ -44,12 +39,7 @@ const EditorButtons: React.FC<EditorButtonsProps> = (props) => {
 				</MDBTooltip>
 
 				{props.onTestCode && (
-					<MDBTooltip
-						title={"Tests ausführen"}
-						tag="span"
-						wrapperClass="d-inline-block"
-						disableMouseDown
-					>
+					<MDBTooltip title={"run tests"} tag="span" wrapperClass="d-inline-block" disableMouseDown>
 						<MDBBtn
 							className="app-tertiary app-text-primary app-button app-button-tertiary anchor-element-test-btn"
 							onClick={props.onTestCode}
@@ -72,7 +62,7 @@ const EditorButtons: React.FC<EditorButtonsProps> = (props) => {
 			>
 				{props.type === "task" && (
 					<MDBTooltip
-						title={"Zur vorherigen Aufgabe"}
+						title={"previous task"}
 						tag="span"
 						wrapperClass="d-inline-block"
 						disableMouseDown
@@ -87,12 +77,7 @@ const EditorButtons: React.FC<EditorButtonsProps> = (props) => {
 					</MDBTooltip>
 				)}
 				{props.type === "task" && (
-					<MDBTooltip
-						title={"Zur nächsten Aufgabe"}
-						tag="span"
-						wrapperClass="d-inline-block"
-						disableMouseDown
-					>
+					<MDBTooltip title={"next task"} tag="span" wrapperClass="d-inline-block" disableMouseDown>
 						<MDBBtn
 							className="app-quaternary app-text-primary app-button app-button-quaternary anchor-element-user-solution-btn"
 							onClick={props.onGotoNextTask}
@@ -110,7 +95,7 @@ const EditorButtons: React.FC<EditorButtonsProps> = (props) => {
 				className="d-flex justify-content-end order-xxl-2 order-sm-1 order-xs-1"
 			>
 				<MDBTooltip
-					title={"Code zurücksetzen"}
+					title={"reset code to default"}
 					tag="span"
 					wrapperClass="d-inline-block"
 					disableMouseDown
@@ -133,7 +118,7 @@ const EditorButtons: React.FC<EditorButtonsProps> = (props) => {
 
 				{props.type === "task" && (
 					<MDBTooltip
-						title={"Eigene Lösung laden"}
+						title={"load own solution"}
 						tag="span"
 						wrapperClass="d-inline-block"
 						disableMouseDown
@@ -150,7 +135,7 @@ const EditorButtons: React.FC<EditorButtonsProps> = (props) => {
 
 				{props.type === "task" && (
 					<MDBTooltip
-						title={"Musterlösung laden"}
+						title={"load sample solution"}
 						tag="span"
 						wrapperClass="d-inline-block"
 						disableMouseDown

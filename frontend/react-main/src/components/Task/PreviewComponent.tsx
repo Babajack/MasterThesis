@@ -49,7 +49,7 @@ const PreviewComponent: React.FC<PreviewComponentProps> = (props) => {
 
 	const getSuccessResult = () => {
 		if (!props.testResults?.some((result) => result.status !== "passed")) {
-			return <h3 style={{ color: "green" }}>Aufgabe gelöst!</h3>;
+			return <h3 style={{ color: "green" }}>task solved!</h3>;
 		}
 	};
 

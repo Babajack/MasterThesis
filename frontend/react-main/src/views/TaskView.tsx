@@ -62,7 +62,8 @@ const TaskMenuView = () => {
 						/* style={{ height: "90%" }} */ className="d-flex flex-grow-1 px-2 py-1"
 					>
 						<EditorComponent
-							{...taskState}
+							buildStatus={taskState.buildStatus}
+							currentFiles={taskState.currentFilesMap[taskId as string] ?? []}
 							onAddFile={(file) => {
 								return new Promise((resolve) => {
 									dispatch(addNewFile({ filename: file.filename })).then((res) => {
@@ -72,11 +73,13 @@ const TaskMenuView = () => {
 								});
 							}}
 							onDeleteFile={(filename) => dispatch(deleteFileByName(filename))}
-							onRunCode={() => dispatch(runCode(taskState.currentFiles))}
+							onRunCode={() => dispatch(runCode(taskState.currentFilesMap[taskId as string]))}
 							onUpdateFile={(oldFile, newFile) =>
 								dispatch(updateFile({ old: oldFile, new: newFile }))
 							}
-							onTestCode={() => dispatch(runTest(taskState.currentFiles, taskState.task._id))}
+							onTestCode={() =>
+								dispatch(runTest(taskState.currentFilesMap[taskId as string], taskState.task._id))
+							}
 							onResetCode={() => dispatch(setCurrentFiles(taskState.task.defaultFiles!))}
 							onSetToSampleSolution={
 								taskState.task.solutionFiles?.length

@@ -87,15 +87,15 @@ const AuthView = () => {
 		if (!isLogin && formValue?.password !== formValue?.password2)
 			newFormError = {
 				...newFormError,
-				password: "Passwörter müssen übereinstimmen!",
-				password2: "Passwörter müssen übereinstimmen!",
+				password: "Passwords must be the same!",
+				password2: "Passwords must be the same!",
 			};
 		if (!formValue?.username)
-			newFormError = { ...newFormError, username: "Bitte alle Felder ausfüllen!" };
+			newFormError = { ...newFormError, username: "Please fill in all the fields!" };
 		if (!formValue?.password)
-			newFormError = { ...newFormError, password: "Bitte alle Felder ausfüllen!" };
+			newFormError = { ...newFormError, password: "Please fill in all the fields!" };
 		if (!isLogin && !formValue?.password2)
-			newFormError = { ...newFormError, password2: "Bitte alle Felder ausfüllen!" };
+			newFormError = { ...newFormError, password2: "Please fill in all the fields!" };
 
 		usernameFormRef.current?.setCustomValidity(newFormError.username ?? "");
 		passwordFormRef.current?.setCustomValidity(newFormError.password ?? "");
@@ -119,8 +119,8 @@ const AuthView = () => {
 	};
 
 	const getSubmitBtnText = () => {
-		if (isLogin) return "Login";
-		else return "Registrieren";
+		if (isLogin) return "login";
+		else return "sign up";
 	};
 
 	const getValidationItemClassName = (type: keyof typeof formError) => {
@@ -146,7 +146,7 @@ const AuthView = () => {
 							</div>
 
 							<h5 className="fw-normal my-4 pb-3" style={{ letterSpacing: "1px" }}>
-								Melde dich an und lerne React in einer interaktiven Umgebung
+								Sign up and learn React in an interactive environment
 							</h5>
 
 							<Form
@@ -161,7 +161,7 @@ const AuthView = () => {
 										ref={usernameFormRef}
 										onChange={onChange}
 										value={formValue?.username ?? ""}
-										label="Benutzername"
+										label="username"
 										name="username"
 										type="text"
 										size="lg"
@@ -193,7 +193,7 @@ const AuthView = () => {
 											ref={password2FormRef}
 											onChange={onChange}
 											value={formValue?.password2 ?? ""}
-											label="password bestätigen"
+											label="confirm password"
 											name="password2"
 											type="password"
 											size="lg"
@@ -212,14 +212,14 @@ const AuthView = () => {
 							</Form>
 							<p className="mb-5 pb-lg-2">
 								<>
-									{isLogin && "Neu hier? "}
-									{!isLogin && "Bereits angemeldet? "}
+									{isLogin && "New here? "}
+									{!isLogin && "Already have an account? "}
 									<span
 										onClick={handleLoginRegisterSwitch}
 										style={{ color: "#1266f1", cursor: "pointer" }}
 									>
-										{isLogin && "registrieren"}
-										{!isLogin && "anmelden"}
+										{isLogin && "sign up"}
+										{!isLogin && "login"}
 									</span>
 								</>
 							</p>

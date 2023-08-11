@@ -30,8 +30,8 @@ const TaskMenuView = () => {
 				<MDBCol md={6}>
 					<MDBCard className="app-secondary app-text-primary">
 						<MDBCardBody>
-							<MDBCardTitle>Aufgabenauswahl</MDBCardTitle>
-							<MDBAccordion alwaysOpen initialActive={undefined}>
+							<MDBCardTitle>Select a task</MDBCardTitle>
+							<MDBAccordion initialActive={undefined}>
 								{tasksByCategory.map((taskByCategory, index) => {
 									return (
 										<MDBAccordionItem
@@ -48,22 +48,28 @@ const TaskMenuView = () => {
 															<MDBListGroupItem
 																tag={"button"}
 																key={task.task._id}
+																className="app-text-primary"
 																action
 																disabled={!(task.isUnlocked || task.task.isDefaultUnlocked)}
 																onClick={() => {
 																	navigate(`/task/${task.task._id}`);
 																}}
 															>
-																<div>
-																	<span>
-																		Aufgabe {task.task.index}: {task.task.title}
-																	</span>
-																	{(task.userSolution?.length ?? 0) > 0 && (
-																		<span className="float-end">
-																			<MDBIcon style={{ color: "green" }} fas icon="check" />
-																		</span>
-																	)}
-																</div>
+																<MDBRow>
+																	<MDBCol sm={2} className="d-flex justify-content-start">
+																		{/* {task.task.index} */}
+																	</MDBCol>
+																	<MDBCol sm={8} className="d-flex justify-content-center">
+																		{task.task.title}
+																	</MDBCol>
+																	<MDBCol sm={2} className="d-flex justify-content-end">
+																		{(task.userSolution?.length ?? 0) > 0 && (
+																			<span className="">
+																				<MDBIcon style={{ color: "green" }} fas icon="check" />
+																			</span>
+																		)}
+																	</MDBCol>
+																</MDBRow>
 															</MDBListGroupItem>
 														);
 													})}

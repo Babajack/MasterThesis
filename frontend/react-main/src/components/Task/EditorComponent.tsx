@@ -30,7 +30,10 @@ const EditorComponent: React.FC<EditorComponentProps> = (props) => {
 	const dirtyFlag = useRef(false);
 
 	const [currentFilename, setCurrentFilename] = useState<string>("App.js");
-	const currentFile = props.currentFiles.find((elem) => elem.filename === currentFilename)!;
+	const currentFile = props.currentFiles.find((elem) => elem.filename === currentFilename) ?? {
+		code: "",
+		filename: "",
+	};
 
 	const editorRef = useRef<editor.IStandaloneCodeEditor>();
 	const monacoRef = useRef<any>();

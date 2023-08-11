@@ -14,13 +14,17 @@ import { AppDispatch, RootState } from "../store";
 import { AxiosResponse } from "axios";
 import { getUserData, updateUserData } from "./userSlice";
 
+interface currentFilesMap {
+	[taskId: string]: CodeFiles;
+}
+
 interface TaskState extends Task {
 	loadingStatus: LoadingStatus;
 	buildStatus: LoadingStatus;
 	errors?: Errors | string;
 	testResults?: TestResults;
-	currentFiles: CodeFiles;
-	//currentFilesList: {taskId: string, currentFiles: CodeFiles}
+	//currentFiles: CodeFiles;
+	currentFilesMap: currentFilesMap;
 }
 
 const initialState: TaskState = {
@@ -141,7 +145,7 @@ const initialState: TaskState = {
 	// 			`,
 	// 		},
 	// 	],
-	currentFiles: [],
+	currentFilesMap: {},
 	loadingStatus: "Idle",
 	buildStatus: "Idle",
 	task: { _id: "", category: "", index: 0, title: "" },
@@ -155,17 +159,19 @@ export const taskSlice = createSlice({
 			return initialState;
 		},
 		setCurrentFiles: (state, action: PayloadAction<CodeFiles>) => {
-			state.currentFiles = action.payload;
+			state.currentFilesMap[state.task._id] = action.payload;
 		},
 		updateFile: (state, action: PayloadAction<{ old: CodeFile; new: CodeFile }>) => {
-			const index = state.currentFiles.findIndex(
+			const index = state.currentFilesMap[state.task._id as string].findIndex(
 				(file) => file.filename === action.payload.old.filename
 			);
-			if (index !== -1) state.currentFiles[index] = action.payload.new;
+			if (index !== -1) state.currentFilesMap[state.task._id as string][index] = action.payload.new;
 		},
 		deleteFileByName: (state, action: PayloadAction<string>) => {
-			const index = state.currentFiles.findIndex((file) => file.filename === action.payload);
-			if (index !== -1) state.currentFiles.splice(index, 1);
+			const index = state.currentFilesMap[state.task._id as string].findIndex(
+				(file) => file.filename === action.payload
+			);
+			if (index !== -1) state.currentFilesMap[state.task._id as string].splice(index, 1);
 		},
 		setLoadingStatus: (state, action: PayloadAction<LoadingStatus>) => {
 			state.loadingStatus = action.payload;
@@ -188,12 +194,12 @@ export const taskSlice = createSlice({
 			state.userCode = action.payload.userCode;
 			state.userSolution = action.payload.userSolution;
 			state.isUnlocked = action.payload.isUnlocked;
-			state.currentFiles =
-				state.currentFiles.length > 0
-					? state.currentFiles
+			state.currentFilesMap[action.payload.task._id as string] =
+				(state.currentFilesMap[action.payload.task._id as string]?.length > 0
+					? state.currentFilesMap[action.payload.task._id as string]
 					: action.payload.userCode?.length ?? 0 > 0
 					? action.payload.userCode!
-					: action.payload.task.defaultFiles!;
+					: action.payload.task.defaultFiles!) ?? action.payload.task.defaultFiles!;
 		});
 		builder.addCase(updateTask.fulfilled, (state, action) => {
 			state.task = action.payload.task;
@@ -231,7 +237,11 @@ export const taskSlice = createSlice({
 			}
 		});
 		builder.addCase(addNewFile.fulfilled, (state, action) => {
-			state.currentFiles.push({ filename: action.payload.filename, code: "", isDeletable: true });
+			state.currentFilesMap[state.task._id as string].push({
+				filename: action.payload.filename,
+				code: "",
+				isDeletable: true,
+			});
 		});
 	},
 });
@@ -325,7 +335,8 @@ export const addNewFile = createAsyncThunk<
 	{ filename: string },
 	{ state: RootState }
 >("task/addNewFile", async (payload, thunkApi) => {
-	const files = thunkApi.getState().task.currentFiles;
+	const taskState = thunkApi.getState().task;
+	const files = taskState.currentFilesMap[taskState.task._id];
 	if (files.some((elem) => elem.filename === payload.filename))
 		return thunkApi.rejectWithValue("Datei existiert bereits");
 	else return thunkApi.fulfillWithValue({ filename: payload.filename });

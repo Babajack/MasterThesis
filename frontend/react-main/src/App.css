@@ -83,6 +83,10 @@ body,
 	color: #000000 !important;
 }
 
+.app-text-primary:disabled {
+	color: rgb(156, 156, 156) !important;
+}
+
 .app-text-secondary {
 	color: #0000ff !important;
 }

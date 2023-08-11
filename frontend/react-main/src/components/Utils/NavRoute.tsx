@@ -37,7 +37,7 @@ const NavRoute = () => {
 									eventKey={1}
 									to="/tasks"
 								>
-									Aufgaben
+									Tasks
 								</Nav.Link>
 								<Nav.Link
 									className="app-text-primary"
@@ -46,7 +46,7 @@ const NavRoute = () => {
 									eventKey={2}
 									to="/sandbox"
 								>
-									Sandbox
+									Sandbox Mode
 								</Nav.Link>
 								{currentTaskId && (
 									<Nav.Link
@@ -56,7 +56,7 @@ const NavRoute = () => {
 										eventKey={3}
 										to={`/task/${currentTaskId}`}
 									>
-										Aktuelle Aufgabe
+										Current Task
 									</Nav.Link>
 								)}
 							</Nav>
