@@ -262,7 +262,7 @@ export const runTest = (files: CodeFiles, taskId: string) => async (dispatch: Ap
 	if (response.payload.status === 202) {
 		response = await dispatch(runTestThunk(files));
 	}
-	if (response.payload.passed) {
+	if (response?.payload?.data?.passed) {
 		dispatch(updateUserData());
 		dispatch(updateTask(taskId));
 	}

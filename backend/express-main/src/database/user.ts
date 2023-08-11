@@ -30,10 +30,8 @@ const userSchema = new mongoose.Schema<UserSchema>({
 		required: true,
 	},
 	tasks: {
-		_id: false,
 		type: [
 			{
-				_id: false,
 				task: {
 					type: mongoose.Schema.Types.ObjectId,
 					ref: "Task",
@@ -56,7 +54,6 @@ const userSchema = new mongoose.Schema<UserSchema>({
 		default: [],
 	},
 	sandbox: {
-		_id: false,
 		type: {
 			sandboxId: {
 				type: mongoose.Schema.Types.ObjectId,

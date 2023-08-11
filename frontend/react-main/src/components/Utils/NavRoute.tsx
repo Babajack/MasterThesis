@@ -22,7 +22,7 @@ const NavRoute = () => {
 			<header>
 				<Navbar collapseOnSelect expand="lg" className="app-navbar app-secondary">
 					<Container>
-						<Navbar.Brand className="app-text-primary">
+						<Navbar.Brand as={Link} className="app-text-primary" to={"/"}>
 							Learn React <MDBIcon className="ms-2 app-text-secondary" fab icon="react" />
 						</Navbar.Brand>
 						<Navbar.Toggle aria-controls="basic-navbar-nav">

@@ -20,7 +20,8 @@ const ProtectedRoute = () => {
 
 	useEffect(() => {
 		// fetch user data
-		if (!userState.isLoggedIn) dispatch(getUserData());
+		//if (!userState.isLoggedIn) dispatch(getUserData());
+		dispatch(getUserData());
 	}, []);
 
 	// let navigateToLogin = <Navigate to={"/auth"} state={{ from: location }} />;

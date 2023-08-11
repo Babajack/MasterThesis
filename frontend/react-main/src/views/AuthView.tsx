@@ -13,6 +13,7 @@ import {
 	MDBCardTitle,
 	MDBValidation,
 	MDBValidationItem,
+	MDBSpinner,
 } from "mdb-react-ui-kit";
 import logo from "../logo.svg";
 import { Form } from "react-bootstrap";
@@ -62,9 +63,9 @@ const AuthView = () => {
 		if (userState.error) setFormError({ username: userState.error });
 	}, [userState.error]);
 
-	useEffect(() => {
-		dispatch(getUserData());
-	}, []);
+	// useEffect(() => {
+	// 	dispatch(getUserData());
+	// }, []);
 
 	// ref
 	const usernameFormRef = useRef<HTMLInputElement>(null);
@@ -205,8 +206,18 @@ const AuthView = () => {
 								)}
 
 								<MDBCol md={8}>
-									<MDBBtn type="submit" className="mb-4 px-5 mt-2" color="dark" size="lg">
-										{getSubmitBtnText()}
+									<MDBBtn
+										type="submit"
+										disabled={userState.loadingStatus === "Pending"}
+										className="mb-4 px-5 mt-2"
+										color="dark"
+										size="lg"
+									>
+										{userState.loadingStatus === "Pending" ? (
+											<MDBSpinner size="sm" />
+										) : (
+											getSubmitBtnText()
+										)}
 									</MDBBtn>
 								</MDBCol>
 							</Form>

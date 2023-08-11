@@ -160,3 +160,7 @@ body,
 	border-bottom: 3px solid #193549;
 	padding-bottom: 2px;
 }
+
+.nav-link {
+	cursor: pointer;
+}
