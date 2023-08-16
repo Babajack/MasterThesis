@@ -18,7 +18,7 @@ dotenv.config();
 
 const app = express();
 const port = 8000;
-const MAX_AGE = 1000 * 60 * 60 * 6;
+export const MAX_AGE = 1000 * 60 * 60 * 6;
 
 // cors
 app.use(
@@ -70,7 +70,7 @@ app.use(
 			console.log(error);
 			if (req.session.userId)
 				startSandboxContainer(req.session.userId).finally(() =>
-					res.status(202).send({ message: "Container is starting..." })
+					res.status(202).send({ message: "Starting..." })
 				);
 		},
 		onProxyReq: (proxyReq, req, res, options) => {

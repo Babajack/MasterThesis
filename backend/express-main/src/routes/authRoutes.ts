@@ -20,12 +20,12 @@ authRouter.post("/auth/login", (req: Request<{}, {}, UserRequest>, res: Response
 				res.send({ username: req.body.username });
 			} else {
 				// user not found
-				res.send({ error: "Dieser Nutzer wurde nicht gefunden!" });
+				res.send({ error: "Wrong username or password!" });
 			}
 		})
 		.catch((error) => {
 			console.log(error);
-			res.status(404).send({ error: "Unbekannter Fehler!" });
+			res.send({ error: "Unknown error!" });
 		});
 });
 
@@ -40,12 +40,12 @@ authRouter.post(
 					res.send({ username: req.body.username });
 				} else {
 					// user not created
-					res.send({ error: "Dieser Benutzername existiert bereits!" });
+					res.send({ error: "This username is not available!" });
 				}
 			})
 			.catch((error) => {
 				console.log(error);
-				res.status(404).send({ error: "Unbekannter Fehler!" });
+				res.send({ error: "This username is not available!" });
 			});
 	}
 );

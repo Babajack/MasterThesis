@@ -4,6 +4,7 @@ import { Container } from "node-docker-api/lib/container";
 import fs from "fs";
 import { CodeFiles } from "types";
 import path from "path";
+import { MAX_AGE } from "../index";
 //import { DOCKER_PORT, getNextPortNumber } from "./portControl";
 
 const SOCKET_PATH = "/var/run/docker.sock";
@@ -169,6 +170,7 @@ export const runTest = async () => {
 // };
 
 export const startSandboxContainer = async (userID: string) => {
+	if (!userID) return;
 	try {
 		const container = (
 			await docker.container.list({ limit: 1, filters: { name: [`${userID}`] } })
@@ -208,6 +210,13 @@ export const startSandboxContainer = async (userID: string) => {
 		});
 		// start container
 		newContainer = await newContainer.start();
+
+		setTimeout(async () => {
+			console.log("Stopping container:", newContainer.id);
+			await newContainer.stop();
+			await newContainer.delete({ force: true }); // Remove the container forcibly
+			console.log("Container removed:", newContainer.id);
+		}, MAX_AGE);
 
 		// execute symlink command to map usercode path to src path
 		/* newContainer.exec
