@@ -1,4 +1,5 @@
 import mongoose, { Types } from "mongoose";
+import { type } from "os";
 import { CodeFiles } from "types";
 
 export enum TaskDescriptionDisplayType {
@@ -7,7 +8,12 @@ export enum TaskDescriptionDisplayType {
 	"hint" = "hint",
 }
 
-export type TaskCategory = "JSX" | "State";
+export type TaskCategory = "JSX" | "State" | "JavaScript Basics";
+
+export type TaskDescription = {
+	displayType: TaskDescriptionDisplayType;
+	text: string | TaskDescription;
+}[];
 
 export interface TaskSchema {
 	_id?: Types.ObjectId;
@@ -16,10 +22,7 @@ export interface TaskSchema {
 	category: TaskCategory;
 	unlocks?: { category: TaskCategory; index: number }[];
 	isDefaultUnlocked?: boolean;
-	description: {
-		displayType: TaskDescriptionDisplayType;
-		text: string;
-	}[];
+	description: TaskDescription;
 	defaultFiles: CodeFiles;
 	solutionFiles: CodeFiles;
 }

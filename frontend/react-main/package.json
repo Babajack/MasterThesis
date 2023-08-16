@@ -5,6 +5,7 @@
   "dependencies": {
     "@babel/parser": "^7.22.5",
     "@babel/traverse": "^7.22.5",
+    "@codemirror/lang-javascript": "^6.1.9",
     "@fortawesome/fontawesome-free": "^6.4.0",
     "@monaco-editor/react": "^4.5.1",
     "@reduxjs/toolkit": "^1.9.5",
@@ -16,6 +17,7 @@
     "@types/prettier": "^2.7.3",
     "@types/react": "^18.2.0",
     "@types/react-dom": "^18.2.1",
+    "@uiw/react-codemirror": "^4.21.9",
     "axios": "^1.4.0",
     "mdb-react-ui-kit": "^6.0.0",
     "monaco-jsx-highlighter": "^2.0.4",

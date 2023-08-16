@@ -171,6 +171,7 @@ const EditorComponent: React.FC<EditorComponentProps> = (props) => {
 						jsx: monaco.languages.typescript.JsxEmit.React,
 						allowJs: true,
 						allowSyntheticDefaultImports: true,
+						isolatedModules: true,
 						//alwaysStrict: true,
 						//checkJs: true,
 						reactNamespace: "React",
@@ -259,9 +260,6 @@ const EditorComponent: React.FC<EditorComponentProps> = (props) => {
 				<Editor
 					key={props.type}
 					height={"99%"}
-					onValidate={(markers) => {
-						console.log(markers);
-					}}
 					//wrapperProps={{ className: "d-block" }}
 					//className="h-100"
 					options={{

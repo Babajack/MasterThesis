@@ -53,11 +53,11 @@ const TaskMenuView = () => {
 		<LoadingWrapper loadingStatus={taskState.loadingStatus}>
 			<MDBContainer fluid className="g-0 d-flex flex-column flex-grow-1">
 				<MDBRow className="g-0 flex-grow-1">
-					<MDBCol lg={3} md={12} className="flex-grow-1 p-2">
+					<MDBCol lg={4} md={12} className="d-flex flex-grow-1 p-2">
 						<TaskDescriptionComponent />
 					</MDBCol>
 					<MDBCol
-						lg={5}
+						lg={4}
 						md={12}
 						/* style={{ height: "90%" }} */ className="d-flex flex-grow-1 px-2 py-1"
 					>
