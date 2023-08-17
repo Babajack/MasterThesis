@@ -1,6 +1,6 @@
 import MongoStore from "connect-mongo";
 import mongoose from "mongoose";
-import { getTaskDefinitions } from "./taskDefinitions";
+import { getTaskDefinitions } from "./taskDefinitions/configuration";
 import { populateDatabase as initTasks } from "./task";
 import { populateDatabase as initSandbox } from "./sandbox";
 import { getSandboxDefinition } from "./sandboxDefinition";

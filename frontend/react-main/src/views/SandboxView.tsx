@@ -45,6 +45,7 @@ const SandboxView = () => {
 					>
 						<EditorComponent
 							{...sandboxState}
+							defaultFilename="App.js"
 							onAddFile={(file) => {
 								return new Promise((resolve) => {
 									dispatch(addNewFile({ filename: file.filename })).then((res) => {

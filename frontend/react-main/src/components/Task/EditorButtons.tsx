@@ -7,7 +7,7 @@ import { ConfirmationModal } from "../Utils/ConfirmationModal";
 import { useState } from "react";
 
 interface EditorButtonsProps {
-	onRunCode: () => void;
+	onRunCode?: () => void;
 	onTestCode?: () => void;
 	onResetCode?: () => void;
 	onSetToUserSolution?: () => void;
@@ -28,7 +28,7 @@ const EditorButtons: React.FC<EditorButtonsProps> = (props) => {
 					<MDBBtn
 						className="app-tertiary app-text-primary app-button app-button-tertiary me-3 anchor-element-run-btn"
 						onClick={props.onRunCode}
-						disabled={props.buildStatus === "Pending"}
+						disabled={props.buildStatus === "Pending" || !props.onRunCode}
 					>
 						{props.buildStatus === "Pending" ? (
 							<MDBSpinner size="sm" />

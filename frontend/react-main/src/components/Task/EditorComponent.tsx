@@ -14,7 +14,8 @@ interface EditorComponentProps {
 	type: CodeType;
 	currentFiles: CodeFiles;
 	buildStatus: LoadingStatus;
-	onRunCode: () => void;
+	defaultFilename: string;
+	onRunCode?: () => void;
 	onTestCode?: () => void;
 	onUpdateFile: (oldFile: CodeFile, newFile: CodeFile) => void;
 	onDeleteFile: (filename: string) => void;
@@ -29,7 +30,7 @@ interface EditorComponentProps {
 const EditorComponent: React.FC<EditorComponentProps> = (props) => {
 	const dirtyFlag = useRef(false);
 
-	const [currentFilename, setCurrentFilename] = useState<string>("App.js");
+	const [currentFilename, setCurrentFilename] = useState<string>(props.defaultFilename);
 	const currentFile = props.currentFiles.find((elem) => elem.filename === currentFilename) ?? {
 		code: "",
 		filename: "",
@@ -232,7 +233,7 @@ const EditorComponent: React.FC<EditorComponentProps> = (props) => {
 	}, []);
 
 	const handleRunCode = () => {
-		if (dirtyFlag.current) {
+		if (dirtyFlag.current && props.onRunCode) {
 			props.onRunCode();
 		}
 		dirtyFlag.current = false;
@@ -256,7 +257,7 @@ const EditorComponent: React.FC<EditorComponentProps> = (props) => {
 					}}
 				/>
 			</MDBCol>
-			<MDBCol md={12} className="px-1">
+			<MDBCol md={12} className="px-1" style={{ minHeight: "300px" }}>
 				<Editor
 					key={props.type}
 					height={"99%"}
@@ -326,10 +327,14 @@ const EditorComponent: React.FC<EditorComponentProps> = (props) => {
 			<MDBCol className="py-2" style={{}} md={12}>
 				<EditorButtons
 					buildStatus={props.buildStatus}
-					onRunCode={() => {
-						dirtyFlag.current = true;
-						handleRunCode();
-					}}
+					onRunCode={
+						props.onRunCode
+							? () => {
+									dirtyFlag.current = true;
+									handleRunCode();
+							  }
+							: undefined
+					}
 					onTestCode={props.onTestCode}
 					onResetCode={props.onResetCode}
 					onSetToSampleSolution={props.onSetToSampleSolution}

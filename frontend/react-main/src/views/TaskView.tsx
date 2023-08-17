@@ -53,15 +53,18 @@ const TaskMenuView = () => {
 		<LoadingWrapper loadingStatus={taskState.loadingStatus}>
 			<MDBContainer fluid className="g-0 d-flex flex-column flex-grow-1">
 				<MDBRow className="g-0 flex-grow-1">
-					<MDBCol lg={4} md={12} className="d-flex flex-grow-1 p-2">
+					<MDBCol xxl={4} lg={12} className="d-flex flex-grow-1 p-2" style={{ maxHeight: "90vh" }}>
 						<TaskDescriptionComponent />
 					</MDBCol>
 					<MDBCol
-						lg={4}
-						md={12}
+						xl={4}
+						lg={12}
 						/* style={{ height: "90%" }} */ className="d-flex flex-grow-1 px-2 py-1"
 					>
 						<EditorComponent
+							defaultFilename={
+								taskState.task.category === "JavaScript Basics" ? "index.js" : "App.js"
+							}
 							buildStatus={taskState.buildStatus}
 							currentFiles={taskState.currentFilesMap[taskId as string] ?? []}
 							onAddFile={(file) => {
@@ -73,7 +76,11 @@ const TaskMenuView = () => {
 								});
 							}}
 							onDeleteFile={(filename) => dispatch(deleteFileByName(filename))}
-							onRunCode={() => dispatch(runCode(taskState.currentFilesMap[taskId as string]))}
+							onRunCode={
+								taskState.task.category !== "JavaScript Basics"
+									? () => dispatch(runCode(taskState.currentFilesMap[taskId as string]))
+									: undefined
+							}
 							onUpdateFile={(oldFile, newFile) =>
 								dispatch(updateFile({ old: oldFile, new: newFile }))
 							}
@@ -99,8 +106,8 @@ const TaskMenuView = () => {
 						/>
 					</MDBCol>
 					<MDBCol
-						lg={4}
-						md={12}
+						xl={4}
+						lg={12}
 						className="d-flex flex-column justify-content-center align-items-center flex-grow-1 p-2"
 					>
 						<PreviewComponent {...taskState} type="task" />

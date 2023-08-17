@@ -24,10 +24,15 @@ const TaskDescriptionComponent = () => {
 			case "code":
 				return (
 					<CodeMirror
+						style={{ wordBreak: "break-word", fontSize: "14px" }}
 						className="pb-5 text-start"
 						value={elem.text}
 						extensions={[javascript({ jsx: true })]}
 						readOnly
+						basicSetup={{
+							highlightActiveLine: false,
+							highlightActiveLineGutter: false,
+						}}
 					/>
 					// <Editor
 					// 	key={key++}
@@ -50,7 +55,7 @@ const TaskDescriptionComponent = () => {
 	});
 
 	return (
-		<div className="px-2 app-secondary app-text-primary overflow-auto">
+		<div className="px-2 app-secondary app-text-primary overflow-auto w-100 h-100">
 			<h3 className="pt-3"> {taskState.task.title} </h3>
 			{taskDescription}
 		</div>
