@@ -1,4 +1,3 @@
-import React from "react";
 import { resultNum, resultObj1, resultObj2 } from "../src/index.js";
 
 test("resultNum has the correct value", () => {

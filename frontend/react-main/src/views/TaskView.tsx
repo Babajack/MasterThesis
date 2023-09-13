@@ -28,6 +28,7 @@ const TaskMenuView = () => {
 
 	const nextTask = userState.tasks.find(
 		(elem) =>
+			elem.task.category === taskState.task.category &&
 			elem.task.index === taskState.task.index + 1 &&
 			(elem.isUnlocked || elem.task.isDefaultUnlocked)
 	);

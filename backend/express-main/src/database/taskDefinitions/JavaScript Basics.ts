@@ -169,14 +169,442 @@ export var resultObj2 = { value: "unchanged" }
 		{
 			// ---------------------------------------- TASK 2 ----------------------------------------
 			index: index++,
-			title: "JSX Basics (2/4)",
+			title: "Short Circuiting",
 			category: CATEGORY,
 			unlocks: [{ category: CATEGORY, index: index }],
 			description: [
-				{ displayType: TaskDescriptionDisplayType.description, text: "Aufgabentext 1" },
+				{
+					displayType: TaskDescriptionDisplayType.description,
+					text: `Short-circuiting in JavaScript is a behavior that occurs when logical operators (typically && and ||) stop evaluating expressions as soon as the result can be determined without evaluating the entire expression. In JavaScript, when used with non-boolean values, it get's more interesting.`,
+				},
+				{
+					displayType: TaskDescriptionDisplayType.description,
+					text: `<h5>Short-circuiting with the OR (||) operator</h5><div>Logical OR (&&) operands from left to right, returning immediately with the value of the first truthy operand it encounters; if all values are falsy, the value of the last operand is returned.</div>`,
+				},
+				{
+					displayType: TaskDescriptionDisplayType.code,
+					text: `true || false 
+// returns true
+
+false || 1
+// returns 1
+`,
+				},
+				{
+					displayType: TaskDescriptionDisplayType.description,
+					text: `<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Logical_OR" target=”_blank”>More details</a>`,
+				},
+				{
+					displayType: TaskDescriptionDisplayType.description,
+					text: `<h5>Short-circuiting with the AND (&&) operator</h5><div>Logical AND (&&) evaluates operands from left to right, returning immediately with the value of the first falsy operand it encounters; if all values are truthy, the value of the last operand is returned.</div>`,
+				},
+				{
+					displayType: TaskDescriptionDisplayType.code,
+					text: `true && false 
+// returns false
+
+3 && "Hello"
+// returns Hello
+`,
+				},
+				{
+					displayType: TaskDescriptionDisplayType.description,
+					text: `<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Logical_AND" target=”_blank”>More details</a>`,
+				},
 			],
-			defaultFiles: [getHTMLFile()],
-			solutionFiles: [getHTMLFile(), getAppFile(), getIndexFile(), getCSSFile()],
+			defaultFiles: [
+				getHTMLFile(),
+
+				{
+					filename: "index.js",
+					code: `// YOUR TASK:
+// 1) define the expected values
+
+// "Hello" || "Hi"
+export var result1 =
+
+// false || ""
+export var result2 =
+
+// 0 || undefined
+export var result3 =
+
+// "Hello" && "Hi"
+export var result4 =
+
+// 0 && 1
+export var result5 =
+
+// "Hello" && ""
+export var result6 =
+
+
+// 2) complete the following functions using AND (&&) or OR (||) operators
+
+/**
+ * returns the name, with "Guest" as a default value
+ */
+export function getName1(name) {
+	// your code
+}
+
+/**
+ * return the name if isAuthenticated equals true, false otherwise
+ */
+export function getName2(isAuthenticated, name) {
+	// your code
+}
+					`,
+				},
+			],
+			solutionFiles: [
+				getHTMLFile(),
+
+				{
+					filename: "index.js",
+					code: `// YOUR TASK:
+// 1) define the expected values
+
+// "Hello" || "Hi"
+export var result1 = "Hello"
+
+// false || ""
+export var result2 = ""
+
+// 0 || undefined
+export var result3 = undefined
+
+// "Hello" && "Hi"
+export var result4 = "Hi"
+
+// 0 && 1
+export var result5 = 0
+
+// "Hello" && ""
+export var result6 = ""
+
+// 2) complete the following functions using AND (&&) or OR (||) operators
+
+/**
+ * returns the name, with "Guest" as a default value
+ */
+export function getName1(name) {
+	// your code
+	return name || "Guest"
+}
+
+
+/**
+ * return the name if isAuthenticated equals true, false otherwise
+ */
+export function getName2(isAuthenticated, name) {
+	// your code
+	return isAuthenticated && name
+}
+					`,
+				},
+			],
+		},
+
+		{
+			// ---------------------------------------- TASK 3 ----------------------------------------
+			index: index++,
+			title: "Short Circuiting",
+			category: CATEGORY,
+			unlocks: [{ category: CATEGORY, index: index }],
+			description: [],
+			defaultFiles: [
+				getHTMLFile(),
+
+				{
+					filename: "index.js",
+					code: `// YOUR TASK:
+// 1) define the expected values
+
+// "Hello" || "Hi"
+export var result1 =
+
+// false || ""
+export var result2 =
+
+// 0 || undefined
+export var result3 =
+
+// "Hello" && "Hi"
+export var result4 =
+
+// 0 && 1
+export var result5 =
+
+// "Hello" && ""
+export var result6 =
+
+
+// 2) complete the following functions using AND (&&) or OR (||) operators
+
+/**
+ * returns the name, with "Guest" as a default value
+ */
+export function getName1(name) {
+	// your code
+}
+
+/**
+ * return the name if isAuthenticated equals true, false otherwise
+ */
+export function getName2(isAuthenticated, name) {
+	// your code
+}
+					`,
+				},
+			],
+			solutionFiles: [
+				getHTMLFile(),
+
+				{
+					filename: "index.js",
+					code: `// YOUR TASK:
+// 1) define the expected values
+
+// "Hello" || "Hi"
+export var result1 = "Hello"
+
+// false || ""
+export var result2 = ""
+
+// 0 || undefined
+export var result3 = undefined
+
+// "Hello" && "Hi"
+export var result4 = "Hi"
+
+// 0 && 1
+export var result5 = 0
+
+// "Hello" && ""
+export var result6 = ""
+
+// 2) complete the following functions using AND (&&) or OR (||) operators
+
+/**
+ * returns the name, with "Guest" as a default value
+ */
+export function getName1(name) {
+	// your code
+	return name || "Guest"
+}
+
+
+/**
+ * return the name if isAuthenticated equals true, false otherwise
+ */
+export function getName2(isAuthenticated, name) {
+	// your code
+	return isAuthenticated && name
+}
+					`,
+				},
+			],
+		},
+		{
+			// ---------------------------------------- TASK 4 ----------------------------------------
+			index: index++,
+			title: "Short Circuiting",
+			category: CATEGORY,
+			unlocks: [{ category: CATEGORY, index: index }],
+			description: [],
+			defaultFiles: [
+				getHTMLFile(),
+
+				{
+					filename: "index.js",
+					code: `// YOUR TASK:
+// 1) define the expected values
+
+// "Hello" || "Hi"
+export var result1 =
+
+// false || ""
+export var result2 =
+
+// 0 || undefined
+export var result3 =
+
+// "Hello" && "Hi"
+export var result4 =
+
+// 0 && 1
+export var result5 =
+
+// "Hello" && ""
+export var result6 =
+
+
+// 2) complete the following functions using AND (&&) or OR (||) operators
+
+/**
+ * returns the name, with "Guest" as a default value
+ */
+export function getName1(name) {
+	// your code
+}
+
+/**
+ * return the name if isAuthenticated equals true, false otherwise
+ */
+export function getName2(isAuthenticated, name) {
+	// your code
+}
+					`,
+				},
+			],
+			solutionFiles: [
+				getHTMLFile(),
+
+				{
+					filename: "index.js",
+					code: `// YOUR TASK:
+// 1) define the expected values
+
+// "Hello" || "Hi"
+export var result1 = "Hello"
+
+// false || ""
+export var result2 = ""
+
+// 0 || undefined
+export var result3 = undefined
+
+// "Hello" && "Hi"
+export var result4 = "Hi"
+
+// 0 && 1
+export var result5 = 0
+
+// "Hello" && ""
+export var result6 = ""
+
+// 2) complete the following functions using AND (&&) or OR (||) operators
+
+/**
+ * returns the name, with "Guest" as a default value
+ */
+export function getName1(name) {
+	// your code
+	return name || "Guest"
+}
+
+
+/**
+ * return the name if isAuthenticated equals true, false otherwise
+ */
+export function getName2(isAuthenticated, name) {
+	// your code
+	return isAuthenticated && name
+}
+					`,
+				},
+			],
+		},
+		{
+			// ---------------------------------------- TASK 5 ----------------------------------------
+			index: index++,
+			title: "Short Circuiting",
+			category: CATEGORY,
+			unlocks: [{ category: CATEGORY, index: index }],
+			description: [],
+			defaultFiles: [
+				getHTMLFile(),
+
+				{
+					filename: "index.js",
+					code: `// YOUR TASK:
+// 1) define the expected values
+
+// "Hello" || "Hi"
+export var result1 =
+
+// false || ""
+export var result2 =
+
+// 0 || undefined
+export var result3 =
+
+// "Hello" && "Hi"
+export var result4 =
+
+// 0 && 1
+export var result5 =
+
+// "Hello" && ""
+export var result6 =
+
+
+// 2) complete the following functions using AND (&&) or OR (||) operators
+
+/**
+ * returns the name, with "Guest" as a default value
+ */
+export function getName1(name) {
+	// your code
+}
+
+/**
+ * return the name if isAuthenticated equals true, false otherwise
+ */
+export function getName2(isAuthenticated, name) {
+	// your code
+}
+					`,
+				},
+			],
+			solutionFiles: [
+				getHTMLFile(),
+
+				{
+					filename: "index.js",
+					code: `// YOUR TASK:
+// 1) define the expected values
+
+// "Hello" || "Hi"
+export var result1 = "Hello"
+
+// false || ""
+export var result2 = ""
+
+// 0 || undefined
+export var result3 = undefined
+
+// "Hello" && "Hi"
+export var result4 = "Hi"
+
+// 0 && 1
+export var result5 = 0
+
+// "Hello" && ""
+export var result6 = ""
+
+// 2) complete the following functions using AND (&&) or OR (||) operators
+
+/**
+ * returns the name, with "Guest" as a default value
+ */
+export function getName1(name) {
+	// your code
+	return name || "Guest"
+}
+
+
+/**
+ * return the name if isAuthenticated equals true, false otherwise
+ */
+export function getName2(isAuthenticated, name) {
+	// your code
+	return isAuthenticated && name
+}
+					`,
+				},
+			],
 		},
 	];
 };
