@@ -32,7 +32,10 @@ const TaskMenuView = () => {
 			elem.task.index === taskState.task.index + 1 &&
 			(elem.isUnlocked || elem.task.isDefaultUnlocked)
 	);
-	const previousTask = userState.tasks.find((elem) => elem.task.index === taskState.task.index - 1);
+	const previousTask = userState.tasks.find(
+		(elem) =>
+			elem.task.category === taskState.task.category && elem.task.index === taskState.task.index - 1
+	);
 
 	useEffect(() => {
 		dispatch(fetchTask(taskId ?? ""));
@@ -78,7 +81,7 @@ const TaskMenuView = () => {
 							}}
 							onDeleteFile={(filename) => dispatch(deleteFileByName(filename))}
 							onRunCode={
-								taskState.task.category !== "JavaScript Basics"
+								true //taskState.task.category !== "JavaScript Basics"   <- disabled for first tasks?
 									? () => dispatch(runCode(taskState.currentFilesMap[taskId as string]))
 									: undefined
 							}

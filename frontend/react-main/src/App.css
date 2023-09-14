@@ -91,6 +91,10 @@ body,
 	color: #0000ff !important;
 }
 
+.app-editor-background {
+	background-color: #193549 !important;
+}
+
 /* .app-card {
 	background-color: #ecded7;
 } */
@@ -164,3 +168,7 @@ body,
 .nav-link {
 	cursor: pointer;
 }
+
+/* .cm-line {
+	background: #686c6e;
+} */

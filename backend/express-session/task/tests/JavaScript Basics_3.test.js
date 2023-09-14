@@ -1,63 +1,47 @@
-import {
-	result1,
-	result2,
-	result3,
-	result4,
-	result5,
-	result6,
-	getName1,
-	getName2,
-} from "../src/index.js";
+import { multiply, calculator, counter } from "../src/index.js";
 
-test("result1 has the correct value", () => {
-	expect(result1).toBe("Hello");
+test("Task 1: multiply returns the correct result", () => {
+	expect(multiply(5, 3)).toBe(15);
+	expect(multiply(1512, 165561)).toBe(1512 * 165561);
 });
 
-test("result2 has the correct value", () => {
-	expect(result2).toBe("");
+test("Task 1: multiply is an arrow function", () => {
+	const fnString = multiply.toString();
+	expect(fnString).toContain("=>");
 });
 
-test("result3 has the correct value", () => {
-	expect(result3).toBe(undefined);
+test("Task 2: add method adds two numbers", () => {
+	expect(calculator.add(2, 3)).toBe(5);
 });
 
-test("result4 has the correct value", () => {
-	expect(result4).toBe("Hi");
+test("Task 2: substract method subtracts two numbers", () => {
+	expect(calculator.substract(5, 2)).toBe(3);
 });
 
-test("result5 has the correct value", () => {
-	expect(result5).toBe(0);
+test("Task 2: multiply method multiplies two numbers", () => {
+	expect(calculator.multiply(2, 3)).toBe(6);
 });
 
-test("result6 has the correct value", () => {
-	expect(result6).toBe("");
+test("Task 2: divide method divides two numbers", () => {
+	expect(calculator.divide(6, 2)).toBe(3);
 });
 
-test("getName1 returns the correct value", () => {
-	expect(getName1("Hans")).toBe("Hans");
-	expect(getName1("")).toBe("Guest");
-	expect(getName1(undefined)).toBe("Guest");
+test("Task 2: arrow functions are used", () => {
+	const add = calculator.add.toString();
+	expect(add.includes("=>")).toBe(true);
+
+	const substract = calculator.substract.toString();
+	expect(substract.includes("=>")).toBe(true);
+
+	const multiply = calculator.multiply.toString();
+	expect(multiply.includes("=>")).toBe(true);
+
+	const divide = calculator.divide.toString();
+	expect(divide.includes("=>")).toBe(true);
 });
 
-test("getName2 uses logical OR operator", () => {
-	const functionBody = getName1.toString();
-	expect(hasLogicalOR(functionBody)).toBe(true);
+test("Task 3: increment increases the count of counter by 1", () => {
+	const count = counter.count;
+	counter.increment();
+	expect(counter.count).toBe(count + 1);
 });
-
-test("getName2 returns the correct value", () => {
-	expect(getName2(true, "Hans")).toBe("Hans");
-	expect(getName2(false, "Hans")).toBe(false);
-});
-
-test("getName2 uses logical AND operator", () => {
-	const functionBody = getName2.toString();
-	expect(hasLogicalAnd(functionBody)).toBe(true);
-});
-
-function hasLogicalAnd(code) {
-	return /\&\&/.test(code);
-}
-
-function hasLogicalOR(code) {
-	return /\|\|/.test(code);
-}

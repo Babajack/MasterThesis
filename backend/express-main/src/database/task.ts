@@ -71,7 +71,6 @@ const taskSchema = new mongoose.Schema<TaskSchema>({
 				},
 				code: {
 					type: String,
-					required: true,
 				},
 			},
 		],
@@ -86,7 +85,6 @@ const taskSchema = new mongoose.Schema<TaskSchema>({
 				},
 				code: {
 					type: String,
-					required: true,
 				},
 			},
 		],

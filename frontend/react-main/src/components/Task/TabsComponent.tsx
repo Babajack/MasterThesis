@@ -23,6 +23,7 @@ interface TabConfig {
 interface TabsComponentProps {
 	currentFilename: string;
 	currentFiles: CodeFiles;
+	defaultFilename: string;
 	setCurrentFilename: (filename: string) => void;
 	onDeleteFile: (filename: string) => void;
 	onAddFile: (file: CodeFile) => Promise<boolean | { error: string }>;
@@ -67,7 +68,12 @@ const TabsComponent: React.FC<TabsComponentProps> = (props) => {
 		// configs.reduce((prev, cur) => {
 		// 	return { ...prev, [cur.tabName]: undefined };
 		// }, {})
-		{ HTML: "index.html", CSS: "App.css", JAVASCRIPT: "App.js" }
+		{
+			HTML:
+				props.currentFiles.find((elem) => elem.filename.endsWith("html"))?.filename ?? "index.html",
+			CSS: props.currentFiles.find((elem) => elem.filename.endsWith("css"))?.filename ?? "App.css",
+			JAVASCRIPT: props.defaultFilename ?? "App.js",
+		}
 	);
 
 	const [showConfirmationModal, setShowConfirmationModal] = useState(false);

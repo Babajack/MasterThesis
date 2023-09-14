@@ -3,27 +3,28 @@ import { useSelector } from "react-redux";
 import { RootState } from "../../redux/store";
 import { Editor } from "@monaco-editor/react";
 import CodeMirror from "@uiw/react-codemirror";
+import { createTheme } from "@uiw/codemirror-themes";
 import { javascript } from "@codemirror/lang-javascript";
-import { MDBCol, MDBRow } from "mdb-react-ui-kit";
-
-let key = 0;
+import { MDBCol, MDBIcon, MDBRow } from "mdb-react-ui-kit";
+import { vscodeDark } from "@uiw/codemirror-theme-vscode";
 
 const TaskDescriptionComponent = () => {
 	const taskState = useSelector((state: RootState) => state.task);
 
-	const taskDescription = taskState.task.description?.map((elem) => {
+	const taskDescription = taskState.task.description?.map((elem, index) => {
 		switch (elem.displayType) {
 			case "description":
 				return (
 					<div
+						key={"cm-dexription" + index}
 						className="pb-4 text-start"
-						key={key++}
 						dangerouslySetInnerHTML={{ __html: elem.text }}
 					></div>
 				);
 			case "code":
 				return (
 					<CodeMirror
+						key={"cm-code" + index}
 						style={{ wordBreak: "break-word", fontSize: "14px" }}
 						className="pb-5 text-start"
 						value={elem.text}
@@ -33,6 +34,8 @@ const TaskDescriptionComponent = () => {
 							highlightActiveLine: false,
 							highlightActiveLineGutter: false,
 						}}
+						//theme={vscodeDark}
+						//theme={createTheme({ theme: "light", settings: { background: "#193549" }, styles: [] })}
 					/>
 					// <Editor
 					// 	key={key++}

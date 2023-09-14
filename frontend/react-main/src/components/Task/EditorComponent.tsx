@@ -243,6 +243,7 @@ const EditorComponent: React.FC<EditorComponentProps> = (props) => {
 		<MDBRow className="h-100 w-100 g-0 app-primary">
 			<MDBCol md={12}>
 				<TabsComponent
+					defaultFilename={props.defaultFilename}
 					currentFiles={props.currentFiles}
 					setCurrentFilename={setCurrentFilename}
 					currentFilename={currentFilename}
@@ -287,12 +288,12 @@ const EditorComponent: React.FC<EditorComponentProps> = (props) => {
 						setTimeout(() => {
 							// add custom commands
 							//editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.KeyS, handleRunCode);
-							editor.addAction({
-								id: "runCode",
-								label: "Run Code",
-								run: handleRunCode,
-								keybindings: [monaco.KeyMod.CtrlCmd | monaco.KeyCode.KeyS],
-							});
+							// editor.addAction({
+							// 	id: "runCode",
+							// 	label: "Run Code",
+							// 	run: handleRunCode,
+							// 	keybindings: [monaco.KeyMod.CtrlCmd | monaco.KeyCode.KeyS],
+							// }); TODO: BUG, ctrl + s uses old code??
 						}, 0);
 
 						//window.onresize = () => {

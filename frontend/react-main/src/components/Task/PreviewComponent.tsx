@@ -20,7 +20,7 @@ const PreviewComponent: React.FC<PreviewComponentProps> = (props) => {
 						<h3>{error.filename}</h3>
 						{error.errors.map((e) => {
 							return (
-								<div key={e.line}>
+								<div key={error.filename + e.line}>
 									line {e.line}: {e.message}
 								</div>
 							);
