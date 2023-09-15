@@ -12,6 +12,7 @@ import { ActionCreatorWithPayload } from "@reduxjs/toolkit";
 
 interface EditorComponentProps {
 	type: CodeType;
+	shouldNotValidateCode?: boolean;
 	currentFiles: CodeFiles;
 	buildStatus: LoadingStatus;
 	defaultFilename: string;
@@ -30,7 +31,11 @@ interface EditorComponentProps {
 const EditorComponent: React.FC<EditorComponentProps> = (props) => {
 	const dirtyFlag = useRef(false);
 
-	const [currentFilename, setCurrentFilename] = useState<string>(props.defaultFilename);
+	const [currentFilename, setCurrentFilename] = useState<string>(
+		(props.defaultFilename &&
+			props.currentFiles.find((elem) => elem.filename === props.defaultFilename)?.filename) ??
+			"index.js"
+	);
 	const currentFile = props.currentFiles.find((elem) => elem.filename === currentFilename) ?? {
 		code: "",
 		filename: "",
@@ -161,8 +166,8 @@ const EditorComponent: React.FC<EditorComponentProps> = (props) => {
 
 					// validation settings
 					monaco.languages.typescript.javascriptDefaults.setDiagnosticsOptions({
-						noSemanticValidation: false,
-						noSyntaxValidation: false,
+						noSemanticValidation: props.shouldNotValidateCode,
+						noSyntaxValidation: props.shouldNotValidateCode,
 					});
 
 					// compiler options

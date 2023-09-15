@@ -72,7 +72,7 @@ const TabsComponent: React.FC<TabsComponentProps> = (props) => {
 			HTML:
 				props.currentFiles.find((elem) => elem.filename.endsWith("html"))?.filename ?? "index.html",
 			CSS: props.currentFiles.find((elem) => elem.filename.endsWith("css"))?.filename ?? "App.css",
-			JAVASCRIPT: props.defaultFilename ?? "App.js",
+			JAVASCRIPT: props.currentFilename,
 		}
 	);
 

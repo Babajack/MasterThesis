@@ -20,7 +20,7 @@ export const getTasks_Basics = (): TaskSchema[] => {
 			index: index++,
 			title: "Reference vs Value",
 			category: CATEGORY,
-			unlocks: [{ category: CATEGORY, index: index }],
+			//unlocks: [{ category: CATEGORY, index: index }],
 			isDefaultUnlocked: true,
 			description: [
 				{
@@ -178,7 +178,8 @@ export {resultNum, resultObj1, resultObj2}
 			index: index++,
 			title: "Short Circuiting",
 			category: CATEGORY,
-			unlocks: [{ category: CATEGORY, index: index }],
+			//unlocks: [{ category: CATEGORY, index: index }],
+			isDefaultUnlocked: true,
 			description: [
 				{
 					displayType: TaskDescriptionDisplayType.description,
@@ -325,7 +326,8 @@ export { result1, result2, result3, result4, result5, result6, getName1, getName
 			index: index++,
 			title: "Arrow Functions",
 			category: CATEGORY,
-			unlocks: [{ category: CATEGORY, index: index }],
+			//unlocks: [{ category: CATEGORY, index: index }],
+			isDefaultUnlocked: true,
 			description: [
 				{
 					displayType: TaskDescriptionDisplayType.description,
@@ -465,7 +467,8 @@ export { multiply, calculator, counter }`,
 			index: index++,
 			title: "Array Functions",
 			category: CATEGORY,
-			unlocks: [{ category: CATEGORY, index: index }],
+			//unlocks: [{ category: CATEGORY, index: index }],
+			isDefaultUnlocked: true,
 			description: [
 				{
 					displayType: TaskDescriptionDisplayType.description,
@@ -710,7 +713,8 @@ export { map1, map2, map3, map4, filter1, filter2, filter3, reduce1, reduce2, re
 			index: index++,
 			title: "Spread Operator & Object Destructuring",
 			category: CATEGORY,
-			unlocks: [{ category: CATEGORY, index: index }],
+			//unlocks: [{ category: CATEGORY, index: index }],
+			isDefaultUnlocked: true,
 			description: [
 				{
 					displayType: TaskDescriptionDisplayType.description,
@@ -994,7 +998,8 @@ export { fun1, fun2, fun3, fun4, fun5, fun6, fun7, fun8 }`,
 			index: index++,
 			title: "Short Circuiting",
 			category: CATEGORY,
-			unlocks: [{ category: CATEGORY, index: index }],
+			//unlocks: [{ category: CATEGORY, index: index }],
+			isDefaultUnlocked: true,
 			description: [],
 			defaultFiles: [
 				{ filename: "index.css", code: "" },
@@ -1023,7 +1028,8 @@ SOLUTION
 			index: index++,
 			title: "Short Circuiting",
 			category: CATEGORY,
-			unlocks: [{ category: CATEGORY, index: index }],
+			//unlocks: [{ category: CATEGORY, index: index }],
+			isDefaultUnlocked: true,
 			description: [],
 			defaultFiles: [
 				{ filename: "index.css", code: "" },
@@ -1052,7 +1058,8 @@ SOLUTION
 			index: index++,
 			title: "Short Circuiting",
 			category: CATEGORY,
-			unlocks: [{ category: CATEGORY, index: index }],
+			//unlocks: [{ category: CATEGORY, index: index }],
+			isDefaultUnlocked: true,
 			description: [],
 			defaultFiles: [
 				{ filename: "index.css", code: "" },

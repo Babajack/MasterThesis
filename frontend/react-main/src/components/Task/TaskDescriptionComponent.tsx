@@ -5,11 +5,25 @@ import { Editor } from "@monaco-editor/react";
 import CodeMirror from "@uiw/react-codemirror";
 import { createTheme } from "@uiw/codemirror-themes";
 import { javascript } from "@codemirror/lang-javascript";
-import { MDBCol, MDBIcon, MDBRow } from "mdb-react-ui-kit";
+import {
+	MDBAccordion,
+	MDBAccordionItem,
+	MDBBtn,
+	MDBCol,
+	MDBCollapse,
+	MDBIcon,
+	MDBRow,
+} from "mdb-react-ui-kit";
 import { vscodeDark } from "@uiw/codemirror-theme-vscode";
+import { useState } from "react";
 
 const TaskDescriptionComponent = () => {
 	const taskState = useSelector((state: RootState) => state.task);
+
+	const [showHints, setShowHints] = useState<Record<number, boolean>>({});
+	const toggleHint = (index: number) => {
+		setShowHints({ ...showHints, [index]: !showHints[index] ?? true });
+	};
 
 	const taskDescription = taskState.task.description?.map((elem, index) => {
 		switch (elem.displayType) {
@@ -54,11 +68,33 @@ const TaskDescriptionComponent = () => {
 					// 	}}
 					// />
 				);
+			case "hint": {
+				return (
+					// <fieldset key={"cm-hint" + index}>
+					// 	<MDBBtn onClick={() => toggleHint(index)}>show hint</MDBBtn>
+					// 	<MDBCollapse show={showHints[index]}>
+					// 		Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson
+					// 		ad squid. Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt
+					// 		sapiente ea proident.
+					// 	</MDBCollapse>
+					// </fieldset>
+
+					<MDBAccordion>
+						<MDBAccordionItem collapseId={1} headerTitle="Hint">
+							<div
+								key={"cm-dexription" + index}
+								className="pb-4 text-start"
+								dangerouslySetInnerHTML={{ __html: elem.text }}
+							></div>
+						</MDBAccordionItem>
+					</MDBAccordion>
+				);
+			}
 		}
 	});
 
 	return (
-		<div className="px-2 app-secondary app-text-primary overflow-auto w-100 h-100">
+		<div className="px-2 pb-3 app-secondary app-text-primary overflow-auto w-100 h-100">
 			<h3 className="pt-3"> {taskState.task.title} </h3>
 			{taskDescription}
 		</div>

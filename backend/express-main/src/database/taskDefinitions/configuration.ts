@@ -1,6 +1,7 @@
 import { TaskSchema } from "database/task";
 import { CodeFile } from "types";
 import { getTasks_Basics } from "./JavaScript Basics";
+import { getTasks_JSX } from "./JSX";
 
 export const getIndexFile = (imports?: string, mainBody?: string, extraBody?: string): CodeFile => {
 	return {
@@ -109,7 +110,7 @@ export const getCSSFile = (): CodeFile => {
 	};
 };
 
-const allTasks: TaskSchema[][] = [getTasks_Basics()];
+const allTasks: TaskSchema[][] = [getTasks_Basics(), getTasks_JSX()];
 
 export const getTaskDefinitions = (): TaskSchema[] => {
 	return allTasks.reduce((prev, cur) => {

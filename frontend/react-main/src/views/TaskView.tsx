@@ -69,6 +69,7 @@ const TaskMenuView = () => {
 							defaultFilename={
 								taskState.task.category === "JavaScript Basics" ? "index.js" : "App.js"
 							}
+							shouldNotValidateCode={true}
 							buildStatus={taskState.buildStatus}
 							currentFiles={taskState.currentFilesMap[taskId as string] ?? []}
 							onAddFile={(file) => {
