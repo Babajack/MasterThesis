@@ -1,24 +1,28 @@
 import React from "react";
 import { render } from "@testing-library/react";
 import "@testing-library/jest-dom/extend-expect";
-import { jsx1, jsx2 } from "../src/index.js";
+import { jsx1, jsx2, jsx3, jsx4 } from "../src/index.js";
 
-test("jsx1 contains Hello World! within a div", () => {
+test("renders jsx1 correctly", () => {
 	const { getByText } = render(jsx1);
-	const divElement = getByText("Hello World!");
-
-	expect(divElement).toBeInTheDocument();
-	expect(divElement.tagName).toBe("DIV");
+	expect(getByText("Hello, world!")).toBeInTheDocument();
+	expect(getByText("Welcome to my app.")).toBeInTheDocument();
 });
 
-test("jsx2 contains Hi within a h2 and div", () => {
-	const { getByText, container } = render(jsx2);
-	const h2Element = getByText("Hi");
-	const divElement = container.firstChild;
+test("renders jsx2 correctly", () => {
+	const { container } = render(jsx2);
+	expect(container.querySelector("img")).toBeInTheDocument();
+});
 
-	expect(h2Element).toBeInTheDocument();
-	expect(h2Element.tagName).toBe("H2");
+test("renders jsx3 correctly", () => {
+	const { getByText, container } = render(jsx3);
+	expect(getByText("Hello!")).toBeInTheDocument();
+	// Check if className is set correctly
+	expect(container.firstChild).toHaveClass("myDiv");
+});
 
-	expect(divElement).toBeInTheDocument();
-	expect(divElement.tagName).toBe("DIV");
+test("renders jsx4 correctly", () => {
+	const { getByText } = render(jsx4);
+	expect(getByText("Hello")).toBeInTheDocument();
+	expect(getByText("Click Me")).toBeInTheDocument();
 });

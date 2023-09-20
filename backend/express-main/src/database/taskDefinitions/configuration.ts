@@ -64,7 +64,7 @@ export const getHTMLFile = (): CodeFile => {
 	};
 };
 
-export const getCSSFile = (): CodeFile => {
+export const getAppCSSFile = (): CodeFile => {
 	return {
 		filename: "App.css",
 		code: `.App {
@@ -105,6 +105,22 @@ export const getCSSFile = (): CodeFile => {
   to {
     transform: rotate(360deg);
   }
+}
+    `,
+	};
+};
+export const getIndexCSSFile = (): CodeFile => {
+	return {
+		filename: "index.css",
+		code: `body {
+  margin: 0;
+  font-family: Roboto, Helvetica, Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New", monospace;
 }
     `,
 	};

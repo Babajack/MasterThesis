@@ -140,13 +140,7 @@ const EditorComponent: React.FC<EditorComponentProps> = (props) => {
 			monaco.editor.setTheme("cobalt2");
 		});
 
-		/**
-		 * load react types for autocomplete
-		 */
-		fetch("https://cdn.jsdelivr.net/npm/@types/react@18.2/index.d.ts")
-			.then((react_def_file) => {
-				react_def_file.text().then((res) => {
-					/* monaco.languages.typescript.javascriptDefaults.setCompilerOptions({
+		/* monaco.languages.typescript.javascriptDefaults.setCompilerOptions({
 						target: monaco.languages.typescript.ScriptTarget.Latest,
 						allowNonTsExtensions: true,
 						moduleResolution: monaco.languages.typescript.ModuleResolutionKind.NodeJs,
@@ -164,28 +158,45 @@ const EditorComponent: React.FC<EditorComponentProps> = (props) => {
 						noSyntaxValidation: false,
 					}); */
 
-					// validation settings
-					monaco.languages.typescript.javascriptDefaults.setDiagnosticsOptions({
-						noSemanticValidation: props.shouldNotValidateCode,
-						noSyntaxValidation: props.shouldNotValidateCode,
-					});
+		// validation settings
+		monaco.languages.typescript.javascriptDefaults.setDiagnosticsOptions({
+			noSemanticValidation: props.shouldNotValidateCode,
+			noSyntaxValidation: props.shouldNotValidateCode,
+		});
 
-					// compiler options
-					monaco.languages.typescript.javascriptDefaults.setCompilerOptions({
-						target: monaco.languages.typescript.ScriptTarget.ES2015,
-						allowNonTsExtensions: true,
-						jsx: monaco.languages.typescript.JsxEmit.React,
-						allowJs: true,
-						allowSyntheticDefaultImports: true,
-						isolatedModules: true,
-						//alwaysStrict: true,
-						//checkJs: true,
-						reactNamespace: "React",
-					});
+		// compiler options
+		monaco.languages.typescript.javascriptDefaults.setCompilerOptions({
+			target: monaco.languages.typescript.ScriptTarget.ES2015,
+			allowNonTsExtensions: true,
+			jsx: monaco.languages.typescript.JsxEmit.React,
+			allowJs: true,
+			allowSyntheticDefaultImports: true,
+			isolatedModules: true,
+			//alwaysStrict: true,
+			//checkJs: true,
+			reactNamespace: "React",
+		});
 
+		/**
+		 * load react types for autocomplete
+		 */
+		fetch("https://cdn.jsdelivr.net/npm/@types/react@18.2/index.d.ts")
+			.then((react_def_file) => {
+				react_def_file.text().then((res) => {
 					monaco.languages.typescript.javascriptDefaults.addExtraLib(
 						res,
 						`file:///node_modules/@types/react/index.d.ts`
+					);
+				});
+			})
+			.catch((e) => console.log(e));
+
+		fetch("https://cdn.jsdelivr.net/npm/@types/react-dom@18.2.7/client.d.ts")
+			.then((react_def_file) => {
+				react_def_file.text().then((res) => {
+					monaco.languages.typescript.javascriptDefaults.addExtraLib(
+						res,
+						`file:///node_modules/@types/react-dom/client.d.ts`
 					);
 				});
 			})

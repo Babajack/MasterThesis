@@ -1,6 +1,6 @@
 import { CodeFile, CodeFiles } from "../../types";
 import { TaskCategory, TaskDescriptionDisplayType, TaskSchema } from "../task";
-import { getAppFile, getCSSFile, getHTMLFile, getIndexFile } from "./configuration";
+import { getAppFile, getAppCSSFile, getHTMLFile, getIndexFile } from "./configuration";
 
 /******************************************************************************************************************************************************/
 /**************************************************               JavaScript Basics                  **************************************************/
@@ -38,8 +38,8 @@ let num1 = 10;
 let num2 = num1; // num2 now holds a copy of the value of num1
 num2 = 20; // num1 remains unchanged
 
-console.log(num1); // Output: 10
-console.log(num2); // Output: 20`,
+console.log(num1); // output: 10
+console.log(num2); // output: 20`,
 				},
 				{
 					displayType: TaskDescriptionDisplayType.description,
@@ -53,8 +53,8 @@ let array2 = array1;
 // array2 now holds a reference to the same array as array1
 array2.push(4); // This changes both array1 and array2
 
-console.log(array1); // Output: [1, 2, 3, 4]
-console.log(array2); // Output: [1, 2, 3, 4]`,
+console.log(array1); // output: [1, 2, 3, 4]
+console.log(array2); // output: [1, 2, 3, 4]`,
 				},
 				{
 					displayType: TaskDescriptionDisplayType.description,
@@ -366,7 +366,7 @@ const add = (a, b) => a + b;`,
 				},
 				{
 					displayType: TaskDescriptionDisplayType.description,
-					text: `<h5>No Binding of "this"</h5> <div>Arrow functions do not have their own <b>this</b> binding: In regular functions the <b>this</b> keyword represents the object that calls the function. In arrow functions the <b>this</b> keyword represents the object that defined the arrow function, so it refers to the surrounding block (parent). <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/this" target=”_blank”>more info</a></div>`,
+					text: `<h5>No Binding of "this"</h5> <div>Arrow functions do not have their own "this" binding: In regular functions the "this" keyword represents the object that calls the function. In arrow functions the "this" keyword represents the object that defined the arrow function, so it refers to the surrounding block (parent). <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/this" target=”_blank”>more info</a></div>`,
 				},
 				{
 					displayType: TaskDescriptionDisplayType.code,
@@ -476,7 +476,7 @@ export { multiply, calculator, counter }`,
 				},
 				{
 					displayType: TaskDescriptionDisplayType.description,
-					text: `<h5>map</h5> <div>The <b>map</b> method creates a new array by applying a function to every element in an existing array. <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/map" target=”_blank”>more info</a></div>`,
+					text: `<h5>map</h5> <div>The "map" method creates a new array by applying a function to every element in an existing array. <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/map" target=”_blank”>more info</a></div>`,
 				},
 				{
 					displayType: TaskDescriptionDisplayType.code,
@@ -486,12 +486,12 @@ const newArray = oldArray.map(callbackFunction);
 // example:
 const numbers = [1, 2, 3];
 const doubled = numbers.map(x => x * 2);
-// Output: [2, 4, 6]`,
+// output: [2, 4, 6]`,
 				},
 
 				{
 					displayType: TaskDescriptionDisplayType.description,
-					text: `<h5>filter</h5> <div>The <b>filter</b> method method creates a new array by filtering out elements that don't satisfy a given condition. <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/filter" target=”_blank”>more info</a></div>`,
+					text: `<h5>filter</h5> <div>The "filter" method method creates a new array by filtering out elements that don't satisfy a given condition. <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/filter" target=”_blank”>more info</a></div>`,
 				},
 				{
 					displayType: TaskDescriptionDisplayType.code,
@@ -501,12 +501,12 @@ const newArray = oldArray.filter(callbackFunction);
 // example:
 const numbers = [1, 2, 3, 4, 5];
 const evenNumbers = numbers.filter(x => x % 2 === 0);
-// Output: [2, 4]`,
+// output: [2, 4]`,
 				},
 
 				{
 					displayType: TaskDescriptionDisplayType.description,
-					text: `<h5>reduce</h5> <div>The <b>reduce</b> method reduces an array to a single value by accumulating a result through a callback function. <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/reduce" target=”_blank”>more info</a></div>`,
+					text: `<h5>reduce</h5> <div>The "reduce" method reduces an array to a single value by accumulating a result through a callback function. <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/reduce" target=”_blank”>more info</a></div>`,
 				},
 				{
 					displayType: TaskDescriptionDisplayType.code,
@@ -516,12 +516,12 @@ const singleValue = array.reduce(callbackFunction, initialValue);
 // example:
 const numbers = [1, 2, 3, 4];
 const sum = numbers.reduce((accumulator, x) => accumulator + x, 0);
-// Output: 10`,
+// output: 10`,
 				},
 
 				{
 					displayType: TaskDescriptionDisplayType.description,
-					text: `<h5>find</h5> <div>The <b>find</b> method returns the first element in the array that satisfies the given condition. If no element is found, undefined is returned. <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/find" target=”_blank”>more info</a></div>`,
+					text: `<h5>find</h5> <div>The "find" method returns the first element in the array that satisfies the given condition. If no element is found, undefined is returned. <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/find" target=”_blank”>more info</a></div>`,
 				},
 				{
 					displayType: TaskDescriptionDisplayType.code,
@@ -531,11 +531,11 @@ const foundElement = array.find(callbackFunction);
 // example:
 const numbers = [1, 2, 3, 4];
 const firstEven = numbers.find(x => x % 2 === 0);
-// Output: 2`,
+// output: 2`,
 				},
 				{
 					displayType: TaskDescriptionDisplayType.description,
-					text: `<h5>sort</h5> <div>The <b>sort</b> method method sorts the elements of an array in place. The return value of the callback function should be a number whose sign indicates the relative order of the two elements: negative if a is less than b, positive if a is greater than b, and zero if they are equal. <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/sort" target=”_blank”>more info</a></div>`,
+					text: `<h5>sort</h5> <div>The "sort" method method sorts the elements of an array in place. The return value of the callback function should be a number whose sign indicates the relative order of the two elements: negative if a is less than b, positive if a is greater than b, and zero if they are equal. <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/sort" target=”_blank”>more info</a></div>`,
 				},
 				{
 					displayType: TaskDescriptionDisplayType.code,
@@ -545,7 +545,7 @@ const sortedArray = array.sort(callbackFunction);
 // example:
 const numbers = [10, 5, 8, 1, 4];
 numbers.sort((a, b) => a - b);
-// Output: [1, 4, 5, 8, 10]`,
+// output: [1, 4, 5, 8, 10]`,
 				},
 			],
 			defaultFiles: [
@@ -816,15 +816,15 @@ const car = {
 };
 
 const { brand, model } = car;
-console.log(brand); // Output: "Ford"
-console.log(model);  // Output: "Mustang"
+console.log(brand); // output: "Ford"
+console.log(model);  // output: "Mustang"
 
 // example 2:
 const names = [ "Hans", "Max", "James" ];
 
 const [firstname, secondname] = names;
-console.log(firstname); // Output: "Hans"
-console.log(secondname);  // Output: "Max"
+console.log(firstname); // output: "Hans"
+console.log(secondname);  // output: "Max"
 
 
 // also works with nested objects:
@@ -838,8 +838,8 @@ const car2 = {
 
 // "brand: brand2" works as a rename
 const { brand: brand2, owner: { lastname } } = car2;
-console.log(brand2); // Output: "Ford"
-console.log(lastname);  // Output: "Wurst"
+console.log(brand2); // output: "Ford"
+console.log(lastname);  // output: "Wurst"
 `,
 				},
 				{
