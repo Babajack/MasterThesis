@@ -219,7 +219,7 @@ export const handleUserPassedTask = async (userId: string, taskId: string, files
 	const task = await getTaskById(taskId);
 
 	if (user) {
-		if (task?.unlocks) {
+		if (task?.unlocks && task.unlocks.length > 0) {
 			// unlock new tasks
 			const unlockedTasksIds = (await getTasksByUnlocksList(task.unlocks)).map((taskId) =>
 				taskId._id.toString()

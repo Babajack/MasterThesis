@@ -984,37 +984,98 @@ export { fun1, fun2, fun3, fun4, fun5, fun6, fun7, fun8 }`,
 			],
 		},
 
-		/*
 		{
 			// ---------------------------------------- TASK 6 ----------------------------------------
 			index: index++,
-			title: "Short Circuiting",
+			title: "Events",
 			category: CATEGORY,
 			//unlocks: [{ category: CATEGORY, index: index }],
 			isDefaultUnlocked: true,
-			description: [],
+			description: [
+				{
+					displayType: TaskDescriptionDisplayType.description,
+					text: `In web development, events are actions or occurrences that happen in the browser, often triggered by users interacting with a page. This could be anything from clicking a button, hovering over an element, typing into an input field, to resizing the browser window.`,
+				},
+				{
+					displayType: TaskDescriptionDisplayType.description,
+					text: `One of the simplest ways to handle events in JavaScript is by using inline event handlers. These are attributes that you can add directly to HTML elements. The <b>onclick</b> attribute, for example, lets you execute a JavaScript function when the element is clicked.`,
+				},
+				{
+					displayType: TaskDescriptionDisplayType.code,
+					text: `//example:
+
+<button onclick="alert('Button was clicked!')">Click Me</button>
+
+// When this button is clicked,
+// an alert will appear with the message "Button was clicked!".`,
+				},
+			],
 			defaultFiles: [
 				{ filename: "index.css", code: "" },
-				getHTMLFile(),
+				{
+					filename: "index.html",
+					code: `<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="utf-8" />
+	<script src="sessionContainer/task/build/App.js" async defer></script>
+	<link rel="stylesheet" href="sessionContainer/task/build/App.css" />
+	<title>React App</title>
+</head>
+
+<body style="margin:0;padding:0">
+	<noscript>You need to enable JavaScript to run this app.</noscript>
+	<div id="root"></div>
+	
+	<!-- create your button here -->
+
+</body>
+
+</html>`,
+				},
 
 				{
 					filename: "index.js",
 					code: `// YOUR TASK:
-CODE
-					`,
+
+// 1) In the "index.html" file: create an HTML <button> element that has the text "Click Me". Use the "onclick" attribute on the button to display an alert saying "Button clicked!" when the button is pressed.`,
 				},
 			],
 			solutionFiles: [
-				getHTMLFile(),
+				{
+					filename: "index.html",
+					code: `<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="utf-8" />
+	<script src="sessionContainer/task/build/App.js" async defer></script>
+	<link rel="stylesheet" href="sessionContainer/task/build/App.css" />
+	<title>React App</title>
+</head>
+
+<body style="margin:0;padding:0">
+	<noscript>You need to enable JavaScript to run this app.</noscript>
+	<div id="root"></div>
+	
+	<!-- create your button here -->
+	<button onclick="alert('Button clicked!')">Click Me</button>
+
+</body>
+
+</html>`,
+				},
 
 				{
 					filename: "index.js",
 					code: `// YOUR TASK:
-SOLUTION
-					`,
+
+// 1) In the "index.html" file: create an HTML <button> element that has the text "Click Me". Use the "onclick" attribute on the button to display an alert saying "Button clicked!" when the button is pressed.`,
 				},
 			],
 		},
+		/*
 		{
 			// ---------------------------------------- TASK 7 ----------------------------------------
 			index: index++,

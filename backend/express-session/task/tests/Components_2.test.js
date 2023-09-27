@@ -23,4 +23,6 @@ test("App component renders correctly", () => {
 	const { getByText } = render(<App />);
 
 	expect(getByText(/Hello, React!/i)).toBeInTheDocument();
+	expect(getByText(/6/i)).toBeInTheDocument();
+	expect(getByText(/9/i)).toBeInTheDocument();
 });

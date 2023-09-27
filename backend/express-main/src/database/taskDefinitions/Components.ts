@@ -251,14 +251,22 @@ import {App as AnyNameYouWant} from "./App" // valid`,
 // 2) Create two functions "add" and "subtract" in a file named "Utilities.js". Both functions take two parameters and adds or subtracts the two numbers respectively and returns the result. Use named export to export the two functions.
 
 
-// 3) Import the "Greeting" component in this file and render it in the App component found below.
+// 3) Import the "Greeting" component into this file and render it in the App component found below.
 // hint: all files in this editor are in the same directory, which means "./" as a prefix will find it
+
+
+// 4) Import the "add" and "subtract" functions into this file and render their results in the App component found below.
+// hint: remember to use curly braces for JavaScript functionality
 
 
 export default function App() {
 	return (
 		<div>
-			{/* render your component here */}
+			{/* render your "Greeting" component here */}
+
+			{/* call your "add" function here, use parameters 4 and 2*/}
+
+			{/* call your "subtract" function here, use parameters 10 and 1*/}
 		</div>
 	)
 }`,
@@ -275,6 +283,7 @@ export default function App() {
 					filename: "App.js",
 					code: `import React from "react"
 import Greeting from "./Greeting"
+import {add, subtract} from "./Utilities"
 
 // YOUR TASK
 
@@ -285,8 +294,12 @@ import Greeting from "./Greeting"
 // 2) Create two functions "add" and "subtract" in a file named "Utilities.js". Both functions take two parameters and adds or subtracts the two numbers respectively and returns the result. Use named export to export the two functions.
 
 
-// 3) Import the "Greeting" component in this file and render it in the App component found below.
+// 3) Import the "Greeting" component into this file and render it in the App component found below.
 // hint: all files in this editor are in the same directory, which means "./" as a prefix will find it
+
+
+// 4) Import the "add" and "subtract" functions into this file and render their results in the App component found below.
+// hint: remember to use curly braces for JavaScript functionality
 
 
 export default function App() {
@@ -294,6 +307,10 @@ export default function App() {
 		<div>
 			{/* render your component here */}
 			<Greeting />
+			{/* call your "add" function here, use parameters 4 and 2*/}
+			{add(4, 2)}
+			{/* call your "subtract" function here, use parameters 10 and 1*/}
+			{subtract(10, 1)}
 		</div>
 	)
 }`,
@@ -319,36 +336,62 @@ export function subtract(a, b) {
 			],
 		},
 		{
-			// -- TASK 1 --
+			// -- TASK 3 --
 			index: index++,
-			title: "Intro to React components",
+			title: "Passing Props to Components",
 			category: CATEGORY,
 			unlocks: [{ category: CATEGORY, index: index }],
 			description: [
 				{
 					displayType: TaskDescriptionDisplayType.description,
-					text: `React components are the building blocks of React applications. Every piece of user interface is expressed using reusable components. For example, if you take a look on this website, you can see a navigation bar at the top, a box with the text you are currently reading, a code editor with some buttons and an area showing the rendered website or the test results. All of these pieces could be implemented as reusable components. These components can be composed of other components and so on, forming a design by composition.`,
+					text: `Just as functions take arguments to produce dynamic outputs, React components can accept inputs too. These inputs are referred to as properties, or more commonly, <b>props</b>.`,
 				},
 				{
 					displayType: TaskDescriptionDisplayType.description,
-					text: `Basically, a React component is just a JavaScript function that returns a JSX element where the function name <b>needs to be capitalized</b>.`,
+					text: `Props are the mechanism by which data flows down the component tree, enabling a parent component to pass data to its child components. This top-down flow of data ensures that components remain as pure and predictable as possible.`,
 				},
 				{
 					displayType: TaskDescriptionDisplayType.code,
 					text: `// example:
 
-function Hello() {
+// component with props
+function Hello(props) {
 	return (
-		<h1>Hello!</h1>
+		<h1>Hello {props.name}!</h1>
 	)
 }
 
-// or as an arrow function
-const Hello = () => {
+// using the component, passing the name property
+function App() {
+	return <Hello name="React" />;
+}`,
+				},
+				{
+					displayType: TaskDescriptionDisplayType.description,
+					text: `There are some key aspects to understand about props:
+					<p><ul> <li> <b>Read-only</b>: Props are "read-only", meaning that a component should never modify the props passed to it. Instead, it should always treat them as immutable.</li> <li> <b>Versatility</b>: Props aren't limited to just data. You can also pass functions, allowing child components to communicate back to their parent by invoking those functions.</li> <li> <b>Destructuring</b>: Instead of accessing props through the props object, it is common to destructure them.</li> </ul></p>`,
+				},
+				{
+					displayType: TaskDescriptionDisplayType.code,
+					text: `// example:
+
+// destructure props
+function Hello({ name }) {
 	return (
-		<h1>Hello!</h1>
+		<h1>Hello {name}!</h1>
+	)
+}
+
+// with a default value as fallback
+function Hello({ name = "React" }) {
+	return (
+		<h1>Hello {name}!</h1>
 	)
 }`,
+				},
+				{
+					displayType: TaskDescriptionDisplayType.description,
+					text: `<a href="https://react.dev/learn/passing-props-to-a-component#" target=”_blank”>more info</a>`,
 				},
 			],
 			defaultFiles: [

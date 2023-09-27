@@ -126,7 +126,8 @@ const TabsComponent: React.FC<TabsComponentProps> = (props) => {
 					active={props.currentFilename === file.filename}
 				>
 					{file.filename}
-					{(file.isDeletable || !["App.js", "index.js"].includes(file.filename)) &&
+					{(file.isDeletable ||
+						!["App.js", "index.js", "index.html", "index.css"].includes(file.filename)) &&
 						file.filename === props.currentFilename && (
 							<span className="ms-3" onClick={() => setShowConfirmationModal(true)}>
 								<MDBIcon fas icon="trash-alt" />
