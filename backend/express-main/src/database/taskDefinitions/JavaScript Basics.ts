@@ -104,7 +104,7 @@ console.log(b, c.foo); // "2" "bar"
 				},
 				{
 					displayType: TaskDescriptionDisplayType.description,
-					text: `<a href="https://stackoverflow.com/questions/6605640/javascript-by-reference-vs-by-value" target=”_blank”>Source</a>`,
+					text: `<a href="https://stackoverflow.com/questions/6605640/javascript-by-reference-vs-by-value" target=”_blank”>more info</a>`,
 				},
 			],
 			defaultFiles: [
@@ -187,7 +187,7 @@ export {resultNum, resultObj1, resultObj2}
 				},
 				{
 					displayType: TaskDescriptionDisplayType.description,
-					text: `<h5>Short-circuiting with the OR (||) operator</h5><div>Logical OR (&&) operands from left to right, returning immediately with the value of the first truthy operand it encounters; if all values are falsy, the value of the last operand is returned.</div>`,
+					text: `<h5>Short-circuiting with the OR (||) operator</h5><div>Logical OR (&&) operands from left to right, returning immediately with the value of the first truthy operand it encounters; if all values are falsy, the value of the last operand is returned. <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Logical_OR" target=”_blank”>more info</a></div>`,
 				},
 				{
 					displayType: TaskDescriptionDisplayType.code,
@@ -200,11 +200,7 @@ false || 1
 				},
 				{
 					displayType: TaskDescriptionDisplayType.description,
-					text: `<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Logical_OR" target=”_blank”>More details</a>`,
-				},
-				{
-					displayType: TaskDescriptionDisplayType.description,
-					text: `<h5>Short-circuiting with the AND (&&) operator</h5><div>Logical AND (&&) evaluates operands from left to right, returning immediately with the value of the first falsy operand it encounters; if all values are truthy, the value of the last operand is returned.</div>`,
+					text: `<h5>Short-circuiting with the AND (&&) operator</h5><div>Logical AND (&&) evaluates operands from left to right, returning immediately with the value of the first falsy operand it encounters; if all values are truthy, the value of the last operand is returned. <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Logical_AND" target=”_blank”>more info</a></div>`,
 				},
 				{
 					displayType: TaskDescriptionDisplayType.code,
@@ -214,10 +210,6 @@ false || 1
 3 && "Hello"
 // returns Hello
 `,
-				},
-				{
-					displayType: TaskDescriptionDisplayType.description,
-					text: `<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Logical_AND" target=”_blank”>More details</a>`,
 				},
 			],
 			defaultFiles: [
@@ -397,7 +389,7 @@ function Person() {
 
 				{
 					displayType: TaskDescriptionDisplayType.description,
-					text: `<a href="https://www.w3schools.com/js/js_arrow_function.asp" target=”_blank”>Source</a>`,
+					text: `<a href="https://www.w3schools.com/js/js_arrow_function.asp" target=”_blank”>more info on arrow functions</a>`,
 				},
 			],
 			defaultFiles: [

@@ -186,7 +186,7 @@ export {jsx1, jsx2}`,
 				},
 				{
 					displayType: TaskDescriptionDisplayType.description,
-					text: `<a href="https://react.dev/learn/writing-markup-with-jsx#the-rules-of-jsx" target=”_blank”>Source</a>`,
+					text: `<a href="https://react.dev/learn/writing-markup-with-jsx#the-rules-of-jsx" target=”_blank”>more info</a>`,
 				},
 			],
 			defaultFiles: [
@@ -360,7 +360,7 @@ const element = <h1> {5 > 0 ? "isHigher" : "isLower"} </h1>;
 				},
 				{
 					displayType: TaskDescriptionDisplayType.description,
-					text: `<a href="https://react.dev/learn/javascript-in-jsx-with-curly-braces" target=”_blank”>Source</a>`,
+					text: `<a href="https://react.dev/learn/javascript-in-jsx-with-curly-braces" target=”_blank”>more info</a>`,
 				},
 			],
 			defaultFiles: [

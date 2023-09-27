@@ -115,6 +115,8 @@ app.use(
 					const responseBody = body.toString("utf8");
 					const responseJSON = JSON.parse(responseBody);
 
+					//console.log(responseJSON);
+
 					if (responseJSON.passed) {
 						handleUserPassedTask(
 							req.session.userId!,

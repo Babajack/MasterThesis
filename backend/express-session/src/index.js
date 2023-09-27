@@ -130,23 +130,33 @@ app.post("/runTest", async (req, res) => {
 		const results = await exec(`env NODE_ENV=test jest --json --testRegex="task/tests/${path}"`);
 		testResults = JSON.parse(results.stdout);
 	} catch (error) {
-		console.log(error);
+		//console.log(error);
 		if (error.stdout) {
 			testResults = JSON.parse(error.stdout);
+			// if there are no tests executed, return error
+			if (!testResults.success && testResults.testResults[0].assertionResults.length === 0) {
+				//res.send({ error: testResults.testResults[0].message }); dont send actual message
+				res.send({
+					error: "There is an Error in the test execution. Check missing files and exports.",
+				});
+				return;
+			}
 		} else {
 			res.status(500).send({ error: error });
 			return;
 		}
 	}
 
-	testResults = testResults.testResults[0].assertionResults.map((elem) => {
+	let parsedResults = testResults.testResults[0].assertionResults.map((elem) => {
 		return {
 			title: elem.title,
 			status: elem.status,
 		};
 	});
-	const isPassed = !testResults.some((elem) => elem.status !== "passed");
-	const response = { passed: isPassed, testResults: testResults, files: req.body };
+	//const isPassed = !testResults.some((elem) => elem.status !== "passed");
+	const isPassed = testResults.success;
+
+	const response = { passed: isPassed, testResults: parsedResults, files: req.body };
 	res.send(response);
 });
 
