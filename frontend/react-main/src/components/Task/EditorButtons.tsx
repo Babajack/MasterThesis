@@ -110,9 +110,9 @@ const EditorButtons: React.FC<EditorButtonsProps> = (props) => {
 					<ConfirmationModal
 						showModal={showConfirmationModal}
 						setShowModal={setShowConfirmationModal}
-						textBody={`Code wirklich zurücksetzen? Aktueller Fortschritt geht verloren.`}
+						textBody={`Reset code? Current progress is lost!`}
 						confirmationFunction={props.onResetCode}
-						titel="Code zurücksetzen"
+						titel="Reset Code"
 					/>
 				</MDBTooltip>
 

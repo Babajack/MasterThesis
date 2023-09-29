@@ -209,13 +209,13 @@ const TabsComponent: React.FC<TabsComponentProps> = (props) => {
 			<ConfirmationModal
 				showModal={showConfirmationModal}
 				setShowModal={setShowConfirmationModal}
-				textBody={`Datei "${props.currentFilename}" wirklich löschen?`}
+				textBody={`Permanently delete file "${props.currentFilename}" ?`}
 				confirmationFunction={() => {
 					props.onDeleteFile(props.currentFilename);
 					setPreviousActiveFile({ ...previousActiveFile, [basicActive.tabName]: "App.js" });
 					props.setCurrentFilename(files[0].filename);
 				}}
-				titel="Löschen"
+				titel="Delete File"
 			/>
 		</div>
 	);

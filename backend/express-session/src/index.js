@@ -130,7 +130,7 @@ app.post("/runTest", async (req, res) => {
 		const results = await exec(`env NODE_ENV=test jest --json --testRegex="task/tests/${path}"`);
 		testResults = JSON.parse(results.stdout);
 	} catch (error) {
-		//console.log(error);
+		console.log(error);
 		if (error.stdout) {
 			testResults = JSON.parse(error.stdout);
 			// if there are no tests executed, return error
@@ -234,11 +234,12 @@ const lint = async (path) => {
 				"react/jsx-uses-vars": "error",
 				"no-unused-expressions": "off",
 				"no-unused-vars": "off",
+				"react/prop-types": "off",
 			},
 		},
 	});
 	// return await eslint.lintFiles(["/usr/src/app/sandbox/src/*.js"]);
-	let results = await eslint.lintFiles([`/usr/src/app/${path}/src/*.js`]);
+	let results = await eslint.lintFiles([`/usr/src/app/${path}/src/*.js*`]);
 	//const formatter = await eslint.loadFormatter("visualstudio");
 	const formatter = await eslint.loadFormatter("json");
 	results = formatter.format(results);

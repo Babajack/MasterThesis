@@ -34,7 +34,7 @@ export const ConfirmationModal: React.FC<ConfirmationModalProps> = (props) => {
 					<MDBModalBody> {props.textBody} </MDBModalBody>
 					<MDBModalFooter>
 						<MDBBtn className="btn-secondary" onClick={() => props.setShowModal(false)}>
-							Nein
+							No
 						</MDBBtn>
 						<MDBBtn
 							onClick={() => {
@@ -42,7 +42,7 @@ export const ConfirmationModal: React.FC<ConfirmationModalProps> = (props) => {
 								props.confirmationFunction();
 							}}
 						>
-							Ja
+							Yes
 						</MDBBtn>
 					</MDBModalFooter>
 				</MDBModalContent>

@@ -79,11 +79,11 @@ const TaskDescriptionComponent = () => {
 					// 	</MDBCollapse>
 					// </fieldset>
 
-					<MDBAccordion>
+					<MDBAccordion className="pb-4">
 						<MDBAccordionItem collapseId={1} headerTitle="Hint">
 							<div
-								key={"cm-dexription" + index}
-								className="pb-4 text-start"
+								key={"cm-description" + index}
+								className="text-start"
 								dangerouslySetInnerHTML={{ __html: elem.text }}
 							></div>
 						</MDBAccordionItem>

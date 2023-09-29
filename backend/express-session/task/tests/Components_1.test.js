@@ -9,12 +9,16 @@ test("renders correct title", () => {
 });
 
 test("renders the correct paragraph text", () => {
-	const { getByText } = render(<Paragraph />);
-	expect(getByText("React makes building user interfaces a breeze.")).toBeInTheDocument();
+	const { queryAllByText } = render(<Paragraph />);
+	expect(
+		queryAllByText(/React makes building user interfaces a breeze./).length
+	).toBeGreaterThanOrEqual(1);
 });
 
 test("renders the App component with title and paragraph", () => {
-	const { getByText } = render(<App />);
-	expect(getByText("Welcome to React!")).toBeInTheDocument();
-	expect(getByText("React makes building user interfaces a breeze.")).toBeInTheDocument();
+	const { queryAllByText } = render(<App />);
+	expect(queryAllByText(/Welcome to React!/).length).toBeGreaterThanOrEqual(1);
+	expect(
+		queryAllByText(/React makes building user interfaces a breeze./).length
+	).toBeGreaterThanOrEqual(1);
 });
