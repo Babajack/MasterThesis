@@ -3,6 +3,7 @@ import { CodeFile } from "types";
 import { getTasks_Basics } from "./JavaScript Basics";
 import { getTasks_JSX } from "./JSX";
 import { getTasks_Components } from "./Components";
+import { getTasks_Interactivity } from "./Interactivity";
 
 export const getIndexFile = (imports?: string, mainBody?: string, extraBody?: string): CodeFile => {
 	return {
@@ -127,7 +128,12 @@ code {
 	};
 };
 
-const allTasks: TaskSchema[][] = [getTasks_Basics(), getTasks_JSX(), getTasks_Components()];
+const allTasks: TaskSchema[][] = [
+	getTasks_Basics(),
+	getTasks_JSX(),
+	getTasks_Components(),
+	getTasks_Interactivity(),
+];
 
 export const getTaskDefinitions = (): TaskSchema[] => {
 	return allTasks.reduce((prev, cur) => {

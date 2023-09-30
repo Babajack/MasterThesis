@@ -828,7 +828,7 @@ export default function UserDashboard({ user }) {
 			index: index++,
 			title: "Rendering Lists",
 			category: CATEGORY,
-			unlocks: [{ category: CATEGORY, index: index }],
+			unlocks: [{ category: "Interactivity", index: 1 }],
 			description: [
 				{
 					displayType: TaskDescriptionDisplayType.description,
