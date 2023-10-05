@@ -233,6 +233,10 @@ function Button() {
 					text: `<h5>State vs Props</h5>If a React component was a machine, props would be like the machine's settings — predetermined and fixed unless changed by an external factor, while state would be more like the machine's readings or outputs, which can vary and change based on various factors.`,
 				},
 				{
+					displayType: TaskDescriptionDisplayType.hint,
+					text: `<h5>How to "think" in React</h5> React uses a declarative approach. Instead of telling the UI what to do at every step, you should specify different states and let the UI "React" to it. E.g. if state = x, look like Y.`,
+				},
+				{
 					displayType: TaskDescriptionDisplayType.description,
 					text: `<a href="https://react.dev/learn/state-a-components-memory" target=”_blank”>more info on state</a>`,
 				},
@@ -958,58 +962,138 @@ export { BookComponent1, BookComponent2, SchoolComponent, ProductComponent }`,
 		},
 
 		{
-			// -- TASK 1 --
+			// -- TASK 5 --
 			index: index++,
-			title: "Event Handling",
+			title: "State: Working with Arrays",
 			category: CATEGORY,
 			unlocks: [{ category: CATEGORY, index: index }],
 			description: [
 				{
 					displayType: TaskDescriptionDisplayType.description,
-					text: `So far, we have learned how to build components and describe the user interface. We haven't really learned much about how to include user interactions.`,
+					text: `When working with collections of data, you often need to manage arrays in your state. Similar to handling objects in state, arrays need to be treated as if they were immutable. This means you should not directly manipulate the array (avoid mutating functions) but instead create a new array and pass it to the state setting function.`,
+				},
+				{
+					displayType: TaskDescriptionDisplayType.code,
+					text: `// Initializing state with an array
+const [fruits, setFruits] = useState(['apple', 'banana']);`,
 				},
 				{
 					displayType: TaskDescriptionDisplayType.description,
-					text: `In React, you can attach event handlers to your JSX. These event handlers are custom functions that get activated in response to interactions such as clicks, hovers, form input focuses, and the like.`,
+					text: `<h5>Adding Items to an Array</h5> Use <b>concat</b> or <b>...</b> (spread) instead of <i>push</i> or <i>unshift</i>.`,
+				},
+				{
+					displayType: TaskDescriptionDisplayType.code,
+					text: `// wrong approach:
+fruits.push('cherry');
+setFruits(fruits);
+
+// correct approach
+setFruits([...fruits, 'cherry']);
+
+
+// wrong approach:
+fruits.unshift('cherry');
+setFruits(fruits);
+
+// correct approach
+setFruits(['cherry', ...fruits ]);`,
+				},
+				{
+					displayType: TaskDescriptionDisplayType.description,
+					text: `<h5>Inserting Items into an Array</h5> If you want to insert items at a specific position, use <b>slice</b> and <b>...</b> (spread) instead of <i>splice</i>. <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/slice" target=”_blank”>more info</a>`,
+				},
+				{
+					displayType: TaskDescriptionDisplayType.code,
+					text: `// wrong approach:
+fruits.splice(1, 0, "cherry");
+setFruits(fruits);
+
+// correct approach
+setFruits([...fruits.slice(0, 1), "cherry", ...fruits.slice(1)]);`,
+				},
+				{
+					displayType: TaskDescriptionDisplayType.description,
+					text: `<h5>Removing Items from an Array</h5> Use <b>filter</b> instead of <i>splice</i>.`,
+				},
+				{
+					displayType: TaskDescriptionDisplayType.code,
+					text: `// wrong approach:
+fruits.splice(1, 1);
+setFruits(fruits);
+
+// correct approach
+setFruits(fruits.filter(fruit => fruit !== "banana"));`,
+				},
+				{
+					displayType: TaskDescriptionDisplayType.description,
+					text: `<h5>Transforming Items from an Array</h5> Use <b>map</b> instead of direct manipulation.`,
+				},
+				{
+					displayType: TaskDescriptionDisplayType.code,
+					text: `// wrong approach:
+for (let i = 0; i < fruits.length; i++) {
+	fruits[i] = fruits[i].toUpperCase();
+}
+setFruits(fruits);
+
+// correct approach
+setFruits(fruits.map(fruit => fruit.toUpperCase()));`,
+				},
+				{
+					displayType: TaskDescriptionDisplayType.description,
+					text: `<h5>Replacing Items in an Array</h5> Use <b>map</b> instead of direct manipulation.`,
+				},
+				{
+					displayType: TaskDescriptionDisplayType.code,
+					text: `// wrong approach:
+fruits[1] = "blueberry";
+setFruits(fruits);
+
+// correct approach
+setFruits(fruits.map(fruit => fruit === "banana" ? "blueberry" : fruit));`,
+				},
+				{
+					displayType: TaskDescriptionDisplayType.description,
+					text: `<h5>Other Changes</h5> If you want to make any other changes that are not achieved using the approach illustrated above, you can always just copy the array and mutate the copy.`,
 				},
 				{
 					displayType: TaskDescriptionDisplayType.code,
 					text: `// example:
-
-// event handler
-function handleClick() {
-    alert("clicked!")
-}
-
-// passing event handler as prop
-const button = <button onClick={handleClick}>Click me!</button>
-
-// inline event handler
-const button = (
-    <button
-        onClick={function handleClick() {
-            alert("clicked!");
-        }}
-    >
-        Click me!
-    </button>
-)
-
-// inline event handler arrow function
-const button = <button onClick={() => alert("clicked!")}>Click me!</button>
-
-// Be careful to pass a function, and not to call it!
-// this is invalid:
-const button = <button onClick={handleClick()}>Click me!</button>
-`,
-				},
-				{
-					displayType: TaskDescriptionDisplayType.hint,
-					text: `<h5>Naming Conventions</h5> <ul> <li>Event handler functions start with <b>handle</b> (e.g. handleClick)</li> <li>Event handler props start with <b>on</b> (e.g. onClick)</li> </ul> `,
+const newFruits = [...fruits]
+newFruits[1] = "cherry"
+setFruits(newFruits);`,
 				},
 				{
 					displayType: TaskDescriptionDisplayType.description,
-					text: `<a href="https://react.dev/learn/responding-to-events" target=”_blank”>more info</a>`,
+					text: `<h5> Updating Objects inside Arrays</h5> Assume that you have an array of objects and want to make an update. When copying the array using the spread operator, the objects inside the array are still the original objects pointed at, because it is only a <b>shallow copy</b>. Instead of directly changing any object properties, remember to copy the object as well.`,
+				},
+				{
+					displayType: TaskDescriptionDisplayType.code,
+					text: `const initialFruits = [
+	{id: 1, name: "apple", color: "red"},
+	{id: 2, name: "banana", color: "yellow"},
+	{id: 3, name: "cherry", color: "red"}
+];
+
+const [fruits, setFruits] = useState(initialFruits);
+					
+// wrong approach:
+const shallowCopiedFruits = [...fruits]
+const banana = shallowCopiedFruits.find(fruit => fruit.name === "banana");
+banana.color = "green";
+setFruits(shallowCopiedFruits)
+
+// correct approach
+const updatedFruits = fruits.map(fruit => {
+	if (fruit.name === "banana") {
+	  return {...fruit, color: "green"};
+	}
+	return fruit;
+});`,
+				},
+				{
+					displayType: TaskDescriptionDisplayType.description,
+					text: `<a href="https://react.dev/learn/updating-arrays-in-state" target=”_blank”>more info</a>`,
 				},
 			],
 			defaultFiles: [
@@ -1021,7 +1105,144 @@ const button = <button onClick={handleClick()}>Click me!</button>
 				getIndexFile(),
 				{
 					filename: "App.js",
-					code: ``,
+					code: `import { useState } from "react";
+import React from "react";
+
+// YOUR TASK
+
+
+// 1) You are given a component "AddCityComponent". Fill in the handleClick function to add "Berlin" to the end and "Stockholm" to the start of the array. If the two cities are already in the array, the button should not add them again.
+
+function AddCityComponent() {
+	const [cities, setCities] = useState(['New York', 'London', 'Tokyo']);
+
+	const handleClick = () => {
+		// Your code here
+	};
+
+	return (
+		<div>
+			<ul>
+				{cities.map(city => <li key={city}>{city}</li>)}
+			</ul>
+			<button onClick={handleClick}>Add Berlin and Stockholm</button>
+		</div>
+	);
+}
+
+// 2) You are given a component "RemoveCityComponent". Fill in the handleClick function to remove "London".
+
+function RemoveCityComponent() {
+	const [cities, setCities] = useState(['New York', 'London', 'Tokyo']);
+
+	const handleClick = () => {
+		// Your code here
+	};
+
+	return (
+		<div>
+			<ul>
+				{cities.map(city => <li key={city}>{city}</li>)}
+			</ul>
+			<button onClick={handleClick}>Remove London</button>
+		</div>
+	);
+}
+
+// 3) You are given a component "InsertCityComponent". Fill in the handleClick function to insert "Paris" between "London" and "Tokyo". If "Paris" is already in the array, the button should not add it again.
+
+function InsertCityComponent() {
+	const [cities, setCities] = useState(['New York', 'London', 'Tokyo']);
+
+	const handleClick = () => {
+		// Your code here
+	};
+
+	return (
+		<div>
+			<ul>
+				{cities.map(city => <li key={city}>{city}</li>)}
+			</ul>
+			<button onClick={handleClick}>Insert Paris</button>
+		</div>
+	);
+}
+
+// 4) You are given a component "TransformCityComponent". Fill in the handleClick function to change all city names to uppercase.
+function TransformCityComponent() {
+	const [cities, setCities] = useState(['New York', 'London', 'Tokyo']);
+
+	const handleClick = () => {
+		// Your code here
+	};
+
+	return (
+		<div>
+			<ul>
+				{cities.map(city => <li key={city}>{city}</li>)}
+			</ul>
+			<button onClick={handleClick}>Uppercase Cities</button>
+		</div>
+	);
+}
+
+// 5) You are given a component "ReplaceCityComponent". Fill in the handleClick function to replace "Tokyo" with "Osaka".
+function ReplaceCityComponent() {
+	const [cities, setCities] = useState(['New York', 'London', 'Tokyo']);
+
+	const handleClick = () => {
+		// Your code here
+	};
+
+	return (
+		<div>
+			<ul>
+				{cities.map(city => <li key={city}>{city}</li>)}
+			</ul>
+			<button onClick={handleClick}>Replace Tokyo</button>
+		</div>
+	);
+}
+
+
+// 6) You are given a component "UpdatePopulationComponent". Fill in the handleClick function to update the population of New York to 9 million.
+function UpdatePopulationComponent() {
+	const [cities, setCities] = useState([
+		{ name: 'New York', population: 8.4 },
+		{ name: 'London', population: 8.9 },
+		{ name: 'Tokyo', population: 13.5 }
+	]);
+
+	const handleClick = () => {
+		// Your code here
+	};
+
+	return (
+		<div>
+			<ul>
+				{cities.map(city => <li key={city.name}>{city.name} - {city.population} million</li>)}
+			</ul>
+			<button onClick={handleClick}>Update New York Population</button>
+		</div>
+	);
+}
+
+/* You can test your components here */
+
+export default function App() {
+	return (
+		<div>
+			<AddCityComponent />
+			<RemoveCityComponent />
+			<InsertCityComponent />
+			<TransformCityComponent />
+			<ReplaceCityComponent />
+			<UpdatePopulationComponent />
+		</div>
+	);
+}
+
+export { AddCityComponent, RemoveCityComponent, InsertCityComponent, TransformCityComponent, ReplaceCityComponent, UpdatePopulationComponent }`,
 				},
 			],
 			solutionFiles: [
@@ -1033,7 +1254,506 @@ const button = <button onClick={handleClick()}>Click me!</button>
 				getIndexFile(),
 				{
 					filename: "App.js",
-					code: ``,
+					code: `import { useState } from "react";
+import React from "react";
+
+// YOUR TASK
+
+
+// 1) You are given a component "AddCityComponent". Fill in the handleClick function to add "Berlin" to the end and "Stockholm" to the start of the array. If the two cities are already in the array, the button should not add them again.
+
+function AddCityComponent() {
+	const [cities, setCities] = useState(['New York', 'London', 'Tokyo']);
+
+	const handleClick = () => {
+		// Your code here
+		let newCities = [...cities];
+		if (!newCities.includes('Berlin')) {
+			newCities.push('Berlin');
+		}
+		if (!newCities.includes('Stockholm')) {
+			newCities.unshift('Stockholm');
+		}
+		setCities(newCities);
+	};
+
+	return (
+		<div>
+			<ul>
+				{cities.map(city => <li key={city}>{city}</li>)}
+			</ul>
+			<button onClick={handleClick}>Add Berlin and Stockholm</button>
+		</div>
+	);
+}
+
+// 2) You are given a component "RemoveCityComponent". Fill in the handleClick function to remove "London".
+
+function RemoveCityComponent() {
+	const [cities, setCities] = useState(['New York', 'London', 'Tokyo']);
+
+	const handleClick = () => {
+		// Your code here
+		const newCities = cities.filter(city => city !== 'London');
+		setCities(newCities);
+	};
+
+	return (
+		<div>
+			<ul>
+				{cities.map(city => <li key={city}>{city}</li>)}
+			</ul>
+			<button onClick={handleClick}>Remove London</button>
+		</div>
+	);
+}
+
+// 3) You are given a component "InsertCityComponent". Fill in the handleClick function to insert "Paris" between "London" and "Tokyo". If "Paris" is already in the array, the button should not add it again.
+
+function InsertCityComponent() {
+	const [cities, setCities] = useState(['New York', 'London', 'Tokyo']);
+
+	const handleClick = () => {
+		// Your code here
+		if (!cities.includes('Paris')) {
+			let index = cities.indexOf('London');
+			let newCities = [...cities];
+			newCities.splice(index + 1, 0, 'Paris');
+			setCities(newCities);
+		}
+	};
+
+	return (
+		<div>
+			<ul>
+				{cities.map(city => <li key={city}>{city}</li>)}
+			</ul>
+			<button onClick={handleClick}>Insert Paris</button>
+		</div>
+	);
+}
+
+// 4) You are given a component "TransformCityComponent". Fill in the handleClick function to change all city names to uppercase.
+function TransformCityComponent() {
+	const [cities, setCities] = useState(['New York', 'London', 'Tokyo']);
+
+	const handleClick = () => {
+		// Your code here
+		const newCities = cities.map(city => city.toUpperCase());
+		setCities(newCities);
+	};
+
+	return (
+		<div>
+			<ul>
+				{cities.map(city => <li key={city}>{city}</li>)}
+			</ul>
+			<button onClick={handleClick}>Uppercase Cities</button>
+		</div>
+	);
+}
+
+// 5) You are given a component "ReplaceCityComponent". Fill in the handleClick function to replace "Tokyo" with "Osaka".
+function ReplaceCityComponent() {
+	const [cities, setCities] = useState(['New York', 'London', 'Tokyo']);
+
+	const handleClick = () => {
+		// Your code here
+		const newCities = cities.map(city => city === 'Tokyo' ? 'Osaka' : city);
+		setCities(newCities);
+	};
+
+	return (
+		<div>
+			<ul>
+				{cities.map(city => <li key={city}>{city}</li>)}
+			</ul>
+			<button onClick={handleClick}>Replace Tokyo</button>
+		</div>
+	);
+}
+
+
+// 6) You are given a component "UpdatePopulationComponent". Fill in the handleClick function to update the population of New York to 9 million.
+function UpdatePopulationComponent() {
+	const [cities, setCities] = useState([
+		{ name: 'New York', population: 8.4 },
+		{ name: 'London', population: 8.9 },
+		{ name: 'Tokyo', population: 13.5 }
+	]);
+
+	const handleClick = () => {
+		// Your code here
+		const newCities = cities.map(city =>
+			city.name === 'New York'
+				? { ...city, population: 9 }
+				: city
+		);
+		setCities(newCities);
+	};
+
+	return (
+		<div>
+			<ul>
+				{cities.map(city => <li key={city.name}>{city.name} - {city.population} million</li>)}
+			</ul>
+			<button onClick={handleClick}>Update New York Population</button>
+		</div>
+	);
+}
+
+/* You can test your components here */
+
+export default function App() {
+	return (
+		<div>
+			<AddCityComponent />
+			<RemoveCityComponent />
+			<InsertCityComponent />
+			<TransformCityComponent />
+			<ReplaceCityComponent />
+			<UpdatePopulationComponent />
+		</div>
+	);
+}
+
+export { AddCityComponent, RemoveCityComponent, InsertCityComponent, TransformCityComponent, ReplaceCityComponent, UpdatePopulationComponent }`,
+				},
+			],
+		},
+		{
+			// -- TASK 5 --
+			index: index++,
+			title: "Lifting the State up",
+			category: CATEGORY,
+			unlocks: [{ category: CATEGORY, index: index }],
+			description: [
+				{
+					displayType: TaskDescriptionDisplayType.description,
+					text: `When you want multiple components to share and react to the same state, it's often a good idea to move that state to the closest common parent of these components. This process is called <b>lifting state up.</b>`,
+				},
+				{
+					displayType: TaskDescriptionDisplayType.description,
+					text: `Consider the following example: There is a component "NumberInput" who takes an user input (number). Assume you use two "NumberInput" components and want to show the sum of the two numbers.`,
+				},
+				{
+					displayType: TaskDescriptionDisplayType.code,
+					text: `// without lifting state up
+function NumberInput() {
+	const [number, setNumber] = useState(0)
+
+	handleChange = (event) => {
+		setNumber(event.target.value)
+	}
+
+	return (
+		<input value={number} onChange={setNumber} />
+	);
+}
+
+function App() {
+	return (
+		<NumberInput />
+		<NumberInput />
+	);
+}`,
+				},
+				{
+					displayType: TaskDescriptionDisplayType.description,
+					text: `Here we have a problem: The state of the components is private and our "App" component can't know the value inputted in either "NumberInput". This is where we need to lift the state up to the "App" component.`,
+				},
+				{
+					displayType: TaskDescriptionDisplayType.description,
+					text: `We manage the state values in the "App" component and let it control the two "NumberInput" components:`,
+				},
+				{
+					displayType: TaskDescriptionDisplayType.code,
+					text: `// lifting state up
+
+function NumberInput({ number, setNumber }) {
+	const handleChange = (event) => {
+		setNumber(event.target.value);
+	};
+
+	return (
+		<input type="number" value={number} onChange={handleChange} />
+	);
+}
+
+function App() {
+	const [number1, setNumber1] = useState(0);
+	const [number2, setNumber2] = useState(0);
+
+	const sum = Number(number1) + Number(number2); // convert to numbers and then sum
+
+	return (
+		<>
+			<NumberInput number={number1} setNumber={setNumber1} />
+			<NumberInput number={number2} setNumber={setNumber2} />
+			<p>Sum: {sum}</p>
+		</>
+	);
+}`,
+				},
+				{
+					displayType: TaskDescriptionDisplayType.description,
+					text: `As illustrated in the example, we use two state values in the parent component and pass the state value and setter as props. "NumberInput" is now a <b>controlled</b> component since the important information is driven by its props instead of its state.`,
+				},
+				{
+					displayType: TaskDescriptionDisplayType.hint,
+					text: `<h5>Single Source of Truth</h5> In React, it's vital to maintain a "single source of truth" for each piece of state. This means any specific data should be managed in one location within a component who "owns" it. Finding out in which component the state "lives" is part of the process. <a href="https://react.dev/learn/thinking-in-react" target=”_blank”>more info</a>`,
+				},
+				{
+					displayType: TaskDescriptionDisplayType.description,
+					text: `<a href="https://react.dev/learn/sharing-state-between-components" target=”_blank”>more info</a>`,
+				},
+			],
+			defaultFiles: [
+				{
+					filename: "index.css",
+					code: "",
+				},
+				getHTMLFile(),
+				getIndexFile(),
+				{
+					filename: "App.js",
+					code: `import { useState } from "react";
+import React from "react";
+
+// YOUR TASK
+
+// 1) You are given two components: "Counter" and "CounterPair". "CounterPair" should show the sum of the two counts. Fix the code accordingly. 
+
+function Counter() {
+	const [count, setCount] = useState(0);
+	return (
+		<div>
+			<button onClick={() => setCount(count + 1)}>Increment</button>
+			<p>{count}</p>
+		</div>
+	);
+}
+
+function CounterPair() {
+	return (
+		<div>
+			<p>Total count: {"???"}</p>
+			<Counter />
+			<Counter />
+		</div>
+	);
+}
+
+// 2) You are given two components: "Box" and "BoxPair". The "Toggle Both Themes" button should toggle both boxes themes simultaneously. A "Toggle Box Theme" button for every box should toggle its theme only. Use "light" as the intial state. Fix the code accordingly.
+
+function Box() {
+	const [theme, setTheme] = useState('light');
+	const boxStyle = {
+		backgroundColor: theme === 'light' ? 'white' : 'black',
+		color: theme === 'light' ? 'black' : 'white',
+		padding: '20px',
+		margin: '10px',
+		border: '1px solid gray'
+	};
+
+	return (
+		<div>
+			<button onClick={() => setTheme(theme === 'light' ? 'dark' : 'light')}>Toggle Box Theme</button>
+			<div style={boxStyle}>Box</div>
+		</div>
+	);
+}
+
+function BoxPair() {
+	return (
+		<div>
+			<button>Toggle Both Themes</button>
+			<Box />
+			<Box />
+		</div>
+	);
+}
+
+// 3) You are given two components: "Slider" and "SliderPair". The two Sliders should always show a sum of exacly 100. If one Sliders changes its value to 40, the other Slider should adapt to 60 and so on.
+
+function Slider() {
+	const [value, setValue] = useState(0);
+	return (
+		<div>
+			<input type="range" min="0" max="100" value={value} onChange={(e) => setValue(e.target.value)} />
+			<p>{value}</p>
+		</div>
+	);
+}
+
+function SliderPair() {
+	return (
+		<div>
+			<Slider />
+			<Slider />
+		</div>
+	);
+}
+
+
+
+/* You can test your oomponents here */
+
+export default function App() {
+	return (
+		<div>
+			<CounterPair />
+			<hr className="solid"/>
+			<BoxPair />
+			<hr className="solid"/>
+			<SliderPair />
+		</div>
+	);
+}
+
+export { Counter, CounterPair, Box, BoxPair, Slider, SliderPair }`,
+				},
+			],
+			solutionFiles: [
+				{
+					filename: "index.css",
+					code: "",
+				},
+				getHTMLFile(),
+				getIndexFile(),
+				{
+					filename: "App.js",
+					code: `import { useState } from "react";
+import React from "react";
+
+// YOUR TASK
+
+// 1) You are given two components: "Counter" and "CounterPair". "CounterPair" should show the sum of the two counts. Fix the code accordingly. 
+
+function Counter({ count, onIncrement }) {
+	return (
+		<div>
+			<button onClick={onIncrement}>Increment</button>
+			<p>{count}</p>
+		</div>
+	);
+}
+
+function CounterPair() {
+	const [count1, setCount1] = useState(0);
+	const [count2, setCount2] = useState(0);
+
+	const handleIncrement1 = () => {
+		setCount1(count1 + 1);
+	}
+
+	const handleIncrement2 = () => {
+		setCount2(count2 + 1);
+	}
+
+	const totalCount = count1 + count2;
+
+	return (
+		<div>
+			<p>Total count: {totalCount}</p>
+			<Counter count={count1} onIncrement={handleIncrement1} />
+			<Counter count={count2} onIncrement={handleIncrement2} />
+		</div>
+	);
+}
+
+// 2) You are given two components: "Box" and "BoxPair". The "Toggle Both Themes" button should toggle both boxes themes simultaneously. A "Toggle Box Theme" button for every box should toggle its theme only. Use "light" as the intial state. Fix the code accordingly.
+
+function Box({ theme, toggleTheme }) {
+	const boxStyle = {
+		backgroundColor: theme === 'light' ? 'white' : 'black',
+		color: theme === 'light' ? 'black' : 'white',
+		padding: '20px',
+		margin: '10px',
+		border: '1px solid gray'
+	};
+
+	return (
+		<div>
+			<button onClick={toggleTheme}>Toggle Box Theme</button>
+			<div style={boxStyle}>Box</div>
+		</div>
+	);
+}
+
+function BoxPair() {
+	const [theme1, setTheme1] = useState('light');
+	const [theme2, setTheme2] = useState('light');
+
+	const handleToggleTheme1 = () => {
+		setTheme1(theme1 === 'light' ? 'dark' : 'light');
+	}
+	const handleToggleTheme2 = () => {
+		setTheme2(theme2 === 'light' ? 'dark' : 'light');
+	}
+	const handleToggleBothThemes = () => {
+		handleToggleTheme1();
+		handleToggleTheme2();
+	}
+
+	return (
+		<div>
+			<button onClick={handleToggleBothThemes}>Toggle Both Themes</button>
+			<Box theme={theme1} toggleTheme={handleToggleTheme1} />
+			<Box theme={theme2} toggleTheme={handleToggleTheme2} />
+		</div>
+	);
+}
+
+// 3) You are given two components: "Slider" and "SliderPair". The two Sliders should always show a sum of exacly 100. If one Sliders changes its value to 40, the other Slider should adapt to 60 and so on.
+
+function Slider({ value, onChange }) {
+	return (
+		<div>
+			<input type="range" min="0" max="100" value={value} onChange={(e) => onChange(e.target.value)} />
+			<p>{value}</p>
+		</div>
+	);
+}
+
+function SliderPair() {
+	const [value1, setValue1] = useState(50);
+	const [value2, setValue2] = useState(50);
+
+	const handleSlider1Change = (value) => {
+		setValue1(value);
+		setValue2(100 - value);
+	};
+
+	const handleSlider2Change = (value) => {
+		setValue2(value);
+		setValue1(100 - value);
+	};
+
+	return (
+		<div>
+			<Slider value={value1} onChange={handleSlider1Change} />
+			<Slider value={value2} onChange={handleSlider2Change} />
+		</div>
+	);
+}
+
+
+/* You can test your oomponents here */
+
+export default function App() {
+	return (
+		<div>
+			<CounterPair />
+			<hr className="solid"/>
+			<BoxPair />
+			<hr className="solid"/>
+			<SliderPair />
+		</div>
+	);
+}
+
+export { Counter, CounterPair, Box, BoxPair, Slider, SliderPair }`,
 				},
 			],
 		},

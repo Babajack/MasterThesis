@@ -76,6 +76,9 @@ app.post("/runCode", async (req, res) => {
 });
 
 app.post("/runTest", async (req, res) => {
+	// TODO REMOVE
+	console.log(req.path);
+
 	const path = req.query.path;
 
 	var testResults;
