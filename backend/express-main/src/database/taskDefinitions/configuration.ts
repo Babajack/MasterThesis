@@ -4,6 +4,7 @@ import { getTasks_Basics } from "./JavaScript Basics";
 import { getTasks_JSX } from "./JSX";
 import { getTasks_Components } from "./Components";
 import { getTasks_Interactivity } from "./Interactivity";
+import { getTasks_Practise } from "./Practise";
 
 export const getIndexFile = (imports?: string, mainBody?: string, extraBody?: string): CodeFile => {
 	return {
@@ -133,6 +134,7 @@ const allTasks: TaskSchema[][] = [
 	getTasks_JSX(),
 	getTasks_Components(),
 	getTasks_Interactivity(),
+	getTasks_Practise(),
 ];
 
 export const getTaskDefinitions = (): TaskSchema[] => {

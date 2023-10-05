@@ -8,7 +8,12 @@ export enum TaskDescriptionDisplayType {
 	"hint" = "hint",
 }
 
-export type TaskCategory = "JSX" | "JavaScript Basics" | "Components" | "Interactivity";
+export type TaskCategory =
+	| "JSX"
+	| "JavaScript Basics"
+	| "Components"
+	| "Interactivity"
+	| "Practise";
 
 export type TaskDescription = {
 	displayType: TaskDescriptionDisplayType;

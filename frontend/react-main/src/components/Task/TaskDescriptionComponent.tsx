@@ -79,13 +79,9 @@ const TaskDescriptionComponent = () => {
 					// 	</MDBCollapse>
 					// </fieldset>
 
-					<MDBAccordion className="pb-4">
+					<MDBAccordion key={"cm-description" + index} className="pb-4">
 						<MDBAccordionItem collapseId={1} headerTitle="Hint">
-							<div
-								key={"cm-description" + index}
-								className="text-start"
-								dangerouslySetInnerHTML={{ __html: elem.text }}
-							></div>
+							<div className="text-start" dangerouslySetInnerHTML={{ __html: elem.text }}></div>
 						</MDBAccordionItem>
 					</MDBAccordion>
 				);

@@ -1426,7 +1426,12 @@ export { AddCityComponent, RemoveCityComponent, InsertCityComponent, TransformCi
 			index: index++,
 			title: "Lifting the State up",
 			category: CATEGORY,
-			unlocks: [{ category: CATEGORY, index: index }],
+			unlocks: [
+				{ category: "Practise", index: 1 },
+				{ category: "Practise", index: 2 },
+				{ category: "Practise", index: 3 },
+				{ category: "Practise", index: 4 },
+			],
 			description: [
 				{
 					displayType: TaskDescriptionDisplayType.description,
