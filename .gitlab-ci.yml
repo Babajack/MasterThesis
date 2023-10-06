@@ -1,0 +1,2 @@
+build:
+  image: node:20-alpine3.17
