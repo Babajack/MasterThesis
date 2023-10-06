@@ -8,7 +8,7 @@ services:
 
   backend-express-main:
     container_name: backend-express-main
-    image: babajack/master_thesis/express-main
+    image: babajack/express-main:latest
     restart: always
     networks:
       - main-network
@@ -30,7 +30,7 @@ services:
 
   frontend-react-main:
     container_name: frontend-react-main
-    image: babajack/master_thesis/react-main
+    image: babajack/react-main:latest
     restart: always
     networks:
       - main-network
@@ -50,7 +50,7 @@ services:
       - '3000:3000'
     
   backend-express-session:
-    image: babajack/master_thesis/express-session
+    image: babajack/express-session:latest
     networks:
       - main-network
     build:
@@ -65,7 +65,7 @@ services:
 
   mongodb:
     container_name: mongodb
-    image: babajack/master_thesis/mongo
+    image: babajack/mongo:latest
     restart: always
     networks:
       - main-network
@@ -78,7 +78,7 @@ services:
 
   mongo-express:
     container_name: mongo-express
-    image: babajack/master_thesis/mongo-express
+    image: babajack/mongo-express:latest
     restart: always
     networks:
       - main-network
