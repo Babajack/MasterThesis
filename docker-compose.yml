@@ -8,7 +8,7 @@ services:
 
   backend-express-main:
     container_name: backend-express-main
-    image: express-main
+    image: babajack/master_thesis/express-main
     restart: always
     networks:
       - main-network
@@ -20,7 +20,6 @@ services:
       - ./backend/express-main/src:/home/node/app/src
       - ./backend/express-main/nodemon.json:/home/node/app/nodemon.json
       - /var/run/docker.sock:/var/run/docker.sock
-      - user-code:/home/node/user-code
     env_file:
       - /.env
     expose:
@@ -31,7 +30,7 @@ services:
 
   frontend-react-main:
     container_name: frontend-react-main
-    image: react-main
+    image: babajack/master_thesis/react-main
     restart: always
     networks:
       - main-network
@@ -51,14 +50,13 @@ services:
       - '3000:3000'
     
   backend-express-session:
-    image: express-session
+    image: babajack/master_thesis/express-session
     networks:
       - main-network
     build:
       context: ./backend/express-session
       dockerfile: ./Dockerfile
     volumes:
-      - user-code:/usr/src/app/user-code
       - ./backend/express-session/src:/usr/src/app/src
     expose:
        - '8001'
@@ -67,7 +65,7 @@ services:
 
   mongodb:
     container_name: mongodb
-    image: mongo
+    image: babajack/master_thesis/mongo
     restart: always
     networks:
       - main-network
@@ -80,7 +78,7 @@ services:
 
   mongo-express:
     container_name: mongo-express
-    image: mongo-express
+    image: babajack/master_thesis/mongo-express
     restart: always
     networks:
       - main-network
@@ -90,8 +88,6 @@ services:
       - /.env
 
 volumes:
-  user-code:
-    driver: local
   db-data:
     driver: local
 
