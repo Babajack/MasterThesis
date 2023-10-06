@@ -1,5 +1,4 @@
 build:
-  stage: build
   image: docker/compose:latest
   services:
     - docker:dind
