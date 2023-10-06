@@ -1,4 +1,6 @@
 build:
+  tags:
+    - build
   image: docker/compose:latest
   services:
     - docker:dind
