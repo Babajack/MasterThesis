@@ -1,2 +1,12 @@
 build:
-  image: node:20-alpine3.17
+  stage: build
+  image: docker/compose:latest
+  services:
+    - docker:dind
+  variables:
+    DOCKER_TLS_CERTDIR: "/certs"
+  before_script:
+    - docker login -u $REGISTRY_USER -p $REGISTRY_PASSWORD
+  script:
+    - docker-compose build
+    - docker-compose push 
