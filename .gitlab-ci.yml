@@ -1,0 +1,11 @@
+build:
+  tags:
+    - build
+  image: docker/compose:latest
+  services:
+    - docker:dind
+  before_script:
+    - docker login babajack/master_thesis -u $REGISTRY_USER -p $REGISTRY_PASSWORD
+  script:
+    - docker-compose build
+    - docker-compose push 
