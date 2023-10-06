@@ -4,6 +4,8 @@ build:
   image: docker/compose:latest
   services:
     - docker:dind
+  variables:
+    DOCKER_TLS_CERTDIR: "/certs"
   before_script:
     - docker login -u $REGISTRY_USER -p $REGISTRY_PASSWORD
   script:
