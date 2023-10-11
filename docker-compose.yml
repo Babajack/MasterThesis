@@ -8,7 +8,7 @@ services:
 
   backend-express-main:
     container_name: backend-express-main
-    image: babajack/master_thesis:express-main-latest
+    image: express-main-latest
     restart: always
     networks:
       - main-network
@@ -30,13 +30,14 @@ services:
 
   frontend-react-main:
     container_name: frontend-react-main
-    image: babajack/master_thesis:react-main-latest
+    image: react-main-latest
     restart: always
     networks:
       - main-network
     build:
       context: ./frontend/react-main
       dockerfile: ./Dockerfile
+      target: dev
     volumes:
       - /usr/src/app/node_modules
       - ./frontend/react-main:/usr/src/app
@@ -50,7 +51,7 @@ services:
       - '8080:80'
     
   backend-express-session:
-    image: babajack/master_thesis:express-session-latest
+    image: express-session-latest
     networks:
       - main-network
     build:

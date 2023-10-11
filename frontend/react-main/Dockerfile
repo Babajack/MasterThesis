@@ -1,4 +1,4 @@
-# FROM node:lts-alpine
+# FROM node:lts-alpine as dev
 # ENV NODE_ENV=production
 # WORKDIR /usr/src/app
 # COPY ["package.json", "package-lock.json*", "npm-shrinkwrap.json*", "./"]
@@ -9,37 +9,44 @@
 # #USER node
 # CMD ["npm", "start"]
 
+# Stage dev
+FROM node:alpine as dev
+
+# set working directory
+WORKDIR /usr/src/app
+
+# add `/app/node_modules/.bin` to $PATH
+ENV PATH /usr/src/app/node_modules/.bin:$PATH
+
+ENV REACT_APP_BACKEND_URL localhost:8000
+ENV REACT_APP_DEV_MODE true
+
+# install app dependencies
+COPY package.json ./
+COPY package-lock.json ./
+RUN npm install 
+RUN npm install react-scripts@3.4.1 -g 
+
+# add app
+COPY . ./
+
+#EXPOSE 8080
+
+# start app
+CMD ["npm", "start"]
 
 
-# # pull official base image
-# FROM node:lts-alpine
-
-# # set working directory
-# WORKDIR /usr/src/app
-
-# # add `/app/node_modules/.bin` to $PATH
-# ENV PATH /usr/src/app/node_modules/.bin:$PATH
-
-# # install app dependencies
-# COPY package.json ./
-# COPY package-lock.json ./
-# RUN npm install 
-# RUN npm install react-scripts@3.4.1 -g 
-
-# # add app
-# COPY . ./
-
-# EXPOSE 3000
-
-# # start app
-# CMD ["npm", "start"]
+# production stages:
 
 # Stage 1: Install dependencies and build the React application
-FROM node:16 as build
+FROM node:alpine as build
 
 WORKDIR /app
 
 ENV PATH /usr/src/app/node_modules/.bin:$PATH
+
+ENV REACT_APP_BACKEND_URL 159.89.21.200:8000
+ENV REACT_APP_DEV_MODE true
 
 # Copy package.json and package-lock.json/yarn.lock
 COPY package*.json ./
@@ -51,14 +58,13 @@ RUN npm install react-scripts@3.4.1 -g
 # Copy the rest of the application code
 COPY . .
 
-# Accept a build mode argument. Default is "production".
-ARG BUILD_MODE=production
+# Build the application
+RUN npm run build
 
-# Build the application based on the build mode
-RUN if [ "$BUILD_MODE" = "development" ]; then npm run build:dev; else npm run build; fi
+
 
 # Stage 2: Serve the React application from Nginx server
-FROM nginx:alpine
+FROM nginx:alpine as prod
 
 COPY nginx.conf /etc/nginx/conf.d/default.conf
 

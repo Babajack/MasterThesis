@@ -25,7 +25,8 @@ app.use(
 	cors({
 		//origin: [process.env.FRONTEND_SERVER!],
 		//origin: ["http://localhost:3000", "http://localhost:3001"],
-		origin: ["http://localhost:8080"],
+		origin: ["http://localhost:8080", "http://159.89.21.200:8080", "http://localhost:3000"],
+		//origin: "*",
 		credentials: true,
 	})
 );

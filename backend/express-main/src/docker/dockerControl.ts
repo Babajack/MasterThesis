@@ -9,7 +9,9 @@ import { MAX_AGE } from "../index";
 
 const SOCKET_PATH = "/var/run/docker.sock";
 //const TESTENV_IMAGE_NAME = "node-docker";
-const SANDBOX_IMAGE_NAME = "babajack/express-session";
+const SANDBOX_IMAGE_NAME = !process.env.DEV_MODE
+	? "babajack/master_thesis:express-session-latest"
+	: "express-session-latest";
 const DOCKER_PORT = 8000;
 const TIMEOUT = 5000; //3600000; // milliseconds
 

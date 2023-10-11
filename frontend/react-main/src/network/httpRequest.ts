@@ -1,11 +1,13 @@
 import axios, { AxiosResponse } from "axios";
 import { CodeType, CodeFiles, UserRequest, UserResponse } from "../types";
 
-const BASE_URL = process.env.REACT_APP_BACKEND_URL!;
-axios.defaults.baseURL = "http://localhost:8000"; //`http://${BASE_URL}`;
+const BASE_URL = process.env.REACT_APP_BACKEND_URL;
+axios.defaults.baseURL = BASE_URL ? `http://${BASE_URL}` : "http://localhost:8000";
 axios.defaults.withCredentials = true;
 
 axios.interceptors.request.use((request) => {
+	console.log(BASE_URL);
+
 	//console.log("Starting Request", JSON.stringify(request, null, 2));
 	if (process.env.REACT_APP_DEV_MODE)
 		console.log("Starting Request", request.method, request.url, request);
