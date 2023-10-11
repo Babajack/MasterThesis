@@ -29,7 +29,7 @@
     "typescript": "^5.0.4"
   },
   "scripts": {
-    "start": "NODE_PATH=./build node build/index.js",
+    "start": "ts-node src/index.ts",
     "build": "tsc -p .",
     "dev": "nodemon -L src/index.ts",
     "debug": "nodemon -L src/index.ts"

@@ -18,13 +18,14 @@ dotenv.config();
 
 const app = express();
 const port = 8000;
-export const MAX_AGE = 1000 * 60 * 60 * 6;
+export const MAX_AGE = 1000 * 60 * 30;
 
 // cors
 app.use(
 	cors({
 		//origin: [process.env.FRONTEND_SERVER!],
-		origin: ["http://localhost:3000", "http://localhost:3001"],
+		//origin: ["http://localhost:3000", "http://localhost:3001"],
+		origin: ["http://localhost:8080"],
 		credentials: true,
 	})
 );

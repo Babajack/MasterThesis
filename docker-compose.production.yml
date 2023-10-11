@@ -17,8 +17,6 @@ services:
       dockerfile: ./Dockerfile
       target: base
     volumes:
-      - ./backend/express-main/src:/home/node/app/src
-      - ./backend/express-main/nodemon.json:/home/node/app/nodemon.json
       - /var/run/docker.sock:/var/run/docker.sock
     env_file:
       - /.env
@@ -26,7 +24,7 @@ services:
       - '10000'
     ports:
       - '8000:8000'
-    command: npm run dev
+    command: npm run start
 
   frontend-react-main:
     container_name: frontend-react-main
@@ -37,9 +35,6 @@ services:
     build:
       context: ./frontend/react-main
       dockerfile: ./Dockerfile
-    volumes:
-      - /usr/src/app/node_modules
-      - ./frontend/react-main:/usr/src/app
     env_file:
       - /.env
     environment:
@@ -56,12 +51,6 @@ services:
     build:
       context: ./backend/express-session
       dockerfile: ./Dockerfile
-    volumes:
-      - ./backend/express-session/src:/usr/src/app/src
-    expose:
-       - '8001'
-    ports:
-       - '8001:8000'
 
   mongodb:
     container_name: mongodb
