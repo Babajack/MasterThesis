@@ -9,9 +9,10 @@ import { MAX_AGE } from "../index";
 
 const SOCKET_PATH = "/var/run/docker.sock";
 //const TESTENV_IMAGE_NAME = "node-docker";
-const SANDBOX_IMAGE_NAME = !process.env.DEV_MODE
-	? "babajack/master_thesis:express-session-latest"
-	: "express-session-latest";
+const SANDBOX_IMAGE_NAME =
+	process.env.DEV_MODE === "false"
+		? "babajack/master_thesis:express-session-latest"
+		: "express-session-latest";
 const DOCKER_PORT = 8000;
 const TIMEOUT = 5000; //3600000; // milliseconds
 
@@ -200,10 +201,10 @@ export const startSandboxContainer = async (userID: string) => {
 			//ExposedPorts: { [DOCKER_PORT]: {} },
 			HostConfig: {
 				//Binds: ["master-thesis_user-code:/usr/user-code"],
-				Binds: [
-					"C:/Users/pheld/Desktop/Master Thesis/Repository/master-thesis/backend/express-session/src:/usr/src/app/src",
-					"C:/Users/pheld/Desktop/Master Thesis/Repository/master-thesis/backend/express-session/task/tests:/usr/src/app/task/tests",
-				],
+				// Binds: [
+				// 	"C:/Users/pheld/Desktop/Master Thesis/Repository/master-thesis/backend/express-session/src:/usr/src/app/src",
+				// 	"C:/Users/pheld/Desktop/Master Thesis/Repository/master-thesis/backend/express-session/task/tests:/usr/src/app/task/tests",
+				// ],
 				NetworkMode: "master-thesis_main-network",
 				PortBindings: {
 					//[DOCKER_PORT]: [{ HostPort: hostPort }],

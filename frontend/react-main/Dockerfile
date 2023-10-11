@@ -30,7 +30,7 @@ RUN npm install react-scripts@3.4.1 -g
 # add app
 COPY . ./
 
-#EXPOSE 8080
+EXPOSE 80
 
 # start app
 CMD ["npm", "start"]
@@ -46,7 +46,7 @@ WORKDIR /app
 ENV PATH /usr/src/app/node_modules/.bin:$PATH
 
 ENV REACT_APP_BACKEND_URL 159.89.21.200:8000
-ENV REACT_APP_DEV_MODE true
+ENV REACT_APP_DEV_MODE false
 
 # Copy package.json and package-lock.json/yarn.lock
 COPY package*.json ./

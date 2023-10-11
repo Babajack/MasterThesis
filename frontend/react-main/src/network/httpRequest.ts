@@ -6,10 +6,8 @@ axios.defaults.baseURL = BASE_URL ? `http://${BASE_URL}` : "http://localhost:800
 axios.defaults.withCredentials = true;
 
 axios.interceptors.request.use((request) => {
-	console.log(BASE_URL);
-
 	//console.log("Starting Request", JSON.stringify(request, null, 2));
-	if (process.env.REACT_APP_DEV_MODE)
+	if (process.env.REACT_APP_DEV_MODE === "true")
 		console.log("Starting Request", request.method, request.url, request);
 	return request;
 });
@@ -17,7 +15,7 @@ axios.interceptors.request.use((request) => {
 axios.interceptors.response.use(
 	(response) => {
 		//console.log("Response:", JSON.stringify(response, null, 2));
-		if (process.env.REACT_APP_DEV_MODE)
+		if (process.env.REACT_APP_DEV_MODE === "true")
 			console.log("Response:", response.config.method, response.config.url, response);
 		return response;
 	},
