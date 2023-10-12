@@ -45,7 +45,7 @@ WORKDIR /app
 
 ENV PATH /usr/src/app/node_modules/.bin:$PATH
 
-ENV REACT_APP_BACKEND_URL 159.89.21.200:8000
+ENV REACT_APP_BACKEND_URL learn-react-app.de:8000
 ENV REACT_APP_DEV_MODE false
 
 # Copy package.json and package-lock.json/yarn.lock
