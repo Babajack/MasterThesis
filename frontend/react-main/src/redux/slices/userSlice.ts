@@ -5,6 +5,8 @@ import {
 	CodeType,
 	LoadingStatus,
 	Task,
+	TaskCategory,
+	TaskHead,
 	TaskResponse,
 	TaskSchemaFrontend,
 	UserSchemaFrontend,
@@ -114,6 +116,12 @@ export const getTasksByCategory = (state: RootState) => {
 			return previous;
 		},
 		[] as { category: string; tasks: Task[] }[]
+	);
+};
+
+export const getIndexOfLastTaskByCategory = (tasks: TaskHead[], category: TaskCategory): number => {
+	return Math.max(
+		...tasks.filter((elem) => elem.task.category === category).map((elem) => elem.task.index)
 	);
 };
 

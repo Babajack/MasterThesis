@@ -17,7 +17,8 @@ import { useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import LoadingWrapper from "../components/Utils/LoadingWrapper";
 import TaskDescriptionComponent from "../components/Task/TaskDescriptionComponent";
-import { updateUserCode } from "../redux/slices/userSlice";
+import { getIndexOfLastTaskByCategory, updateUserCode } from "../redux/slices/userSlice";
+import { TaskCategory } from "../types";
 
 const TaskMenuView = () => {
 	const dispatch = useDispatch<AppDispatch>();
@@ -25,17 +26,48 @@ const TaskMenuView = () => {
 	const userState = useSelector((state: RootState) => state.user);
 	const { taskId } = useParams();
 	const navigate = useNavigate();
+	const taskCategories: TaskCategory[] = [
+		"JavaScript Basics",
+		"JSX",
+		"Components",
+		"Interactivity",
+		"Practise",
+	];
+	const lastIndex = getIndexOfLastTaskByCategory(userState.tasks, taskState.task.category);
 
-	const nextTask = userState.tasks.find(
-		(elem) =>
-			elem.task.category === taskState.task.category &&
-			elem.task.index === taskState.task.index + 1 &&
-			(elem.isUnlocked || elem.task.isDefaultUnlocked)
-	);
-	const previousTask = userState.tasks.find(
-		(elem) =>
-			elem.task.category === taskState.task.category && elem.task.index === taskState.task.index - 1
-	);
+	const nextTask =
+		taskState.task.index === lastIndex
+			? userState.tasks.find(
+					(elem) =>
+						elem.task.category ===
+							taskCategories[
+								taskCategories.findIndex((category) => category === taskState.task.category) + 1
+							] &&
+						elem.task.index === 1 &&
+						(elem.isUnlocked || elem.task.isDefaultUnlocked)
+			  )
+			: userState.tasks.find(
+					(elem) =>
+						elem.task.category === taskState.task.category &&
+						elem.task.index === taskState.task.index + 1 &&
+						(elem.isUnlocked || elem.task.isDefaultUnlocked)
+			  );
+	const previousTask =
+		taskState.task.index === 1
+			? userState.tasks.find(
+					(elem) =>
+						elem.task.category ===
+							taskCategories[
+								taskCategories.findIndex((category) => category === taskState.task.category) - 1
+							] &&
+						elem.task.index === getIndexOfLastTaskByCategory(userState.tasks, elem.task.category) &&
+						(elem.isUnlocked || elem.task.isDefaultUnlocked)
+			  )
+			: userState.tasks.find(
+					(elem) =>
+						elem.task.category === taskState.task.category &&
+						elem.task.index === taskState.task.index - 1
+			  );
 
 	useEffect(() => {
 		dispatch(fetchTask(taskId ?? ""));
