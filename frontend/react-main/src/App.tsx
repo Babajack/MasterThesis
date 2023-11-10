@@ -7,6 +7,7 @@ import TaskView from "./views/TaskView";
 import TaskMenuView from "./views/TaskMenuView";
 import SandboxView from "./views/SandboxView";
 import InfoView from "./views/InfoView";
+import PrivacyPolicy from "./views/PrivacyPolicyView";
 //import ProtectedRoute from "./components/Utils/ProtectedRoute";
 
 function App() {
@@ -15,6 +16,7 @@ function App() {
 			<Routes>
 				{/* public routes */}
 				<Route path="/auth" element={<AuthView />} />
+				<Route path="/privacy" element={<PrivacyPolicy />} />
 				{/* protected routes */}
 				<Route element={<ProtectedRoute />}>
 					<Route element={<NavRoute />}>

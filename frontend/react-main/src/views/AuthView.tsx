@@ -19,7 +19,7 @@ import logo from "../logo.svg";
 import { Form } from "react-bootstrap";
 import { httpRequest } from "../network/httpRequest";
 import { getUserData, loginUser, registerUser, setError } from "../redux/slices/userSlice";
-import { useLocation, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../redux/store";
 
@@ -221,7 +221,7 @@ const AuthView = () => {
 									</MDBBtn>
 								</MDBCol>
 							</Form>
-							<p className="mb-5 pb-lg-2">
+							<p className="mb-2 pb-lg-2">
 								<>
 									{isLogin && "New here? "}
 									{!isLogin && "Already have an account? "}
@@ -233,6 +233,9 @@ const AuthView = () => {
 										{!isLogin && "login"}
 									</span>
 								</>
+							</p>
+							<p className="">
+								<Link to={"/privacy"}>Privacy Policy</Link>
 							</p>
 						</MDBCardBody>
 					</MDBCol>

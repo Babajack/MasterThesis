@@ -127,9 +127,7 @@ app.post("/runTest", async (req, res) => {
 		// 	},
 		// 	["./task/tests"]
 		// );
-		const results = await exec(
-			`env NODE_ENV=test jest --json --testRegex="task/tests/${path}" --testTimeout=20000`
-		);
+		const results = await exec(`env NODE_ENV=test jest --json --testRegex="task/tests/${path}"`);
 		testResults = JSON.parse(results.stdout);
 	} catch (error) {
 		console.log(error);
