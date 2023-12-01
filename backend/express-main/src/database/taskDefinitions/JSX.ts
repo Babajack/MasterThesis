@@ -137,7 +137,7 @@ export {jsx1, jsx2}`,
 				},
 				{
 					displayType: TaskDescriptionDisplayType.description,
-					text: "<h5>1. JSX elements must have a closing tag</h5><div>JSX requires tags to be explicitly closed.</div>",
+					text: "<h5>2. JSX elements must have a closing tag</h5><div>JSX requires tags to be explicitly closed.</div>",
 				},
 				{
 					displayType: TaskDescriptionDisplayType.code,

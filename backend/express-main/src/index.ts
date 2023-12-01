@@ -27,6 +27,8 @@ app.use(
 		//origin: ["http://localhost:3000", "http://localhost:3001"],
 		origin: [
 			"http://localhost:8080",
+			"http://localhost",
+			"http://localhost:80",
 			"http://159.89.21.200",
 			"http://localhost:3000",
 			"http://learn-react-app.de",

@@ -1,11 +1,4 @@
 services:
-
-  #node-docker:
-   # image: node-docker
-    #build: 
-     # context: ./backend/test-env
-      #dockerfile: ./Dockerfile
-
   backend-express-main:
     container_name: backend-express-main
     image: babajack/master_thesis:express-main-latest
@@ -20,8 +13,6 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock
     env_file:
       - /production.env
-    expose:
-      - '10000'
     ports:
       - '8000:8000'
     command: npm run start
@@ -38,8 +29,6 @@ services:
       target: prod
     env_file:
       - /production.env
-    environment:
-      WATCHPACK_POLLING: "true"
     expose:
       - '80'
     ports:

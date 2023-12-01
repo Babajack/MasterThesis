@@ -2,7 +2,6 @@ import * as React from "react";
 import { CodeType, Errors, LoadingStatus, TestResults } from "../../types";
 import LoadingWrapper from "../Utils/LoadingWrapper";
 import { MDBIcon } from "mdb-react-ui-kit";
-import Confetti from "react-confetti";
 
 interface PreviewComponentProps {
 	buildStatus: LoadingStatus;
@@ -58,7 +57,6 @@ const PreviewComponent: React.FC<PreviewComponentProps> = (props) => {
 		<LoadingWrapper loadingStatus={props.buildStatus}>
 			{props.testResults ? (
 				<>
-					<Confetti numberOfPieces={100} />
 					<h3>Test Results:</h3>
 					<div className="text-start pb-5">{testResults}</div>
 					{getSuccessResult()}

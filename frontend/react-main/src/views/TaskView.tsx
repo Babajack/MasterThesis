@@ -19,6 +19,8 @@ import LoadingWrapper from "../components/Utils/LoadingWrapper";
 import TaskDescriptionComponent from "../components/Task/TaskDescriptionComponent";
 import { getIndexOfLastTaskByCategory, updateUserCode } from "../redux/slices/userSlice";
 import { TaskCategory } from "../types";
+import Confetti from "react-confetti";
+import { useWindowSize } from "react-use";
 
 const TaskMenuView = () => {
 	const dispatch = useDispatch<AppDispatch>();
@@ -34,6 +36,7 @@ const TaskMenuView = () => {
 		"Practise",
 	];
 	const lastIndex = getIndexOfLastTaskByCategory(userState.tasks, taskState.task.category);
+	const { width, height } = useWindowSize();
 
 	const nextTask =
 		taskState.task.index === lastIndex
@@ -88,6 +91,7 @@ const TaskMenuView = () => {
 	return (
 		<LoadingWrapper loadingStatus={taskState.loadingStatus}>
 			<MDBContainer fluid className="g-0 d-flex flex-column flex-grow-1">
+				{taskState.showConfetti && <Confetti height={height} width={width} numberOfPieces={100} />}
 				<MDBRow className="g-0 flex-grow-1">
 					<MDBCol xxl={4} lg={12} className="d-flex flex-grow-1 p-2" style={{ maxHeight: "90vh" }}>
 						<TaskDescriptionComponent />

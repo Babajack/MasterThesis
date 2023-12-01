@@ -25,130 +25,15 @@ interface TaskState extends Task {
 	testResults?: TestResults;
 	//currentFiles: CodeFiles;
 	currentFilesMap: currentFilesMap;
+	showConfetti: boolean;
 }
 
 const initialState: TaskState = {
-	// 	currentFiles: [
-	// 		{
-	// 			filename: "App.js",
-	// 			code: `import "./App.css";
-	// import React from "react";
-
-	// function App() {
-	// 	return (
-	// <div className="App">
-	// 	<header className="App-header">
-	// 		<img src={""} className="App-logo" alt="logo" />
-	// 		<p>TEST</p>
-	// 		<a
-	// 			className="App-link"
-	// 			href="https://reactjs.org"
-	// 			target="_blank"
-	// 			rel="noopener noreferrer"
-	// 		>
-	// 			Learn React
-	// 		</a>
-	// 	</header>
-	// </div>
-	// 	);
-	// }
-
-	// export default App;
-	// 			`,
-	// 		},
-	// 		{
-	// 			filename: "index.js",
-	// 			code: `import React from "react";
-	// import ReactDOM from "react-dom/client";
-	// import App from "./App";
-
-	// const root = ReactDOM.createRoot(document.getElementById("root"));
-	// root.render(
-	// 	<React.StrictMode>
-	// 		<App />
-	// 	</React.StrictMode>
-	// );
-
-	// 			`,
-	// 		},
-	// 		{
-	// 			filename: "App.css",
-	// 			code: `.App {
-	// 				text-align: center;
-	// 			  }
-
-	// 			  .App-logo {
-	// 				height: 40vmin;
-	// 				pointer-events: none;
-	// 			  }
-
-	// 			  @media (prefers-reduced-motion: no-preference) {
-	// 				.App-logo {
-	// 				  animation: App-logo-spin infinite 20s linear;
-	// 				}
-	// 			  }
-
-	// 			  .App-header {
-	// 				background-color: #282c34;
-	// 				min-height: 100vh;
-	// 				display: flex;
-	// 				flex-direction: column;
-	// 				align-items: center;
-	// 				justify-content: center;
-	// 				font-size: calc(10px + 2vmin);
-	// 				color: white;
-	// 			  }
-
-	// 			  .App-link {
-	// 				color: #61dafb;
-	// 			  }
-
-	// 			  @keyframes App-logo-spin {
-	// 				from {
-	// 				  transform: rotate(0deg);
-	// 				}
-	// 				to {
-	// 				  transform: rotate(360deg);
-	// 				}
-	// 			  }
-	// 			  `,
-	// 		},
-	// 		{
-	// 			filename: "index.html",
-	// 			code: `<!DOCTYPE html>
-	// <html lang="en">
-
-	// <head>
-	//   <meta charset="utf-8" />
-	//   <link rel="icon" href="sessionContainer/task/favicon.ico" />
-	//   <meta name="viewport" content="width=device-width, initial-scale=1" />
-	//   <meta name="theme-color" content="#000000" />
-	//   <meta name="description" content="Web site created using create-react-app" />
-	//   <link rel="apple-touch-icon" href="sessionContainer/task/logo192.png" />
-	//   <!--
-	//       manifest.json provides metadata used when your web app is installed on a
-	//       user's mobile device or desktop. See https://developers.google.com/web/fundamentals/web-app-manifest/
-	//     -->
-	//   <link rel="manifest" href="sessionContainer/task/manifest.json" />
-	//   <script src="sessionContainer/task/build/App.js" async defer></script>
-	//   <link rel="stylesheet" href="sessionContainer/task/build/App.css" />
-	//   <title>React App</title>
-	// </head>
-
-	// <body style="margin:0;padding:0">
-	//    <noscript>You need to enable JavaScript to run this app.</noscript>
-	//   <div id="root"></div>
-
-	// </body>
-
-	// </html>
-	// 			`,
-	// 		},
-	// 	],
 	currentFilesMap: {},
 	loadingStatus: "Idle",
 	buildStatus: "Idle",
 	task: { _id: "", category: "", index: 0, title: "" },
+	showConfetti: false,
 };
 
 export const taskSlice = createSlice({
@@ -184,6 +69,7 @@ export const taskSlice = createSlice({
 		builder.addCase(fetchTask.pending, (state) => {
 			state.loadingStatus = "Pending";
 			state.buildStatus = "Idle";
+			state.showConfetti = false;
 		});
 		builder.addCase(fetchTask.rejected, (state) => {
 			state.loadingStatus = "Error";
@@ -210,6 +96,7 @@ export const taskSlice = createSlice({
 			state.buildStatus = "Pending";
 			state.errors = undefined;
 			state.testResults = undefined;
+			state.showConfetti = false;
 		});
 		builder.addCase(runCodeThunk.rejected, (state) => {
 			state.buildStatus = "Error";
@@ -222,6 +109,7 @@ export const taskSlice = createSlice({
 			state.buildStatus = "Pending";
 			state.errors = undefined;
 			state.testResults = undefined;
+			state.showConfetti = false;
 		});
 		builder.addCase(runTestThunk.rejected, (state) => {
 			state.buildStatus = "Error";
@@ -233,6 +121,7 @@ export const taskSlice = createSlice({
 				state.testResults = action.payload.data.testResults;
 				if (action.payload.data.passed) {
 					state.userSolution = action.payload.files;
+					state.showConfetti = true;
 				}
 			}
 		});

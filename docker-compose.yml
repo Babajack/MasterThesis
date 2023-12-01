@@ -1,11 +1,4 @@
 services:
-
-  #node-docker:
-   # image: node-docker
-    #build: 
-     # context: ./backend/test-env
-      #dockerfile: ./Dockerfile
-
   backend-express-main:
     container_name: backend-express-main
     image: express-main-latest
@@ -22,8 +15,6 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock
     env_file:
       - /.env
-    expose:
-      - '10000'
     ports:
       - '8000:8000'
     command: npm run dev
@@ -46,9 +37,9 @@ services:
     environment:
       WATCHPACK_POLLING: "true"
     expose:
-      - '80'
+      - '3000'
     ports:
-      - '8080:80'
+      - '3000:3000'
     
   backend-express-session:
     image: express-session-latest
@@ -59,10 +50,6 @@ services:
       dockerfile: ./Dockerfile
     volumes:
       - ./backend/express-session/src:/usr/src/app/src
-    expose:
-       - '8001'
-    ports:
-       - '8001:8000'
 
   mongodb:
     container_name: mongodb
