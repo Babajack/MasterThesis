@@ -404,7 +404,7 @@ function Person() {
 
 
 
-// 2) Create an object "calculator" with methods for addition, subtraction, multiplication, and division using arrow functions.
+// 2) Create an object "calculator" with methods for addition (add), subtraction (subtract), multiplication (multiply), and division (divide) using arrow functions.
 // hint: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Working_with_Objects
 
 

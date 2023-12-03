@@ -60,7 +60,9 @@ export const httpRequest = {
 		});
 	},
 	async runTest(files: CodeFiles, taskId: string) {
-		return axios.post("/sessionContainer/runTest", files, { params: { taskId: taskId } });
+		return axios.post("/sessionContainer/runTest", files, {
+			params: { taskId: taskId, type: "task" },
+		});
 	},
 
 	async fetchTask(taskId: string) {

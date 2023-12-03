@@ -4,10 +4,11 @@ import express from "express";
 
 export const sessionDockerRouter = express.Router();
 
-sessionDockerRouter.use((req, res, next) => {
+sessionDockerRouter.use(async (req, res, next) => {
 	if (req.path === "/runTest" || req.path === "/runCode") {
 		// save user code to db
-		updateUserCode(
+
+		await updateUserCode(
 			req.session.userId!,
 			req.query.taskId as string,
 			req.body,

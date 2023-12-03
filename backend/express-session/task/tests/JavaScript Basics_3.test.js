@@ -14,8 +14,8 @@ test("Task 2: add method adds two numbers", () => {
 	expect(calculator.add(2, 3)).toBe(5);
 });
 
-test("Task 2: substract method subtracts two numbers", () => {
-	expect(calculator.substract(5, 2)).toBe(3);
+test("Task 2: subtract method subtracts two numbers", () => {
+	expect(calculator.subtract(5, 2)).toBe(3);
 });
 
 test("Task 2: multiply method multiplies two numbers", () => {
@@ -30,8 +30,8 @@ test("Task 2: arrow functions are used", () => {
 	const add = calculator.add.toString();
 	expect(add.includes("=>")).toBe(true);
 
-	const substract = calculator.substract.toString();
-	expect(substract.includes("=>")).toBe(true);
+	const subtract = calculator.subtract.toString();
+	expect(subtract.includes("=>")).toBe(true);
 
 	const multiply = calculator.multiply.toString();
 	expect(multiply.includes("=>")).toBe(true);

@@ -61,7 +61,7 @@ export const startSandboxContainer = async (userID: string) => {
 				// ],
 				NetworkMode: "master-thesis_main-network",
 				CpuPeriod: 100000,
-				CpuQuota: 50000,
+				CpuQuota: 100000,
 				PortBindings: {
 					//[DOCKER_PORT]: [{ HostPort: hostPort }],
 				},
