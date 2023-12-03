@@ -12,7 +12,7 @@ services:
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
     env_file:
-      - ./production.env
+      - /production.env
     ports:
       - '8000:8000'
     command: npm run start
@@ -28,13 +28,11 @@ services:
       dockerfile: ./Dockerfile
       target: prod
     env_file:
-      - ./production.env
+      - /production.env
+    expose:
+      - '80'
     ports:
       - '80:80'
-      - '443:443'
-    volumes:
-      - ./frontend/react-main/nginx/:/etc/nginx/conf.d/:ro
-      - ./certbot/www:/var/www/certbot/:ro
     
   backend-express-session:
     image: babajack/master_thesis:express-session-latest
@@ -55,7 +53,7 @@ services:
     volumes:
       - db-data:/data/db
     env_file:
-      - ./production.env
+      - /production.env
 
   mongo-express:
     container_name: mongo-express
@@ -66,13 +64,7 @@ services:
     ports:
       - 8081:8081
     env_file:
-      - ./production.env
-
-  certbot:
-    image: certbot/certbot:latest
-    volumes:
-      - /certbot/www/:/var/www/certbot/:rw
-      - /certbot/conf/:/etc/letsencrypt/:rw
+      - /production.env
 
 volumes:
   db-data:
