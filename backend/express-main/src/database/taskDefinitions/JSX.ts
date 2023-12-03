@@ -369,8 +369,9 @@ const element = <h1> {5 > 0 ? "isHigher" : "isLower"} </h1>;
 					code: "",
 				},
 				getHTMLFile(),
+				getIndexFile(),
 				{
-					filename: "index.js",
+					filename: "App.js",
 					code: `import React from "react"
 					
 // YOUR TASK
@@ -394,7 +395,27 @@ const exampleCar = { brand: "Porsche", hp: 400, owner: "Hans" }
 
 
 
-export {fun1, fun2, fun3, fun4, fun5}`,
+export {fun1, fun2, fun3, fun4, fun5}
+
+export default function App() {
+    return (
+        <div>
+			{fun1(exampleCar)}
+			<br />
+			{fun2(true)}
+			{fun2(false)}
+			<br />
+			{fun3("Enabled Button", true)}
+			{fun3("Disabled Button", false)}
+			<br />
+			{fun4(12)}
+			{fun4(5)}
+			<br />
+            {fun5(4)}
+            {fun5(14)}
+        </div>
+    );
+}`,
 				},
 			],
 			solutionFiles: [
@@ -403,8 +424,9 @@ export {fun1, fun2, fun3, fun4, fun5}`,
 					code: "",
 				},
 				getHTMLFile(),
+				getIndexFile(),
 				{
-					filename: "index.js",
+					filename: "App.js",
 					code: `import React from "react"
 					
 // YOUR TASK
@@ -449,7 +471,27 @@ const fun5 = (count) => (
 );
 
 
-export {fun1, fun2, fun3, fun4, fun5}`,
+export {fun1, fun2, fun3, fun4, fun5}
+
+export default function App() {
+    return (
+        <div>
+			{fun1(exampleCar)}
+			<br />
+			{fun2(true)}
+			{fun2(false)}
+			<br />
+			{fun3("Enabled Button", true)}
+			{fun3("Disabled Button", false)}
+			<br />
+			{fun4(12)}
+			{fun4(5)}
+			<br />
+            {fun5(4)}
+            {fun5(14)}
+        </div>
+    );
+}`,
 				},
 			],
 		},
@@ -462,7 +504,7 @@ export {fun1, fun2, fun3, fun4, fun5}`,
 			description: [
 				{
 					displayType: TaskDescriptionDisplayType.description,
-					text: `So far, we have only wrote JSX code but have not displayed anything on our screen. In the following, we will learn how to render JSX.`,
+					text: `So far, we have only wrote JSX code. In the following, we will learn how to render JSX.`,
 				},
 				{
 					displayType: TaskDescriptionDisplayType.description,

@@ -29,10 +29,12 @@ services:
       target: prod
     env_file:
       - /production.env
-    expose:
-      - '80'
     ports:
       - '80:80'
+      - '443:443'
+    volumes:
+      - ./frontend/react-main/nginx/:/etc/nginx/conf.d/:ro
+      - ./certbot/www:/var/www/certbot/:ro
     
   backend-express-session:
     image: babajack/master_thesis:express-session-latest
@@ -65,6 +67,12 @@ services:
       - 8081:8081
     env_file:
       - /production.env
+
+  certbot:
+    image: certbot/certbot:latest
+    volumes:
+      - ./certbot/www/:/var/www/certbot/:rw
+      - ./certbot/conf/:/etc/letsencrypt/:rw
 
 volumes:
   db-data:

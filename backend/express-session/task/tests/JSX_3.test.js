@@ -1,7 +1,7 @@
 import React from "react";
 import { cleanup, render } from "@testing-library/react";
 import "@testing-library/jest-dom/extend-expect";
-import { fun1, fun2, fun3, fun4, fun5 } from "../src/index.js";
+import { fun1, fun2, fun3, fun4, fun5 } from "../src/App";
 
 // Test fun1
 test("displays car information correctly", () => {
