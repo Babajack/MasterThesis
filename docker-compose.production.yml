@@ -12,7 +12,7 @@ services:
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
     env_file:
-      - /production.env
+      - ./production.env
     ports:
       - '8000:8000'
     command: npm run start
@@ -28,7 +28,7 @@ services:
       dockerfile: ./Dockerfile
       target: build
     env_file:
-      - /production.env
+      - ./production.env
     volumes:
       - /MasterThesisProject/build:/usr/share/nginx/html
 
@@ -62,7 +62,7 @@ services:
     volumes:
       - db-data:/data/db
     env_file:
-      - /production.env
+      - ./production.env
 
   mongo-express:
     container_name: mongo-express
@@ -73,7 +73,7 @@ services:
     ports:
       - 8081:8081
     env_file:
-      - /production.env
+      - ./production.env
 
 volumes:
   db-data:
