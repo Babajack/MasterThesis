@@ -42,7 +42,6 @@ COPY package*.json ./
 
 # Install all dependencies
 RUN npm install
-RUN npm install react-scripts@3.4.1 -g 
 
 # Copy the rest of the application code
 COPY . .
