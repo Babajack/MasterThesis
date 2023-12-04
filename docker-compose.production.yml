@@ -20,19 +20,28 @@ services:
   frontend-react-main:
     container_name: frontend-react-main
     image: babajack/master_thesis:react-main-latest
-    restart: always
+    #restart: always
     networks:
       - main-network
     build:
       context: ./frontend/react-main
       dockerfile: ./Dockerfile
-      target: prod
+      target: build
     env_file:
       - /production.env
-    expose:
-      - '80'
+    volumes:
+      - /MasterThesisProject/build:/usr/share/nginx/html
+
+  nginx:
+    image: nginx:latest
+    volumes:
+      - /MasterThesisProject/build:/usr/share/nginx/html:ro
+      - /MasterThesisProject/nginx.conf:/etc/nginx/conf.d/default.conf
     ports:
-      - '80:80'
+      - "80:80"
+      - "443:443"
+    depends_on:
+      - frontend-react-main
     
   backend-express-session:
     image: babajack/master_thesis:express-session-latest

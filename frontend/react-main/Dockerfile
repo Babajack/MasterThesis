@@ -40,7 +40,7 @@ ENV REACT_APP_DEV_MODE false
 # Copy package.json and package-lock.json/yarn.lock
 COPY package*.json ./
 
-# Install all dependencies (both dev and production for flexibility)
+# Install all dependencies
 RUN npm install
 RUN npm install react-scripts@3.4.1 -g 
 
@@ -52,19 +52,19 @@ RUN npm run build
 
 
 
-# Stage 2: Serve the React application from Nginx server
-FROM nginx:alpine as prod
+# # Stage 2: Serve the React application from Nginx server
+# FROM nginx:alpine as prod
 
-COPY nginx.conf /etc/nginx/conf.d/default.conf
+# COPY nginx.conf /etc/nginx/conf.d/default.conf
 
-# Remove default nginx website
-RUN rm -rf /usr/share/nginx/html/*
+# # Remove default nginx website
+# RUN rm -rf /usr/share/nginx/html/*
 
-# Copy the build folder from stage 1 to Nginx's serve folder
-COPY --from=build /app/build /usr/share/nginx/html
+# # Copy the build folder from stage 1 to Nginx's serve folder
+# COPY --from=build /app/build /usr/share/nginx/html
 
-# Define the port number the container should expose
-EXPOSE 80
+# # Define the port number the container should expose
+# EXPOSE 80
 
-# Run Nginx
-CMD ["nginx", "-g", "daemon off;"]
+# # Run Nginx
+# CMD ["nginx", "-g", "daemon off;"]
