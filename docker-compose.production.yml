@@ -36,7 +36,7 @@ services:
     image: nginx:latest
     volumes:
       - /MasterThesis/MasterThesis/build:/usr/share/nginx/html:ro
-      - /MasterThesis/MasterThesis/nginx.conf:/etc/nginx/nginx.conf:ro
+      - /MasterThesis/MasterThesis/nginx.conf:/etc/nginx/conf.d:ro
     ports:
       - "80:80"
       - "443:443"
