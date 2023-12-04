@@ -30,7 +30,7 @@ services:
     env_file:
       - ./production.env
     volumes:
-      - /MasterThesis/MasterThesis/build:/usr/share/nginx/html
+      - /MasterThesis/MasterThesis/build:/build
 
   nginx:
     image: nginx:latest
