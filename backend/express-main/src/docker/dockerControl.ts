@@ -8,9 +8,7 @@ import { MAX_AGE } from "../index";
 
 const SOCKET_PATH = "/var/run/docker.sock";
 const SANDBOX_IMAGE_NAME =
-	process.env.DEV_MODE === "false"
-		? "babajack/master_thesis:express-session-latest"
-		: "express-session-latest";
+	process.env.DEV_MODE === "false" ? "backend-express-session" : "express-session-latest";
 
 /* -------------------------------- Docker -------------------------------- */
 
