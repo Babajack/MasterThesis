@@ -1,7 +1,7 @@
 services:
   backend-express-main:
     container_name: backend-express-main
-    image: babajack/master_thesis:express-main-latest
+    #image: babajack/master_thesis:express-main-latest
     restart: always
     networks:
       - main-network
@@ -19,7 +19,7 @@ services:
 
   frontend-react-main:
     container_name: frontend-react-main
-    image: babajack/master_thesis:react-main-latest
+    #image: babajack/master_thesis:react-main-latest
     #restart: always
     networks:
       - main-network
@@ -44,7 +44,7 @@ services:
       - frontend-react-main
     
   backend-express-session:
-    image: babajack/master_thesis:express-session-latest
+    #image: babajack/master_thesis:express-session-latest
     networks:
       - main-network
     build:
