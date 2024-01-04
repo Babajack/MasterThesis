@@ -61,6 +61,9 @@ export const taskSlice = createSlice({
 		setLoadingStatus: (state, action: PayloadAction<LoadingStatus>) => {
 			state.loadingStatus = action.payload;
 		},
+		setShowConfetti: (state, action: PayloadAction<boolean>) => {
+			state.showConfetti = action.payload;
+		},
 	},
 	extraReducers: (builder) => {
 		builder.addCase("auth/logout/fulfilled", (state) => {
@@ -135,8 +138,14 @@ export const taskSlice = createSlice({
 	},
 });
 
-export const { resetTaskState, setCurrentFiles, updateFile, deleteFileByName, setLoadingStatus } =
-	taskSlice.actions;
+export const {
+	resetTaskState,
+	setCurrentFiles,
+	updateFile,
+	deleteFileByName,
+	setLoadingStatus,
+	setShowConfetti,
+} = taskSlice.actions;
 
 export default taskSlice.reducer;
 

@@ -49,10 +49,6 @@ const element = <h1>Hello, JSX!</h1>;`,
 					displayType: TaskDescriptionDisplayType.description,
 					text: `Overall, JSX simplifies the development of React applications by providing an efficient way to define user interfaces with integrated JavaScript logic.`,
 				},
-				{
-					displayType: TaskDescriptionDisplayType.hint,
-					text: `The "run code" button does not show anything because the JSX is not rendered. You will learn how to render elements later in this chapter.`,
-				},
 			],
 			defaultFiles: [
 				{

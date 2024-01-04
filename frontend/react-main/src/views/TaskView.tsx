@@ -12,6 +12,7 @@ import {
 	setLoadingStatus,
 	runCode,
 	updateFile,
+	setShowConfetti,
 } from "../redux/slices/taskSlice";
 import { useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
@@ -26,6 +27,10 @@ const TaskMenuView = () => {
 	const dispatch = useDispatch<AppDispatch>();
 	const taskState = useSelector((state: RootState) => state.task);
 	const userState = useSelector((state: RootState) => state.user);
+	const showRunCodeBtn = !(
+		taskState.task.category === "JavaScript Basics" ||
+		(taskState.task.category == "JSX" && taskState.task.index < 3)
+	);
 	const { taskId } = useParams();
 	const navigate = useNavigate();
 	const taskCategories: TaskCategory[] = [
@@ -88,10 +93,14 @@ const TaskMenuView = () => {
 		};
 	}, []);
 
+	useEffect(() => {
+		setTimeout(() => dispatch(setShowConfetti(false)), 4000);
+	}, [taskState.showConfetti]);
+
 	return (
 		<LoadingWrapper loadingStatus={taskState.loadingStatus}>
 			<MDBContainer fluid className="g-0 d-flex flex-column flex-grow-1">
-				{taskState.showConfetti && <Confetti height={height} width={width} numberOfPieces={100} />}
+				<Confetti height={height} width={width} numberOfPieces={taskState.showConfetti ? 100 : 0} />
 				<MDBRow className="g-0 flex-grow-1">
 					<MDBCol xxl={4} lg={12} className="d-flex flex-grow-1 p-2" style={{ maxHeight: "90vh" }}>
 						<TaskDescriptionComponent />
@@ -118,7 +127,7 @@ const TaskMenuView = () => {
 							}}
 							onDeleteFile={(filename) => dispatch(deleteFileByName(filename))}
 							onRunCode={
-								true //taskState.task.category !== "JavaScript Basics"   <- disabled for first tasks?
+								showRunCodeBtn //taskState.task.category !== "JavaScript Basics"   <- disabled for first tasks?
 									? () => dispatch(runCode(taskState.currentFilesMap[taskId as string]))
 									: undefined
 							}

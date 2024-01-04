@@ -24,35 +24,40 @@ const EditorButtons: React.FC<EditorButtonsProps> = (props) => {
 	return (
 		<MDBRow>
 			<MDBCol xxl={3} sm={6} xs={6} className="d-flex order-xxl-0 order-sm-0 order-xs-0">
-				<MDBTooltip title={"run code"} tag="span" wrapperClass="d-inline-block" disableMouseDown>
-					<MDBBtn
-						className="app-tertiary app-text-primary app-button app-button-tertiary me-3 anchor-element-run-btn"
-						onClick={props.onRunCode}
-						disabled={props.buildStatus === "Pending" || !props.onRunCode}
-					>
-						{props.buildStatus === "Pending" ? (
-							<MDBSpinner size="sm" />
-						) : (
-							<MDBIcon fas icon="play" />
-						)}
-					</MDBBtn>
-				</MDBTooltip>
-
 				{props.onTestCode && (
 					<MDBTooltip title={"run tests"} tag="span" wrapperClass="d-inline-block" disableMouseDown>
 						<MDBBtn
-							className="app-tertiary app-text-primary app-button app-button-tertiary anchor-element-test-btn"
+							className="app-tertiary app-text-primary app-button app-button-tertiary anchor-element-test-btn me-3"
 							onClick={props.onTestCode}
 							disabled={props.buildStatus === "Pending"}
 						>
 							{props.buildStatus === "Pending" ? (
 								<MDBSpinner size="sm" />
 							) : (
-								<MDBIcon fas icon="clipboard-list" />
+								<MDBIcon fas icon="play" />
 							)}
 						</MDBBtn>
 					</MDBTooltip>
 				)}
+
+				<MDBTooltip
+					title={"render website"}
+					tag="span"
+					wrapperClass="d-inline-block"
+					disableMouseDown
+				>
+					<MDBBtn
+						className="app-tertiary app-text-primary app-button app-button-tertiary anchor-element-run-btn"
+						onClick={props.onRunCode}
+						disabled={props.buildStatus === "Pending" || !props.onRunCode}
+					>
+						{props.buildStatus === "Pending" ? (
+							<MDBSpinner size="sm" />
+						) : (
+							<MDBIcon fas icon="cog" />
+						)}
+					</MDBBtn>
+				</MDBTooltip>
 			</MDBCol>
 			<MDBCol
 				xxl={4}

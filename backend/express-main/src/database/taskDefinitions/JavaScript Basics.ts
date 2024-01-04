@@ -187,7 +187,7 @@ export {resultNum, resultObj1, resultObj2}
 				},
 				{
 					displayType: TaskDescriptionDisplayType.description,
-					text: `<h5>Short-circuiting with the OR (||) operator</h5><div>Logical OR (&&) operands from left to right, returning immediately with the value of the first truthy operand it encounters; if all values are falsy, the value of the last operand is returned. <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Logical_OR" target=”_blank”>more info</a></div>`,
+					text: `<h5>Short-circuiting with the OR (||) operator</h5><div>Logical OR (||) operands from left to right, returning immediately with the value of the first truthy operand it encounters; if all values are falsy, the value of the last operand is returned. <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Logical_OR" target=”_blank”>more info</a></div>`,
 				},
 				{
 					displayType: TaskDescriptionDisplayType.code,
